@@ -13,7 +13,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger
 } from '@/components/ui/context-menu'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import UpdateFolderForm from './UpdateFolderForm'
 
 export default function SingleFolder({ folder }: { folder: Folder }) {

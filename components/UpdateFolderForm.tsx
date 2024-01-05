@@ -2,7 +2,7 @@
 
 import useFetch, { revalidate } from 'http-react'
 import { Folder } from '@prisma/client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Select,
@@ -23,6 +23,8 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { availableColors } from '@/lib/utils'
+import { useParams } from 'next/navigation'
 
 export default function UpdateFolderForm({
   folder,
@@ -33,30 +35,9 @@ export default function UpdateFolderForm({
   open: boolean
   setOpen: any
 }) {
-  const [folderData, setFolderData] = useState(folder)
+  const params = useParams()
 
-  const availableColors = [
-    {
-      name: 'Yellow',
-      value: '#fcba03'
-    },
-    {
-      name: 'Green',
-      value: '#02d177'
-    },
-    {
-      name: 'Blue',
-      value: '#025df0'
-    },
-    {
-      name: 'Red',
-      value: '#ff4949'
-    },
-    {
-      name: 'Pink',
-      value: '#fd3b8c'
-    }
-  ]
+  const [folderData, setFolderData] = useState(folder)
 
   const {
     data: _,
@@ -66,17 +47,19 @@ export default function UpdateFolderForm({
     method: 'PUT',
     auto: false,
     body: folderData,
-    onResolve(newFolder) {
-      setOpen(false)
-      revalidate([
-        newFolder.parentFolderId
-          ? { folderId: newFolder.parentFolderId }
-          : 'parent',
+    onResolve() {
+      // setOpen(false)
 
+      revalidate([
+        params.folderId ? { folderId: params.folderId } : 'parent',
         'GET /folders/previous'
       ])
     }
   })
+
+  useEffect(() => {
+    setOpen(false)
+  }, [folder])
 
   return (
     <>

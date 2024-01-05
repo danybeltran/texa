@@ -3,7 +3,7 @@
 import { FaFolder } from 'react-icons/fa6'
 import useFetch, { revalidate } from 'http-react'
 import { BsFillFileEarmarkTextFill, BsPlusLg } from 'react-icons/bs'
-import { Doc, Folder } from '@prisma/client'
+import { Folder } from '@prisma/client'
 import { useState } from 'react'
 
 import {
@@ -32,34 +32,12 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { availableColors } from '@/lib/utils'
 
 export default function CreateForm({ folder }: { folder: Folder }) {
-  const availableColors = [
-    {
-      name: 'Yellow',
-      value: '#fcba03'
-    },
-    {
-      name: 'Green',
-      value: '#02d177'
-    },
-    {
-      name: 'Blue',
-      value: '#025df0'
-    },
-    {
-      name: 'Red',
-      value: '#ff4949'
-    },
-    {
-      name: 'Pink',
-      value: '#fd3b8c'
-    }
-  ]
-
   const [isCreatingFolder, setIsCreatingFolder] = useState(false)
   const [newFolderName, setNewFolderName] = useState('')
-  const [newFolderColor, setNewFolderColor] = useState('#fcba03')
+  const [newFolderColor, setNewFolderColor] = useState(availableColors[0].value)
 
   const {
     data: _,
