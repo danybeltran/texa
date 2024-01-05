@@ -13,6 +13,10 @@ const markdown = new MD()
     katexOptions: { macros: { '\\RR': '\\mathbb{R}' } }
   })
 
+export const metadata = {
+  title: ''
+}
+
 export default async function DocumentPage({
   params
 }: {
