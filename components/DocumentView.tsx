@@ -1,13 +1,9 @@
 'use client'
-
-import MD from 'markdown-it'
-
-import { Textarea } from '@/components/ui/textarea'
 import useFetch, { useDebounceFetch } from 'http-react'
+import { useParams } from 'next/navigation'
+import { useEffect, useMemo } from 'react'
 import { Doc } from '@prisma/client'
-import { Input } from '@/components/ui/input'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import {
   FaChevronLeft,
   FaLock,
@@ -16,25 +12,12 @@ import {
   FaRegEyeSlash
 } from 'react-icons/fa6'
 import { FaExternalLinkAlt } from 'react-icons/fa'
-import { cn } from '@/lib/utils'
-import { useParams } from 'next/navigation'
-import { KatexOptions } from 'katex'
-import { useEffect, useMemo } from 'react'
 
-const markdown = new MD({
-  html: true,
-  breaks: true
-})
-  .use(require('markdown-it-math'))
-  .use(require('markdown-it-texmath'), {
-    engine: require('katex'),
-    delimiters: 'dollars',
-    katexOptions: {
-      throwOnError: false,
-      displayMode: true,
-      macros: { '\\RR': '\\mathbb{R}' }
-    } as KatexOptions
-  })
+import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { renderMD } from '@/lib/md'
 
 export default function DocumentView() {
   const params: { id: string } = useParams()
@@ -79,7 +62,7 @@ export default function DocumentView() {
         className='w-full'
         dangerouslySetInnerHTML={{
           __html: doc?.content
-            ? markdown.render((doc?.content || '').replaceAll('$$$', '$$ $'))
+            ? renderMD(doc?.content)
             : '<p class="text-neutral-500 select-none">Preview will appear here</p>'
         }}
       ></div>

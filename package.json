@@ -37,6 +37,7 @@
     "latex.js": "^0.12.6",
     "lucide-react": "^0.303.0",
     "markdown-it": "^14.0.0",
+    "markdown-it-checkbox": "^1.1.0",
     "markdown-it-latex": "^0.2.0",
     "markdown-it-latex2img": "^0.0.6",
     "markdown-it-math": "^4.1.1",

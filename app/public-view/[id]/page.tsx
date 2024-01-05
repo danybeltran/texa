@@ -1,21 +1,10 @@
-import MD from 'markdown-it'
 import { headers } from 'next/headers'
+import { Fragment } from 'react'
 import 'markdown-it-latex/dist/index.css'
 
 import { cn } from '@/lib/utils'
 import { prisma } from '@/server'
-import { Fragment } from 'react'
-
-const markdown = new MD({
-  html: true,
-  breaks: true
-})
-  .use(require('markdown-it-math'))
-  .use(require('markdown-it-texmath'), {
-    engine: require('katex'),
-    delimiters: 'dollars',
-    katexOptions: { macros: { '\\RR': '\\mathbb{R}' } }
-  })
+import { renderMD } from '@/lib/md'
 
 export const metadata = {
   title: ''
@@ -63,9 +52,7 @@ export default async function DocumentPage({
             'md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 prose text-black'
           )}
           dangerouslySetInnerHTML={{
-            __html: markdown.render(
-              (doc?.content || '').replaceAll('$$$', '$$ $')
-            )
+            __html: renderMD(doc?.content!)
           }}
         ></div>
       </div>
