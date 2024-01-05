@@ -17,8 +17,11 @@ function MainLayout({ children }) {
   return (
     <html suppressHydrationWarning>
       <head>
-        <title>Next.js starter</title>
-        <meta name='description' content='A Starter with Next.js' />
+        <title>Texa</title>
+        <meta
+          name='description'
+          content='Texa is an online Markdown and LaTeX editor'
+        />
       </head>
       <body className={GeistSans.className}>
         <ThemeProvider attribute='class' defaultTheme='system'>
