@@ -5,7 +5,6 @@ import { FaFolder } from 'react-icons/fa6'
 import { Folder } from '@prisma/client'
 import { cn } from '@/lib/utils'
 import useFetch, { revalidate } from 'http-react'
-import { storage } from 'atomic-state'
 
 import {
   ContextMenu,
@@ -13,7 +12,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger
 } from '@/components/ui/context-menu'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import UpdateFolderForm from './UpdateFolderForm'
 import {
   AlertDialog,
@@ -38,13 +37,7 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
       delete: folder
     },
     onResolve() {
-      revalidate(
-        folder.parentFolderId
-          ? {
-              folderId: folder.parentFolderId
-            }
-          : 'parent'
-      )
+      revalidate(['GET /folders', 'parent'])
     }
   })
 

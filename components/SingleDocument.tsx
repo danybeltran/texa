@@ -36,14 +36,7 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
       delete: doc
     },
     onResolve() {
-      revalidate([
-        doc
-          ? {
-              folderId: doc.parentFolderId
-            }
-          : 'parent',
-        'GET /documents'
-      ])
+      revalidate('GET /documents')
     }
   })
 
