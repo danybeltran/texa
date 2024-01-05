@@ -10,14 +10,13 @@ import AuthProvider from '@/components/AuthProvider'
 
 export const metadata: Metadata = {
   title: 'Home',
-  description: 'Home page '
+  description: 'Texa is an online Markdown and LaTeX editor'
 }
 
 function MainLayout({ children }) {
   return (
     <html suppressHydrationWarning>
       <head>
-        <title>Texa</title>
         <meta
           name='description'
           content='Texa is an online Markdown and LaTeX editor'
