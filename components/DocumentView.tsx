@@ -19,6 +19,13 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { renderMD } from '@/lib/md'
 
+function calcHeight(value: string) {
+  let numberOfLineBreaks = (value.match(/\n/g) || []).length
+  // min-height + lines x line-height + padding + border
+  let newHeight = 20 + numberOfLineBreaks * 20 + 12 + 2
+  return newHeight
+}
+
 export default function DocumentView() {
   const params: { id: string } = useParams()
 
@@ -47,7 +54,7 @@ export default function DocumentView() {
         editor.style.height = editor.scrollHeight + heightOffset + 'px'
       }
     }, 100)
-  }, [doc.content, doc.locked, doc.editorOnly])
+  }, [doc.locked, doc.editorOnly])
 
   const { reFetch: saveDoc, data: __ } = useDebounceFetch('/documents', {
     method: 'PUT',
@@ -138,16 +145,10 @@ export default function DocumentView() {
           value={doc.description || ''}
           placeholder='Document description'
           onFocus={e => {
-            const heightOffset = 3
-            e.currentTarget.style.height = 'auto'
-            e.currentTarget.style.height =
-              e.currentTarget.scrollHeight + heightOffset + 'px'
+            e.currentTarget.style.height = calcHeight(e.target.value) + 3 + 'px'
           }}
           onChange={e => {
-            const heightOffset = 3
-            e.currentTarget.style.height = 'auto'
-            e.currentTarget.style.height =
-              e.currentTarget.scrollHeight + heightOffset + 'px'
+            e.currentTarget.style.height = calcHeight(e.target.value) + 3 + 'px'
 
             setDoc(prevDoc => ({ ...prevDoc, description: e.target.value }))
           }}
