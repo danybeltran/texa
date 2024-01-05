@@ -1,10 +1,5 @@
 import Link from 'next/link'
-import { TbBrandNextjs } from 'react-icons/tb'
-import { FaReact } from 'react-icons/fa'
-import { SiPrisma, SiTailwindcss } from 'react-icons/si'
-import { BiLogoMongodb } from 'react-icons/bi'
-import { GoPlus } from 'react-icons/go'
-import { IoLogoGithub, IoLogoVercel } from 'react-icons/io5'
+import { TfiWrite } from 'react-icons/tfi'
 
 import { Button } from '@/components/ui/button'
 
@@ -14,34 +9,22 @@ export default function Home() {
       <section className='space-y-6 pb-8 py-8  md:py-16 lg:py-20 '>
         <div className='container flex max-w-[64rem] flex-col items-center gap-4 text-center mx-auto'>
           <h1 className='font-bold leading-normal text-3xl sm:text-5xl md:text-6xl lg:text-7xl'>
-            Welcome to Next.js 14
+            Welcome to Texa
           </h1>
           <p className='max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8'>
-            This is a starter project
+            Texa is an online Markdown and LaTeX editor
           </p>
           <div className='flex gap-x-2 *:*:gap-x-2'>
-            <Link
-              href='https://github.com/danybeltran/nextjs-typescript-and-mongodb'
-              target='_blank'
-              rel='noreferrer'
-            >
+            <Link href='/personal' rel='noreferrer'>
               <Button variant='outline'>
-                <IoLogoGithub />
-                GitHub
-              </Button>
-            </Link>
-            <Link
-              target='_blank'
-              href='https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdanybeltran%2Fnextjs-typescript-and-mongodb'
-            >
-              <Button>
-                <IoLogoVercel /> Deploy
+                <TfiWrite />
+                Start writing
               </Button>
             </Link>
           </div>
         </div>
       </section>
-      <section
+      {/* <section
         id='features'
         className='container space-y-6 py-8 dark:bg-transparent md:py-12 lg:py-24 mx-auto'
       >
@@ -101,26 +84,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
-      <section
-        id='open-source'
-        className='container py-8 md:py-12 lg:py-24 mx-auto'
-      >
-        <div className='mx-auto flex max-w-[58rem] flex-col items-center justify-center gap-4 text-center '>
-          <p className='max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7'>
-            The code is available on{' '}
-            <Link
-              href='https://github.com/danybeltran/nextjs-typescript-and-mongodb'
-              target='_blank'
-              rel='noreferrer'
-              className='underline underline-offset-4'
-            >
-              GitHub
-            </Link>
-            .{' '}
-          </p>
-        </div>
-      </section>
+      </section> */}
     </>
   )
 }
