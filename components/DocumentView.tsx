@@ -18,20 +18,18 @@ import {
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { cn } from '@/lib/utils'
 import { useParams } from 'next/navigation'
-
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from '@/components/ui/accordion'
+import { KatexOptions } from 'katex'
 
 const markdown = new MD()
   .use(require('markdown-it-math'))
   .use(require('markdown-it-texmath'), {
     engine: require('katex'),
     delimiters: 'dollars',
-    katexOptions: { macros: { '\\RR': '\\mathbb{R}' } }
+    katexOptions: {
+      throwOnError: false,
+      displayMode: true,
+      macros: { '\\RR': '\\mathbb{R}' }
+    } as KatexOptions
   })
 
 export default function DocumentView() {
@@ -72,7 +70,7 @@ export default function DocumentView() {
           href={'/personal/' + (doc?.parentFolderId ? doc.parentFolderId : '')}
         >
           <Button variant='ghost' className='gap-x-2' title='Open public link'>
-            <FaChevronLeft /> Return to folder
+            <FaChevronLeft /> Close
           </Button>
         </Link>
         <div className='flex items-center gap-x-2'>
@@ -183,7 +181,7 @@ export default function DocumentView() {
           )}
           dangerouslySetInnerHTML={{
             __html: doc?.content
-              ? markdown.render(doc?.content || '')
+              ? markdown.render(doc?.content.replaceAll('$$$', '$$ $') || '')
               : '<p class="text-neutral-500 select-none">Preview will appear here</p>'
           }}
         ></div>
