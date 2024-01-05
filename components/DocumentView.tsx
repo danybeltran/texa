@@ -20,7 +20,10 @@ import { cn } from '@/lib/utils'
 import { useParams } from 'next/navigation'
 import { KatexOptions } from 'katex'
 
-const markdown = new MD()
+const markdown = new MD({
+  html: true,
+  breaks: true
+})
   .use(require('markdown-it-math'))
   .use(require('markdown-it-texmath'), {
     engine: require('katex'),
@@ -175,13 +178,13 @@ export default function DocumentView() {
         />
         <div
           className={cn(
-            'md-editor-preview w-full sm:w-1/2 border-neutral-500 rounded-lg p-6 prose text-black whitespace-pre-line',
+            'md-editor-preview w-full sm:w-1/2 border-neutral-500 rounded-lg p-6 prose text-black',
             doc.locked && 'w-full',
             doc.editorOnly && 'hidden'
           )}
           dangerouslySetInnerHTML={{
             __html: doc?.content
-              ? markdown.render(doc?.content.replaceAll('$$$', '$$ $') || '')
+              ? markdown.render((doc?.content || '').replaceAll('$$$', '$$ $'))
               : '<p class="text-neutral-500 select-none">Preview will appear here</p>'
           }}
         ></div>

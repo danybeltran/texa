@@ -100,3 +100,9 @@ body::-webkit-scrollbar-thumb {
   background: var(--sb-thumb-color);
   border-radius: 2px;
 }
+
+iframe {
+  width: 100%;
+  height: auto !important;
+  aspect-ratio: 16/9;
+}
