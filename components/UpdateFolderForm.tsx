@@ -1,6 +1,6 @@
 'use client'
 
-import useFetch, { revalidate } from 'http-react'
+import { Client, revalidate } from 'http-react'
 import { Folder } from '@prisma/client'
 import { useEffect, useState } from 'react'
 
@@ -38,24 +38,6 @@ export default function UpdateFolderForm({
   const params = useParams()
 
   const [folderData, setFolderData] = useState(folder)
-
-  const {
-    data: _,
-    reFetch: updateFolder,
-    loading: isUpdatingFolder
-  } = useFetch<Folder>('/folders', {
-    method: 'PUT',
-    auto: false,
-    body: folderData,
-    onResolve() {
-      // setOpen(false)
-
-      revalidate([
-        params.folderId ? { folderId: params.folderId } : 'parent',
-        'GET /folders/previous'
-      ])
-    }
-  })
 
   useEffect(() => {
     setOpen(false)
@@ -136,8 +118,19 @@ export default function UpdateFolderForm({
           <DialogFooter>
             <Button
               type='submit'
-              onClick={updateFolder}
-              disabled={isUpdatingFolder}
+              onClick={() => {
+                Client.put('/api/folders', {
+                  body: JSON.stringify(folderData),
+                  onResolve() {
+                    revalidate([
+                      params.folderId
+                        ? { folderId: params.folderId }
+                        : 'parent',
+                      'GET /folders/previous'
+                    ])
+                  }
+                })
+              }}
             >
               Save
             </Button>
