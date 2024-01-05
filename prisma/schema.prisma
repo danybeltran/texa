@@ -7,9 +7,21 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Post {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  date      DateTime @default(now())
-  content   String
+model Folder {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String   @default("Unnamed folder")
+  created        DateTime @default(now()) @map("date")
+  color          String
+  owner          String
+  parentFolderId String?
+}
+
+model Doc {
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  name           String? @default("Unnamed document")
+  content        String? @default("")
+  owner          String
+  parentFolderId String?
+  publicId       String
+  locked         Boolean
 }

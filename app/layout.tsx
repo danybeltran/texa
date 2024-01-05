@@ -20,7 +20,6 @@ function MainLayout({ children }) {
         <title>Next.js starter</title>
         <meta name='description' content='A Starter with Next.js' />
       </head>
-
       <body className={GeistSans.className}>
         <ThemeProvider attribute='class' defaultTheme='system'>
           <main className='min-h-screen'>
