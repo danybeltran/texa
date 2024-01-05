@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { FaChevronRight } from 'react-icons/fa6'
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
 import useFetch from 'http-react'
 import { BrowserOnly } from 'react-kuh'
 import { storage } from 'atomic-state'
@@ -12,19 +12,10 @@ import CreateForm from '@/components/CreateForm'
 import SingleFolder from '@/components/SingleFolder'
 import SingleDocument from '@/components/SingleDocument'
 import { useParams } from 'next/navigation'
+import { Button } from './ui/button'
 
 export default function NormalFolders() {
   const params: { folderId: string } = useParams()
-
-  const { data: folders } = useFetch<Folder[]>('/folders', {
-    default: [],
-    id: params,
-    suspense: true,
-    cacheProvider: storage,
-    query: {
-      parentFolderId: params.folderId
-    }
-  })
 
   const { data: parentFolder } = useFetch<{
     folderSegments: Folder[]
@@ -32,12 +23,22 @@ export default function NormalFolders() {
   }>('/folders/previous', {
     suspense: true,
     revalidateOnMount: false,
+    cacheProvider: storage,
     query: {
       folderId: params.folderId
     },
     default: {
       folder: {} as any,
       folderSegments: []
+    }
+  })
+
+  const { data: folders } = useFetch<Folder[]>('/folders', {
+    default: [],
+    suspense: true,
+    cacheProvider: storage,
+    query: {
+      parentFolderId: params.folderId
     }
   })
 
@@ -52,7 +53,7 @@ export default function NormalFolders() {
 
   return (
     <>
-      <div className='flex items-center gap-x-4 h-10'>
+      <div className='flex items-center gap-x-4 h-10 max-w-full overflow-x-auto'>
         <Link href={'/personal/'}>Home</Link>
         {parentFolder.folderSegments?.map((folder, folderIndex) => (
           <Link
@@ -61,7 +62,7 @@ export default function NormalFolders() {
               'flex items-center gap-x-2',
               folderIndex === parentFolder.folderSegments.length
                 ? 'border'
-                : 'text-neutral-400'
+                : 'text-neutral-400 whitespace-nowrap'
             )}
             href={
               '/personal/' +
@@ -71,12 +72,26 @@ export default function NormalFolders() {
             <FaChevronRight /> {folder.name}
           </Link>
         ))}
-        <div className='flex items-center gap-x-2'>
+        <div className='flex items-center gap-x-2 whitespace-nowrap'>
           <FaChevronRight />
           <p>{parentFolder.folder?.name}</p>
         </div>
       </div>
-      <div className='flex flex-wrap items-center py-8 gap-8'>
+      <div className='pt-2'>
+        <Link
+          href={
+            '/personal/' +
+            (parentFolder.folder.parentFolderId
+              ? parentFolder.folder.parentFolderId
+              : '')
+          }
+        >
+          <Button variant='secondary' size='sm' className='gap-x-2'>
+            <FaChevronLeft /> Back
+          </Button>
+        </Link>
+      </div>
+      <div className='flex flex-wrap items-center gap-8'>
         <CreateForm folder={parentFolder.folder} />
         <BrowserOnly>
           {folders.map(folder => (

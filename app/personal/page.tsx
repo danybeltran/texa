@@ -8,7 +8,7 @@ export default function PersonalPage() {
       <div className='flex items-center gap-x-4 h-10'>
         <h2>Home</h2>
       </div>
-      <div className='flex flex-wrap py-8 gap-8'>
+      <div className='flex flex-wrap py-8 pt-11 gap-8'>
         <SSRSuspense>
           <CreateForm folder={{} as any} />
           <RootFolders />

@@ -66,12 +66,12 @@ export default function DocumentView() {
     }, 100)
   }, [doc.content, doc.locked, doc.editorOnly])
 
-  useDebounceFetch('/documents', {
+  const { reFetch: saveDoc, data: __ } = useDebounceFetch('/documents', {
     method: 'PUT',
     auto: !loadingDoc,
-    debounce: '200 ms',
+    debounce: '300 ms',
     body: doc
-  }).data
+  })
 
   const renderedPreview = useMemo(
     () => (
@@ -191,6 +191,14 @@ export default function DocumentView() {
             e.currentTarget.style.height = 'auto'
             e.currentTarget.style.height =
               e.currentTarget.scrollHeight + heightOffset + 'px'
+          }}
+          onKeyDown={e => {
+            if (e.ctrlKey) {
+              if (e.key === 'S' || e.key === 's') {
+                e.preventDefault()
+                saveDoc()
+              }
+            }
           }}
           disabled={doc.locked}
           onChange={e => {
