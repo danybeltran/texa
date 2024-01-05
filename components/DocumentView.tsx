@@ -175,7 +175,7 @@ export default function DocumentView() {
         />
         <div
           className={cn(
-            'md-editor-preview w-full sm:w-1/2 border-neutral-500 rounded-lg p-6 prose text-black',
+            'md-editor-preview w-full sm:w-1/2 border-neutral-500 rounded-lg p-6 prose text-black whitespace-pre-line',
             doc.locked && 'w-full',
             doc.editorOnly && 'hidden'
           )}
