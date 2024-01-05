@@ -33,11 +33,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { availableColors } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 
 export default function CreateForm({ folder }: { folder: Folder }) {
   const [isCreatingFolder, setIsCreatingFolder] = useState(false)
   const [newFolderName, setNewFolderName] = useState('')
   const [newFolderColor, setNewFolderColor] = useState(availableColors[0].value)
+
+  const router = useRouter()
 
   const {
     data: _,
@@ -75,6 +78,9 @@ export default function CreateForm({ folder }: { folder: Folder }) {
     onResolve(newDoc) {
       setIsCreatingDoc(false)
       setNewDocName('')
+
+      router.push('/personal/document/' + newDoc.id)
+
       revalidate([
         newDoc.parentFolderId ? { folderId: newDoc.parentFolderId } : 'parent',
         'GET /documents'
@@ -86,7 +92,7 @@ export default function CreateForm({ folder }: { folder: Folder }) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className='text-center flex flex-col items-center h-36 pt-4'>
+          <div className='text-center flex flex-col items-center h-36 pt-4 select-none'>
             <div className='border h-28 border-neutral-400 border-dashed decoration-dashed  w-full flex items-center rounded-lg cursor-pointer'>
               <BsPlusLg className='text-9xl p-6' />
             </div>
@@ -125,6 +131,9 @@ export default function CreateForm({ folder }: { folder: Folder }) {
               <p className='py-3'>Folder name</p>
               <Input
                 id='name'
+                onKeyDown={e => {
+                  if (e.key === 'Enter') createFolder()
+                }}
                 value={newFolderName}
                 onChange={e => setNewFolderName(e.target.value)}
                 className='w-full'
@@ -192,6 +201,9 @@ export default function CreateForm({ folder }: { folder: Folder }) {
             <Label>
               <p className='py-3'>Document name</p>
               <Input
+                onKeyDown={e => {
+                  if (e.key === 'Enter') createDoc()
+                }}
                 id='name'
                 value={newDocName}
                 onChange={e => setNewDocName(e.target.value)}
@@ -200,7 +212,6 @@ export default function CreateForm({ folder }: { folder: Folder }) {
               />
             </Label>
           </div>
-
           <DialogFooter>
             <Button type='submit' onClick={createDoc} disabled={creatingDoc}>
               Create

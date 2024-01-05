@@ -11,7 +11,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger
 } from '@/components/ui/context-menu'
-import { FaFile, FaFileLines } from 'react-icons/fa6'
+import { FaFile, FaFileLines, FaRegTrashCan } from 'react-icons/fa6'
 import { useState } from 'react'
 import {
   AlertDialog,
@@ -22,6 +22,7 @@ import {
   AlertDialogTitle
 } from './ui/alert-dialog'
 import { Button } from './ui/button'
+import { FaExternalLinkAlt } from 'react-icons/fa'
 
 export default function SingleDocument({ doc }: { doc: Doc }) {
   const {
@@ -49,7 +50,7 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete document</AlertDialogTitle>
             <AlertDialogDescription>
-              The document <i>{doc.name}</i> will be deleted
+              The document <strong>{doc.name}</strong> will be deleted
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -68,7 +69,7 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <Link href={'/personal/document/' + doc.id} className='h-36'>
+      <Link href={'/personal/document/' + doc.id} className='h-36 select-none'>
         <ContextMenu>
           <ContextMenuTrigger className='h-36 text-center'>
             <FaFileLines
@@ -94,12 +95,17 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
               onClick={() => {
                 setDeleting(true)
               }}
+              className='gap-x-2 flex items-center cursor-pointer'
             >
-              Delete
+              <FaRegTrashCan /> Delete
             </ContextMenuItem>
             <ContextMenuItem>
-              <Link href={/public-view/ + doc.publicId} target='_blank'>
-                Open public link
+              <Link
+                href={'/public-view/' + doc.publicId}
+                target='_blank'
+                className='gap-x-2 flex items-center cursor-pointer'
+              >
+                <FaExternalLinkAlt /> Open public link
               </Link>
             </ContextMenuItem>
           </ContextMenuContent>

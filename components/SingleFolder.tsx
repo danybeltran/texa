@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { FaFolder } from 'react-icons/fa6'
+import { FaFolder, FaPen, FaRegTrashCan } from 'react-icons/fa6'
 import { Folder } from '@prisma/client'
 import { cn } from '@/lib/utils'
 import useFetch, { revalidate } from 'http-react'
@@ -52,7 +52,8 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete folder</AlertDialogTitle>
             <AlertDialogDescription>
-              The folder <i>{folder.name}</i> and its contents will be deleted
+              The folder <strong>{folder.name}</strong> and its contents will be
+              deleted
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -71,7 +72,7 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <Link href={'/personal/' + folder.id} className='h-36'>
+      <Link href={'/personal/' + folder.id} className='h-36 select-none'>
         <ContextMenu>
           <ContextMenuTrigger className='h-36 text-center'>
             <FaFolder
@@ -96,12 +97,16 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
                 e.stopPropagation()
                 setEditFolder(true)
               }}
+              className='gap-x-2 flex items-center cursor-pointer'
             >
-              <span>Edit</span>
+              <FaPen /> Edit
             </ContextMenuItem>
 
-            <ContextMenuItem onClick={() => setDeleting(true)}>
-              Delete
+            <ContextMenuItem
+              onClick={() => setDeleting(true)}
+              className='gap-x-2 flex items-center cursor-pointer'
+            >
+              <FaRegTrashCan /> Delete
             </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
