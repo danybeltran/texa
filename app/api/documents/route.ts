@@ -101,6 +101,8 @@ export async function PUT(req: Request) {
       name: newDocumentData.name,
       content: newDocumentData.content,
       parentFolderId: newDocumentData.parentFolderId,
+      editorOnly: newDocumentData.editorOnly,
+      description: newDocumentData.description,
       locked: newDocumentData.locked
     },
     where: {

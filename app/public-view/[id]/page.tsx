@@ -4,6 +4,7 @@ import 'markdown-it-latex/dist/index.css'
 
 import { cn } from '@/lib/utils'
 import { prisma } from '@/server'
+import { Fragment } from 'react'
 
 const markdown = new MD()
   .use(require('markdown-it-math'))
@@ -37,9 +38,22 @@ export default async function DocumentPage({
       </div>
     )
 
+  let docName = doc.name || 'Unnamed document'
+  let docDescription = doc.description || 'No description'
+
   return (
     <main className='w-full'>
-      <title>{doc.name}</title>
+      <Fragment>
+        <title>{docName}</title>
+        <meta property='og:title' content={docName} />
+        <meta name='twitter:title' content={docName} />
+
+        <meta name='description' content={docDescription} />
+        <meta name='og:description' content={docDescription} />
+        <meta name='twitter:description' content={docDescription} />
+
+        <meta name='twitter:card' content='summary_large_image' />
+      </Fragment>
       <div className={'flex border-white w-full gap-x-4 py-8 justify-center'}>
         <div
           className={cn(

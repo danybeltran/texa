@@ -19,9 +19,11 @@ model Folder {
 model Doc {
   id             String  @id @default(auto()) @map("_id") @db.ObjectId
   name           String? @default("Unnamed document")
+  description    String? @default("")
   content        String? @default("")
   owner          String
   parentFolderId String?
   publicId       String
+  editorOnly     Boolean @default(false)
   locked         Boolean
 }
