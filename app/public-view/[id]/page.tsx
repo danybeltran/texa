@@ -57,7 +57,7 @@ export default async function DocumentPage({
       <div className={'flex border-white w-full gap-x-4 py-8 justify-center'}>
         <div
           className={cn(
-            'md-editor-preview w-full border-neutral-500 rounded-lg p-6 prose text-black'
+            'md-editor-preview w-full border-neutral-500 rounded-lg p-6 prose text-black whitespace-pre-line'
           )}
           dangerouslySetInnerHTML={{
             __html: markdown.render(doc?.content || '')
