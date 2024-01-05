@@ -12,7 +12,7 @@ export default function Home() {
             Welcome to Texa
           </h1>
           <p className='max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8'>
-            Texa is an online Markdown and LaTeX editor
+            Texa is the online Markdown and LaTeX editor
           </p>
           <div className='flex gap-x-2 *:*:gap-x-2'>
             <Link href='/personal' rel='noreferrer'>

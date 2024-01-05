@@ -10,7 +10,7 @@ import AuthProvider from '@/components/AuthProvider'
 
 export const metadata: Metadata = {
   title: 'Home',
-  description: 'Texa is an online Markdown and LaTeX editor'
+  description: 'Texa is the online Markdown and LaTeX editor'
 }
 
 function MainLayout({ children }) {
@@ -19,7 +19,7 @@ function MainLayout({ children }) {
       <head>
         <meta
           name='description'
-          content='Texa is an online Markdown and LaTeX editor'
+          content='Texa is the online Markdown and LaTeX editor'
         />
       </head>
       <body className={GeistSans.className}>
