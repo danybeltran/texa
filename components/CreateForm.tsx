@@ -54,11 +54,7 @@ export default function CreateForm({ folder }: { folder: Folder }) {
     onResolve(newFolder) {
       setIsCreatingFolder(false)
       setNewFolderName('')
-      revalidate(
-        newFolder.parentFolderId
-          ? { folderId: newFolder.parentFolderId }
-          : 'parent'
-      )
+      revalidate(newFolder.parentFolderId ? 'GET /folders' : 'parent')
     }
   })
 
