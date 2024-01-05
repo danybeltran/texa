@@ -1,11 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { IoDocumentTextOutline } from 'react-icons/io5'
-import { Doc, Folder } from '@prisma/client'
+import { Doc } from '@prisma/client'
 import { cn } from '@/lib/utils'
 import useFetch, { revalidate } from 'http-react'
-import { storage } from 'atomic-state'
 
 import {
   ContextMenu,
@@ -13,13 +11,23 @@ import {
   ContextMenuItem,
   ContextMenuTrigger
 } from '@/components/ui/context-menu'
-import { FaFile } from 'react-icons/fa6'
+import { FaFile, FaFileLines } from 'react-icons/fa6'
+import { useState } from 'react'
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from './ui/alert-dialog'
+import { Button } from './ui/button'
 
 export default function SingleDocument({ doc }: { doc: Doc }) {
   const {
     data: _,
-    reFetch: deleteFolder,
-    loading: deletingFolder
+    reFetch: deleteFile,
+    loading: deletingDoc
   } = useFetch('/documents', {
     method: 'DELETE',
     auto: false,
@@ -39,32 +47,71 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
     }
   })
 
-  return (
-    <Link href={'/personal/document/' + doc.id} className='h-36'>
-      <ContextMenu>
-        <ContextMenuTrigger className='h-36 text-center'>
-          <FaFile
-            className={cn(
-              'text-9xl hover:opacity-85 transition h-36 p-3.5',
-              deletingFolder && 'cursor-not-allowed animate-pulse'
-            )}
-            style={{
-              color: '#616161'
-            }}
-          />
-          <p className='text-sm w-32 whitespace-pre-line'>{doc.name}</p>
-        </ContextMenuTrigger>
+  const [deleting, setDeleting] = useState(false)
 
-        <ContextMenuContent
-          onClick={e => {
-            e.stopPropagation()
-          }}
-        >
-          {/* <ContextMenuItem>Edit</ContextMenuItem>
+  return (
+    <>
+      <AlertDialog open={deleting} onOpenChange={setDeleting}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete document</AlertDialogTitle>
+            <AlertDialogDescription>
+              The document <i>{doc.name}</i> will be deleted
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button variant='ghost' onClick={() => setDeleting(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant='ghost'
+              onClick={() => {
+                deleteFile()
+                setDeleting(false)
+              }}
+            >
+              Confirm
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <Link href={'/personal/document/' + doc.id} className='h-36'>
+        <ContextMenu>
+          <ContextMenuTrigger className='h-36 text-center'>
+            <FaFileLines
+              className={cn(
+                'text-9xl hover:opacity-85 transition h-36 p-3.5',
+                deletingDoc && 'cursor-not-allowed animate-pulse'
+              )}
+              style={{
+                color: '#6e84ff'
+              }}
+            />
+            <p className='text-sm w-32 whitespace-pre-line'>{doc.name}</p>
+          </ContextMenuTrigger>
+
+          <ContextMenuContent
+            onClick={e => {
+              e.stopPropagation()
+            }}
+          >
+            {/* <ContextMenuItem>Edit</ContextMenuItem>
           <ContextMenuItem>Move</ContextMenuItem> */}
-          <ContextMenuItem onClick={deleteFolder}>Delete</ContextMenuItem>
-        </ContextMenuContent>
-      </ContextMenu>
-    </Link>
+            <ContextMenuItem
+              onClick={() => {
+                setDeleting(true)
+              }}
+            >
+              Delete
+            </ContextMenuItem>
+            <ContextMenuItem>
+              <Link href={/public-view/ + doc.publicId} target='_blank'>
+                Open public link
+              </Link>
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
+      </Link>
+    </>
   )
 }

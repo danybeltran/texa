@@ -19,6 +19,7 @@ import { FaExternalLinkAlt } from 'react-icons/fa'
 import { cn } from '@/lib/utils'
 import { useParams } from 'next/navigation'
 import { KatexOptions } from 'katex'
+import { useEffect, useMemo } from 'react'
 
 const markdown = new MD({
   html: true,
@@ -47,10 +48,23 @@ export default function DocumentView() {
     id: {
       doc: params
     },
+    onResolve() {},
     query: {
       id: params.id
     }
   })
+
+  useEffect(() => {
+    setTimeout(() => {
+      const editor = document.getElementById('editor-area')
+
+      if (editor) {
+        const heightOffset = 3
+        editor.style.height = 'auto'
+        editor.style.height = editor.scrollHeight + heightOffset + 'px'
+      }
+    }, 100)
+  }, [doc.content, doc.locked, doc.editorOnly])
 
   useDebounceFetch('/documents', {
     method: 'PUT',
@@ -58,6 +72,20 @@ export default function DocumentView() {
     debounce: '200 ms',
     body: doc
   }).data
+
+  const renderedPreview = useMemo(
+    () => (
+      <div
+        className='w-full'
+        dangerouslySetInnerHTML={{
+          __html: doc?.content
+            ? markdown.render((doc?.content || '').replaceAll('$$$', '$$ $'))
+            : '<p class="text-neutral-500 select-none">Preview will appear here</p>'
+        }}
+      ></div>
+    ),
+    [doc.content]
+  )
 
   if (!doc)
     return (
@@ -153,8 +181,9 @@ export default function DocumentView() {
           style={{
             display: doc.locked && !doc.editorOnly ? 'none' : 'inherit'
           }}
+          id='editor-area'
           placeholder='Start writing...'
-          className='w-full md:w-1/2 p-6 text-lg resize-none'
+          className='w-full lg:w-1/2 p-6 text-lg resize-none'
           value={doc?.content || ''}
           autoFocus
           onFocus={e => {
@@ -178,16 +207,13 @@ export default function DocumentView() {
         />
         <div
           className={cn(
-            'md-editor-preview w-full sm:w-1/2 border-neutral-500 rounded-lg p-6 prose text-black',
+            'md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 prose text-black',
             doc.locked && 'w-full',
             doc.editorOnly && 'hidden'
           )}
-          dangerouslySetInnerHTML={{
-            __html: doc?.content
-              ? markdown.render((doc?.content || '').replaceAll('$$$', '$$ $'))
-              : '<p class="text-neutral-500 select-none">Preview will appear here</p>'
-          }}
-        ></div>
+        >
+          {renderedPreview}
+        </div>
       </div>
     </main>
   )

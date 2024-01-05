@@ -66,6 +66,11 @@ export async function DELETE(req: Request) {
       parentFolderId: folderData.id
     }
   })
+  await prisma.doc.deleteMany({
+    where: {
+      parentFolderId: folderData.id
+    }
+  })
 
   return NextResponse.json(
     {

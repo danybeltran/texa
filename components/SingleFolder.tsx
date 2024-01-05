@@ -15,6 +15,15 @@ import {
 } from '@/components/ui/context-menu'
 import { useEffect, useState } from 'react'
 import UpdateFolderForm from './UpdateFolderForm'
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from './ui/alert-dialog'
+import { Button } from './ui/button'
 
 export default function SingleFolder({ folder }: { folder: Folder }) {
   const {
@@ -41,8 +50,34 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
 
   const [editFolder, setEditFolder] = useState(false)
 
+  const [deleting, setDeleting] = useState(false)
+
   return (
     <>
+      <AlertDialog open={deleting} onOpenChange={setDeleting}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete folder</AlertDialogTitle>
+            <AlertDialogDescription>
+              The folder <i>{folder.name}</i> and its contents will be deleted
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button variant='ghost' onClick={() => setDeleting(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant='ghost'
+              onClick={() => {
+                deleteFolder()
+                setDeleting(false)
+              }}
+            >
+              Confirm
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <Link href={'/personal/' + folder.id} className='h-36'>
         <ContextMenu>
           <ContextMenuTrigger className='h-36 text-center'>
@@ -72,7 +107,9 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
               <span>Edit</span>
             </ContextMenuItem>
 
-            <ContextMenuItem onClick={deleteFolder}>Delete</ContextMenuItem>
+            <ContextMenuItem onClick={() => setDeleting(true)}>
+              Delete
+            </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
       </Link>
