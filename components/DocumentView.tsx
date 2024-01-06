@@ -59,14 +59,14 @@ export default function DocumentView() {
   const { reFetch: saveDoc, data: __ } = useDebounceFetch('/documents', {
     method: 'PUT',
     auto: !loadingDoc,
-    debounce: '300 ms',
+    debounce: '600 ms',
     body: doc
   })
 
   const renderedPreview = useMemo(
     () => (
       <div
-        className='w-full'
+        className='max-w-full overflow-x-auto'
         dangerouslySetInnerHTML={{
           __html: doc?.content
             ? renderMD(doc?.content)

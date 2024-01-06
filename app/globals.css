@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css');
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -105,4 +107,9 @@ iframe {
   width: 100%;
   height: auto !important;
   aspect-ratio: 16/9;
+}
+
+.tex-content {
+  font-family: 'KaTeX_Main';
+  font-size: auto;
 }
