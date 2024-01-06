@@ -54,11 +54,11 @@ export default function DocumentView() {
         editor.style.height = editor.scrollHeight + heightOffset + 'px'
       }
     }, 100)
-  }, [doc.locked, doc.editorOnly])
+  }, [doc?.locked, doc?.editorOnly])
 
   const { reFetch: saveDoc, data: __ } = useDebounceFetch('/documents', {
     method: 'PUT',
-    auto: !loadingDoc,
+    auto: !loadingDoc && Boolean(doc),
     debounce: '600 ms',
     body: doc
   })
@@ -74,7 +74,7 @@ export default function DocumentView() {
         }}
       ></div>
     ),
-    [doc.content]
+    [doc?.content]
   )
 
   if (!doc)
