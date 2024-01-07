@@ -22,6 +22,14 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { renderMD } from '@/lib/md'
 import EditorToolbar from './EditorToolbar'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle
+} from './ui/dialog'
+import { Label } from './ui/label'
 
 function calcHeight(value: string) {
   let numberOfLineBreaks = (value.match(/\n/g) || []).length
@@ -92,7 +100,7 @@ export default function DocumentView() {
 
   const [loaded, setLoaded] = useState(false)
 
-  const [showMetadata, setShowMetadata] = useState(true)
+  const [showMetadata, setShowMetadata] = useState(false)
 
   useEffect(() => {
     if (!loaded) {
@@ -133,13 +141,13 @@ export default function DocumentView() {
             </div>
           )}
           <Link href={'/public-view/' + doc.publicId} target='_blank'>
-            <Button className='gap-x-2'>
+            <Button variant='secondary' className='gap-x-2'>
               <FaExternalLinkAlt />{' '}
-              <span className='hidden md:inline-block'>Open public link</span>
             </Button>
           </Link>
           <Button
             className='gap-x-2'
+            variant='secondary'
             onClick={() => {
               setDoc(prevDoc => ({
                 ...prevDoc,
@@ -148,13 +156,11 @@ export default function DocumentView() {
             }}
           >
             {doc.locked ? <FaLock /> : <FaLockOpen />}{' '}
-            <span className='hidden md:inline-block'>
-              {doc.locked ? 'Locked' : 'Editing'}
-            </span>
           </Button>
           {doc.code ? (
             <Button
               className='gap-x-2'
+              variant='secondary'
               onClick={() => {
                 setDoc(prev => ({
                   ...prev,
@@ -163,9 +169,6 @@ export default function DocumentView() {
               }}
             >
               {doc.editorOnly ? <FaRegEyeSlash /> : <FaRegEye />}{' '}
-              <span className='hidden md:inline-block'>
-                {doc.editorOnly ? 'Preview hidden' : 'Preview shown'}
-              </span>
             </Button>
           ) : (
             <Button
@@ -173,41 +176,59 @@ export default function DocumentView() {
                 setShowMetadata(m => !m)
               }}
               className='gap-x-2'
+              variant='secondary'
             >
               <CiCircleInfo className='text-lg' />{' '}
-              {showMetadata ? 'Hide details' : 'Show details'}
             </Button>
           )}
         </div>
       </div>
-      {showMetadata && (
-        <div className='py-4 space-y-2 print:hidden'>
-          <Input
-            disabled={doc.locked}
-            value={doc?.name!}
-            onChange={e =>
-              setDoc(prevDoc => ({ ...prevDoc, name: e.target.value }))
-            }
-            className='font-semibold text-xl py-4'
-          />
-          <Textarea
-            disabled={doc.locked}
-            value={doc.description || ''}
-            placeholder='Document description'
-            onFocus={e => {
-              e.currentTarget.style.height =
-                calcHeight(e.target.value) + 3 + 'px'
-            }}
-            onChange={e => {
-              e.currentTarget.style.height =
-                calcHeight(e.target.value) + 3 + 'px'
 
-              setDoc(prevDoc => ({ ...prevDoc, description: e.target.value }))
-            }}
-            className='resize-none'
-          />
-        </div>
-      )}
+      <Dialog open={showMetadata} onOpenChange={setShowMetadata}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Document details</DialogTitle>
+            <DialogDescription>Edit basic information</DialogDescription>
+          </DialogHeader>
+          <div className='py-4 print:hidden'>
+            <Label>
+              Document title
+              <Input
+                value={doc?.name!}
+                onChange={e =>
+                  setDoc(prevDoc => ({ ...prevDoc, name: e.target.value }))
+                }
+                className='font-semibold text-xl py-4'
+              />
+            </Label>
+            <br />
+            <Label>
+              Document description
+              <Textarea
+                value={doc.description || ''}
+                placeholder='Document description'
+                onFocus={e => {
+                  e.currentTarget.style.height =
+                    calcHeight(e.target.value) + 3 + 'px'
+                }}
+                onChange={e => {
+                  e.currentTarget.style.height =
+                    calcHeight(e.target.value) + 3 + 'px'
+
+                  setDoc(prevDoc => ({
+                    ...prevDoc,
+                    description: e.target.value
+                  }))
+                }}
+                className='resize-none'
+              />
+            </Label>
+          </div>
+          <div className='text-center'>
+            <Button onClick={() => setShowMetadata(false)}>Close</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div
         className={cn(
@@ -253,8 +274,9 @@ export default function DocumentView() {
               tabIndex={0}
               contentEditable={!doc.locked}
               className={cn(
-                'w-full border p-6 focus:outline-none overflow-hidden bg-transparent whitespace-normal prose min-h-screen',
+                'w-full p-6 focus:outline-none overflow-hidden bg-transparent whitespace-normal prose min-h-screen',
                 doc.locked && !doc.editorOnly && 'hidden',
+                !doc.code && !doc.locked && 'border',
                 'print:hidden'
               )}
               id='content-editor'

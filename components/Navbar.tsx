@@ -25,39 +25,45 @@ const navHiddenState = atom({
 const Navbar = () => {
   const [hidden, setHidden] = useAtom(navHiddenState)
   return (
-    <header
-      className={cn(
-        'sticky top-0 z-50 transition print:hidden',
-        hidden && 'opacity-10'
-      )}
-    >
+    <header className={cn('sticky top-0 z-50 transition print:hidden')}>
       <div className='max-w-[84rem] mx-auto bg-white dark:bg-neutral-950 flex items-center justify-between py-2 px-4 relative backdrop-filter backdrop-blur-lg bg-opacity-80'>
         {/* <div className='absolute left-0 w-full h-full bg-white dark:bg-neutral-950 backdrop-filter backdrop-blur-lg'></div> */}
-        <Link className='font-bold text-lg z-10' href={'/'}>
+        <Link
+          className={cn('font-bold text-lg z-10', hidden && 'opacity-10')}
+          href={'/'}
+        >
           TeXa
         </Link>
         <NavigationMenu>
           <NavigationMenuList className='gap-2'>
             <NavigationMenuItem>
-              <Button size='sm' onClick={() => setHidden(h => !h)}>
+              <Button
+                size='sm'
+                className={cn(hidden && 'opacity-10')}
+                onClick={() => setHidden(h => !h)}
+              >
                 <FaRegEye />
               </Button>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <Link href='/personal' legacyBehavior passHref>
                 <NavigationMenuLink
-                  className={cn(navigationMenuTriggerStyle(), 'font-medium')}
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    'font-medium',
+                    hidden && 'opacity-10'
+                  )}
                 >
                   My space
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
 
-            <NavigationMenuItem>
+            <NavigationMenuItem className={cn(hidden && 'opacity-10')}>
               <AuthButton />
             </NavigationMenuItem>
 
-            <NavigationMenuItem>
+            <NavigationMenuItem className={cn(hidden && 'opacity-10')}>
               <ThemeToggle />
             </NavigationMenuItem>
           </NavigationMenuList>
