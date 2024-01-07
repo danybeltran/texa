@@ -104,8 +104,6 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
                 e.stopPropagation()
               }}
             >
-              {/* <ContextMenuItem>Edit</ContextMenuItem>
-          <ContextMenuItem>Move</ContextMenuItem> */}
               <ContextMenuItem
                 onClick={() => {
                   setItemsToMove([doc])

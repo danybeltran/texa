@@ -15,6 +15,7 @@ import { CiCircleInfo } from 'react-icons/ci'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import ResizeTextarea from 'react-textarea-autosize'
+import Editor, { DiffEditor, useMonaco, loader } from '@monaco-editor/react'
 
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
@@ -259,24 +260,35 @@ export default function DocumentView() {
         )}
       >
         {doc.code ? (
-          <ResizeTextarea
-            id='editor-area'
-            placeholder='Start writing...'
-            className={cn(
-              'w-full lg:w-1/2 p-6 resize-none border rounded-lg focus:border-transparent focus:ring-2 focus:outline-none overflow-hidden bg-transparent min-h-72',
-              doc.locked && !doc.editorOnly && 'hidden',
-              doc.editorOnly && 'w-full',
-              'print:hidden'
+          <>
+            {(!doc.locked || doc.editorOnly) && (
+              <Editor
+                loading
+                options={{
+                  readOnly: doc.locked
+                }}
+                value={doc.content!}
+                onChange={v => {
+                  if (!doc.locked) {
+                    setDoc(prevDoc => ({
+                      ...prevDoc,
+                      content: v!
+                    }))
+                  }
+                }}
+                height='30rem'
+                theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
+                width={doc?.editorOnly ? '100%' : '50%'}
+                defaultLanguage='markdown'
+                className={cn(
+                  'first:peer-first:p-4 w-1/2 resize-none border rounded-lg focus:border-transparent focus:ring-2 focus:outline-none overflow-hidden bg-transparent min-h-72',
+                  doc.locked && !doc.editorOnly && 'hidden',
+                  doc.editorOnly && 'w-full',
+                  'print:hidden'
+                )}
+              />
             )}
-            value={doc?.content || ''}
-            disabled={doc.locked}
-            onChange={e => {
-              setDoc(prevDoc => ({
-                ...prevDoc,
-                content: e.target.value
-              }))
-            }}
-          />
+          </>
         ) : (
           <div className='w-full md:w-1/2 relative prose mb-48'>
             <style>
