@@ -303,7 +303,6 @@ export default function DocumentView() {
 
                       .ck-content:focus {
                         box-shadow: none !important;
-                        border: 1px solid lightgray !important;
                       }
                     `}
             </style>
