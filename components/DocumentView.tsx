@@ -335,23 +335,23 @@ export default function DocumentView() {
               config={{
                 placeholder: 'Start writing...'
               }}
-              onFocus={(_, editor) => {
-                editor.editing.view.document.on(
-                  'enter',
-                  (evt, data) => {
-                    if (data.isSoft) {
-                      editor.execute('enter')
-                    } else {
-                      editor.execute('shiftEnter')
-                    }
+              // onFocus={(_, editor) => {
+              //   editor.editing.view.document.on(
+              //     'enter',
+              //     (evt, data) => {
+              //       if (data.isSoft) {
+              //         editor.execute('shiftEnter')
+              //       } else {
+              //         editor.execute('enter')
+              //       }
 
-                    data.preventDefault()
-                    evt.stop()
-                    editor.editing.view.scrollToTheSelection()
-                  },
-                  { priority: 'high' }
-                )
-              }}
+              //       data.preventDefault()
+              //       evt.stop()
+              //       editor.editing.view.scrollToTheSelection()
+              //     },
+              //     { priority: 'high' }
+              //   )
+              // }}
               onChange={(_, editor) => {
                 const textData = editor.getData()
                 setDoc(prevDoc => ({

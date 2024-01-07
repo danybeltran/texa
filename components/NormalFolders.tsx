@@ -69,13 +69,13 @@ export default function NormalFolders() {
               (parentFolder.folder?.parentFolderId ? folder.id : '')
             }
           >
-            <FaChevronRight /> {folder.name}
+            <FaChevronRight /> {folder.name.trim() || 'Unnamed folder'}
           </Link>
         ))}
         {folderNotFound ? null : (
           <div className='flex items-center gap-x-2 whitespace-nowrap'>
             <FaChevronRight />
-            <p>{parentFolder.folder?.name}</p>
+            <p>{parentFolder.folder?.name.trim() || 'Unnamed folder'}</p>
           </div>
         )}
       </div>

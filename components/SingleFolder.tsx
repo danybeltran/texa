@@ -84,7 +84,9 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
                 color: folder.color
               }}
             />
-            <p className='text-sm w-32 whitespace-pre-line'>{folder.name}</p>
+            <p className='text-sm w-32 whitespace-pre-line'>
+              {folder.name.trim() || 'Unnamed folder' || 'Unnamed folder'}
+            </p>
           </ContextMenuTrigger>
 
           <ContextMenuContent

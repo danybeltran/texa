@@ -81,7 +81,9 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
                 color: '#6e84ff'
               }}
             />
-            <p className='text-sm w-32 whitespace-pre-line'>{doc.name}</p>
+            <p className='text-sm w-32 whitespace-pre-line'>
+              {doc.name?.trim() || 'Unnamed document'}
+            </p>
           </ContextMenuTrigger>
 
           <ContextMenuContent
