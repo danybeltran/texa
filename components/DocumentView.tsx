@@ -21,7 +21,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { renderMD } from '@/lib/md'
-import EditorToolbar from './EditorToolbar'
+
 import {
   Dialog,
   DialogContent,
@@ -167,7 +167,7 @@ export default function DocumentView() {
           >
             {doc.locked ? <FaLock /> : <FaLockOpen />}{' '}
           </Button>
-          {doc.code ? (
+          {doc.code && (
             <Button
               className='gap-x-2'
               variant='secondary'
@@ -180,17 +180,16 @@ export default function DocumentView() {
             >
               {doc.editorOnly ? <FaRegEyeSlash /> : <FaRegEye />}{' '}
             </Button>
-          ) : (
-            <Button
-              onClick={() => {
-                setShowMetadata(m => !m)
-              }}
-              className='gap-x-2'
-              variant='secondary'
-            >
-              <CiCircleInfo className='text-lg' />{' '}
-            </Button>
           )}
+          <Button
+            onClick={() => {
+              setShowMetadata(m => !m)
+            }}
+            className='gap-x-2'
+            variant='secondary'
+          >
+            <CiCircleInfo className='text-lg' />{' '}
+          </Button>
         </div>
       </div>
 
@@ -265,10 +264,8 @@ export default function DocumentView() {
           />
         ) : (
           <div className='w-full md:w-1/2 relative prose mb-48'>
-            {!doc.code && (
-              <>
-                <style>
-                  {`
+            <style>
+              {`
 
                       ${
                         theme === 'dark'
@@ -295,40 +292,43 @@ export default function DocumentView() {
                         position: sticky !important;
                         z-index: 50;
                         border-bottom: 1px solid lightgray !important;
-                        top: 40px;
+                        top: 20px !important;
                       }
+
+                      
                       .ck-content {
                         border: none !important;
+                        min-height: 100vh;
                       }
 
                       .ck-content:focus {
                         box-shadow: none !important;
+                        border: 1px solid lightgray !important;
                       }
                     `}
-                </style>
-                {doc.locked && (
-                  <style>
-                    {`
-                        .ck-editor__top {
-                          display: none;
-                        }
-                      `}
-                  </style>
-                )}
-                <CKEditor
-                  disabled={doc.locked}
-                  editor={ClassicEditor}
-                  data={doc?.content}
-                  onChange={(_, editor) => {
-                    const textData = editor.getData()
-                    setDoc(prevDoc => ({
-                      ...prevDoc,
-                      content: textData
-                    }))
-                  }}
-                />
-              </>
+            </style>
+            {doc.locked && (
+              <style>
+                {`
+                  .ck-editor__top {
+                    display: none;
+                  }
+                `}
+              </style>
             )}
+            <CKEditor
+              onReady={editor => editor.focus()}
+              disabled={doc.locked}
+              editor={ClassicEditor}
+              data={doc?.content}
+              onChange={(_, editor) => {
+                const textData = editor.getData()
+                setDoc(prevDoc => ({
+                  ...prevDoc,
+                  content: textData
+                }))
+              }}
+            />
           </div>
         )}
         {doc.code && (
