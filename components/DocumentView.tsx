@@ -14,8 +14,7 @@ import {
 import { CiCircleInfo } from 'react-icons/ci'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
-import ResizeTextarea from 'react-textarea-autosize'
-import Editor, { DiffEditor, useMonaco, loader } from '@monaco-editor/react'
+import Editor from '@monaco-editor/react'
 
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'

@@ -7,6 +7,7 @@ const markdown = new MD({
 })
   .use(require('markdown-it-math'))
   .use(markdownItLatex)
+  .use(require('@agoose77/markdown-it-mermaid').default)
   .use(require('markdown-it-texmath'), {
     engine: require('katex'),
     delimiters: 'dollars',
