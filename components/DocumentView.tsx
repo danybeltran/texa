@@ -378,6 +378,14 @@ export default function DocumentView() {
               doc.editorOnly && 'hidden',
               'print:block'
             )}
+            style={
+              !doc?.locked
+                ? {
+                    height: '40rem',
+                    overflowY: 'auto'
+                  }
+                : {}
+            }
           >
             {renderedPreview}
           </div>
