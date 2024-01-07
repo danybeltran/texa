@@ -29,7 +29,9 @@ function MainLayout({ children }) {
               <AtomicState>
                 <FetchConfig baseUrl='/api'>
                   <Navbar />
-                  <div className='max-w-7xl mx-auto p-2'>{children}</div>
+                  <div className='max-w-[86rem] mx-auto p-3 sm:px-4 '>
+                    {children}
+                  </div>
                 </FetchConfig>
               </AtomicState>
             </AuthProvider>
