@@ -197,13 +197,18 @@ export default function DocumentView() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Document details</DialogTitle>
-            <DialogDescription>Edit basic information</DialogDescription>
+            <DialogDescription>Edit document information</DialogDescription>
           </DialogHeader>
           <div className='py-4 print:hidden'>
             <Label>
-              <p className='py-2'>Title</p>
+              <p className='py-2'>Name</p>
               <Input
                 value={doc?.name!}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    setShowMetadata(false)
+                  }
+                }}
                 onChange={e =>
                   setDoc(prevDoc => ({ ...prevDoc, name: e.target.value }))
                 }
@@ -218,6 +223,13 @@ export default function DocumentView() {
                 onFocus={e => {
                   e.currentTarget.style.height =
                     calcHeight(e.target.value) + 3 + 'px'
+                }}
+                onKeyUp={e => {
+                  if (e.ctrlKey) {
+                    if (e.key === 'Enter') {
+                      setShowMetadata(false)
+                    }
+                  }
                 }}
                 onChange={e => {
                   e.currentTarget.style.height =
@@ -320,6 +332,26 @@ export default function DocumentView() {
               disabled={doc.locked}
               editor={ClassicEditor}
               data={doc?.content}
+              config={{
+                placeholder: 'Start writing...'
+              }}
+              onFocus={(_, editor) => {
+                editor.editing.view.document.on(
+                  'enter',
+                  (evt, data) => {
+                    if (data.isSoft) {
+                      editor.execute('enter')
+                    } else {
+                      editor.execute('shiftEnter')
+                    }
+
+                    data.preventDefault()
+                    evt.stop()
+                    editor.editing.view.scrollToTheSelection()
+                  },
+                  { priority: 'high' }
+                )
+              }}
               onChange={(_, editor) => {
                 const textData = editor.getData()
                 setDoc(prevDoc => ({
