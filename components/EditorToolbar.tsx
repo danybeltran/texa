@@ -44,7 +44,8 @@ export default function EditorToolbar({ onCommand }: { onCommand: any }) {
           <Button
             variant='secondary'
             onClick={() => {
-              execCommand('undo')
+              // execCommand('undo')
+              execCommand('formatBlock', undefined, `<table>`)
             }}
           >
             <IoMdUndo />

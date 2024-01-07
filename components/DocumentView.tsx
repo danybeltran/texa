@@ -31,6 +31,9 @@ import {
 } from './ui/dialog'
 import { Label } from './ui/label'
 
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+
 function calcHeight(value: string) {
   let numberOfLineBreaks = (value.match(/\n/g) || []).length
   // min-height + lines x line-height + padding + border
@@ -194,18 +197,17 @@ export default function DocumentView() {
           </DialogHeader>
           <div className='py-4 print:hidden'>
             <Label>
-              Document title
+              <p className='py-2'>Title</p>
               <Input
                 value={doc?.name!}
                 onChange={e =>
                   setDoc(prevDoc => ({ ...prevDoc, name: e.target.value }))
                 }
-                className='font-semibold text-xl py-4'
               />
             </Label>
             <br />
             <Label>
-              Document description
+              <p className='py-2'>Description</p>
               <Textarea
                 value={doc.description || ''}
                 placeholder='Document description'
@@ -258,7 +260,7 @@ export default function DocumentView() {
           />
         ) : (
           <div className='w-full md:w-1/2 relative'>
-            {!doc?.locked && (
+            {false && !doc?.locked && (
               <EditorToolbar
                 onCommand={() => {
                   const editor = document.getElementById('content-editor')
@@ -272,59 +274,92 @@ export default function DocumentView() {
                 }}
               />
             )}
-            <div
-              tabIndex={0}
-              contentEditable={!doc.locked}
-              className={cn(
-                'w-full p-6 focus:outline-none overflow-hidden bg-transparent whitespace-normal prose min-h-screen inline-block dark:text-white',
-                doc.code && doc.locked && !doc.editorOnly && 'hidden',
-                !doc.code && !doc.locked && 'border',
-                'print:hidden'
-              )}
-              id='content-editor'
-              onKeyUp={e => {
-                setDoc(prevDoc => ({
-                  ...prevDoc,
-                  content: e.currentTarget.innerHTML
-                }))
-              }}
-              onPaste={e => {
-                if (e.clipboardData.types.indexOf('Files') === -1) {
-                  e.preventDefault()
 
-                  // get text representation of clipboard
-                  var text = e.clipboardData.getData('text/plain')
+            {!doc.code && (
+              <>
+                <div className='prose'>
+                  {doc.locked && (
+                    <style>
+                      {`
+                        .ck-editor__top {
+                          display: none;
+                        }
+                        .ck-content {
+                          border: none !important;
+                        }
+                        `}
+                    </style>
+                  )}
+                  <CKEditor
+                    disabled={doc.locked}
+                    editor={ClassicEditor}
+                    data={doc?.content}
+                    onChange={(_, editor) => {
+                      const textData = editor.getData()
+                      setDoc(prevDoc => ({
+                        ...prevDoc,
+                        content: textData
+                      }))
+                    }}
+                  />
+                </div>
+              </>
+            )}
+            {false && (
+              <div
+                tabIndex={0}
+                contentEditable={!doc.locked}
+                className={cn(
+                  'w-full p-6 focus:outline-none overflow-hidden bg-transparent whitespace-normal prose min-h-screen inline-block dark:text-white',
+                  doc.code && doc.locked && !doc.editorOnly && 'hidden',
+                  !doc.code && !doc.locked && 'border',
+                  'print:hidden'
+                )}
+                id='content-editor'
+                onKeyUp={e => {
+                  setDoc(prevDoc => ({
+                    ...prevDoc,
+                    content: e.currentTarget.innerHTML
+                  }))
+                }}
+                onPaste={e => {
+                  if (e.clipboardData.types.indexOf('Files') === -1) {
+                    e.preventDefault()
 
-                  // insert text manually
-                  document.execCommand('insertText', false, text)
-                }
-              }}
-              onKeyDown={e => {
-                if (e.key === 'Tab') {
-                  // For tabbing
-                  e.preventDefault() // this will prevent us from tabbing out of the editor
+                    // get text representation of clipboard
+                    var text = e.clipboardData.getData('text/plain')
 
-                  const editor = e.currentTarget
+                    // insert text manually
+                    document.execCommand('insertText', false, text)
+                  }
+                }}
+                onKeyDown={e => {
+                  if (e.key === 'Tab') {
+                    // For tabbing
+                    e.preventDefault() // this will prevent us from tabbing out of the editor
 
-                  // now insert four non-breaking spaces for the tab key
+                    const editor = e.currentTarget
 
-                  var doc = editor.ownerDocument.defaultView!
-                  var sel = doc.getSelection()!
-                  var range = sel.getRangeAt(0)
+                    // now insert four non-breaking spaces for the tab key
 
-                  var tabNode = document.createTextNode(
-                    '\u00a0\u00a0\u00a0\u00a0'
-                  )
-                  range.insertNode(tabNode)
+                    var doc = editor.ownerDocument.defaultView!
+                    var sel = doc.getSelection()!
+                    var range = sel.getRangeAt(0)
 
-                  range.setStartAfter(tabNode)
-                  range.setEndAfter(tabNode)
-                  sel.removeAllRanges()
-                  sel.addRange(range)
-                  // For tabbing
-                }
-              }}
-            />
+                    var tabNode = document.createTextNode(
+                      '\u00a0\u00a0\u00a0\u00a0'
+                    )
+                    range.insertNode(tabNode)
+
+                    range.setStartAfter(tabNode)
+                    range.setEndAfter(tabNode)
+                    sel.removeAllRanges()
+                    sel.addRange(range)
+                    // For tabbing
+                  }
+                }}
+              />
+            )}
           </div>
         )}
         {doc.code && (
