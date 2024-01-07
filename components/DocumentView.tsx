@@ -76,7 +76,7 @@ export default function DocumentView() {
       if (e.ctrlKey) {
         if (e.key === 'S' || e.key === 's') {
           e.preventDefault()
-          if (!doc.locked) {
+          if (!doc?.locked) {
             saveDoc()
           }
         }
@@ -88,7 +88,7 @@ export default function DocumentView() {
     return () => {
       document.removeEventListener('keydown', saveDocumentListener)
     }
-  }, [doc.locked])
+  }, [doc?.locked])
 
   const renderedPreview = useMemo(
     () => (
@@ -123,14 +123,17 @@ export default function DocumentView() {
         }
       }
     }
-  }, [loaded, doc.content])
+  }, [loaded, doc?.content])
 
   const { theme } = useTheme()
 
   if (!doc)
     return (
-      <div className='flex items-center justify-center pt-24'>
-        <p>Document not found</p>
+      <div className='flex items-center flex-wrap justify-center pt-24'>
+        <p className='w-full text-center pb-10'>Document not found</p>
+        <Link href='/personal'>
+          <Button>Return to home</Button>
+        </Link>
       </div>
     )
 
@@ -328,30 +331,23 @@ export default function DocumentView() {
               </style>
             )}
             <CKEditor
-              onReady={editor => editor.focus()}
+              onReady={editor => {
+                editor.focus()
+              }}
               disabled={doc.locked}
               editor={ClassicEditor}
               data={doc?.content}
               config={{
+                ui: {
+                  poweredBy: {
+                    position: 'inside',
+                    side: 'left',
+                    label: 'This is'
+                  } as any
+                },
+
                 placeholder: 'Start writing...'
               }}
-              // onFocus={(_, editor) => {
-              //   editor.editing.view.document.on(
-              //     'enter',
-              //     (evt, data) => {
-              //       if (data.isSoft) {
-              //         editor.execute('shiftEnter')
-              //       } else {
-              //         editor.execute('enter')
-              //       }
-
-              //       data.preventDefault()
-              //       evt.stop()
-              //       editor.editing.view.scrollToTheSelection()
-              //     },
-              //     { priority: 'high' }
-              //   )
-              // }}
               onChange={(_, editor) => {
                 const textData = editor.getData()
                 setDoc(prevDoc => ({

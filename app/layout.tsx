@@ -1,7 +1,7 @@
 import './globals.css'
 import { AtomicState } from 'atomic-state'
 import { FetchConfig } from 'http-react'
-import { GeistSans } from 'geist/font/sans'
+import { Poppins } from 'next/font/google'
 import type { Metadata } from 'next'
 
 import Navbar from '@/components/Navbar'
@@ -13,6 +13,12 @@ export const metadata: Metadata = {
   description: 'Texa is the online Markdown and LaTeX editor'
 }
 
+const montserratFont = Poppins({
+  display: 'swap',
+  subsets: ['latin', 'latin-ext'],
+  weight: ['300', '400', '500', '600', '800', '900']
+})
+
 function MainLayout({ children }) {
   return (
     <html suppressHydrationWarning>
@@ -22,7 +28,7 @@ function MainLayout({ children }) {
           content='Texa is the online Markdown and LaTeX editor'
         />
       </head>
-      <body className={GeistSans.className}>
+      <body className={montserratFont.className}>
         <ThemeProvider attribute='class' defaultTheme='system'>
           <main className='min-h-screen'>
             <AuthProvider>
