@@ -38,12 +38,9 @@ export default function EditorToolbar({ onCommand }: { onCommand: any }) {
   const isValidYoutube = hasBaseUrl(youtubeVideoUrl)
 
   return (
-    <div className='flex sticky top-[3.7rem] bg-white dark:bg-neutral-950 max-w-full overflow-x-auto'>
-      <div className='text-center border border-r-0'>
-        <p>
-          <small>Headings</small>
-        </p>
-        <div className='flex'>
+    <div className='flex sticky top-[3.7rem] bg-white dark:bg-neutral-950 max-w-full overflow-x-auto border-x gap-x-2 p-2'>
+      <div className='text-center'>
+        <div className='flex  gap-x-2'>
           {new Array(4).fill(null).map((h, i) => (
             <Button
               key={'toolbarheading' + (i + 1)}
@@ -53,11 +50,7 @@ export default function EditorToolbar({ onCommand }: { onCommand: any }) {
               style={{
                 fontSize: `calc(100% - ${i * 2}px)`
               }}
-              variant='ghost'
-              className={cn(
-                'border-r border-t rounded-none font-bold',
-                i === 3 && 'border-r-0'
-              )}
+              variant='secondary'
             >
               H{i + 1}
             </Button>
@@ -65,12 +58,8 @@ export default function EditorToolbar({ onCommand }: { onCommand: any }) {
         </div>
       </div>
 
-      <div className='text-center border border-r-0'>
-        <p>
-          <small>Style</small>
-        </p>
-
-        <div className='flex'>
+      <div className='text-center border-r-0'>
+        <div className='flex gap-x-2'>
           {[
             {
               title: 'Bold',
@@ -98,50 +87,39 @@ export default function EditorToolbar({ onCommand }: { onCommand: any }) {
               onClick={() => {
                 execCommand(cm.command)
               }}
-              variant='ghost'
-              className={cn(
-                'border-r border-t rounded-none',
-                i === c.length - 1 && 'border-r-0'
-              )}
+              variant='secondary'
             >
               {<cm.icon />}
             </Button>
           ))}
         </div>
       </div>
-      <div className='text-center border'>
-        <p>
-          <small>Other</small>
-        </p>
-
-        <div className='flex'>
+      <div className='text-center'>
+        <div className='flex gap-x-2'>
           <Button
-            variant='ghost'
+            variant='secondary'
             onClick={() => {
               execCommand('insertUnorderedList')
             }}
-            className={cn('border-r border-t rounded-none')}
           >
             <FaListUl />
           </Button>
           <Button
-            variant='ghost'
+            variant='secondary'
             onClick={() => {
               execCommand('insertOrderedList')
             }}
-            className={cn('border-r border-t rounded-none')}
           >
             <FaListOl />
           </Button>
 
           <Button
-            variant='ghost'
+            variant='secondary'
             title='Insert YouTube video'
             onClick={() => {
               // execCommand('insertOrderedList')
               setInsertingYoutube(true)
             }}
-            className={cn('border-t rounded-none')}
           >
             <FaYoutube />
           </Button>

@@ -5,21 +5,15 @@ import { useEffect, useMemo, useState } from 'react'
 import { Doc } from '@prisma/client'
 import Link from 'next/link'
 import {
-  FaBold,
   FaChevronLeft,
-  FaItalic,
-  FaListOl,
-  FaListUl,
   FaLock,
   FaLockOpen,
   FaRegEye,
-  FaRegEyeSlash,
-  FaStrikethrough,
-  FaUnderline
+  FaRegEyeSlash
 } from 'react-icons/fa6'
+import { CiCircleInfo } from 'react-icons/ci'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
-
 import ResizeTextarea from 'react-textarea-autosize'
 
 import { Textarea } from '@/components/ui/textarea'
@@ -98,14 +92,19 @@ export default function DocumentView() {
 
   const [loaded, setLoaded] = useState(false)
 
+  const [showMetadata, setShowMetadata] = useState(true)
+
   useEffect(() => {
     if (!loaded) {
       if (doc) {
-        const element = document.getElementById('content-editor')
-        if (element) {
-          element.innerHTML = renderMD(doc.content!)
+        if (!doc.code) {
+          setShowMetadata(false)
+          const element = document.getElementById('content-editor')
+          if (element) {
+            element.innerHTML = doc.content!
+          }
+          setLoaded(true)
         }
-        setLoaded(true)
       }
     }
   }, [loaded, doc])
@@ -153,7 +152,7 @@ export default function DocumentView() {
               {doc.locked ? 'Locked' : 'Editing'}
             </span>
           </Button>
-          {doc.code && (
+          {doc.code ? (
             <Button
               className='gap-x-2'
               onClick={() => {
@@ -168,33 +167,47 @@ export default function DocumentView() {
                 {doc.editorOnly ? 'Preview hidden' : 'Preview shown'}
               </span>
             </Button>
+          ) : (
+            <Button
+              onClick={() => {
+                setShowMetadata(m => !m)
+              }}
+              className='gap-x-2'
+            >
+              <CiCircleInfo className='text-lg' />{' '}
+              {showMetadata ? 'Hide details' : 'Show details'}
+            </Button>
           )}
         </div>
       </div>
-      <div className='py-4 space-y-2 print:hidden'>
-        <Input
-          disabled={doc.locked}
-          value={doc?.name!}
-          onChange={e =>
-            setDoc(prevDoc => ({ ...prevDoc, name: e.target.value }))
-          }
-          className='font-semibold text-xl py-4'
-        />
-        <Textarea
-          disabled={doc.locked}
-          value={doc.description || ''}
-          placeholder='Document description'
-          onFocus={e => {
-            e.currentTarget.style.height = calcHeight(e.target.value) + 3 + 'px'
-          }}
-          onChange={e => {
-            e.currentTarget.style.height = calcHeight(e.target.value) + 3 + 'px'
+      {showMetadata && (
+        <div className='py-4 space-y-2 print:hidden'>
+          <Input
+            disabled={doc.locked}
+            value={doc?.name!}
+            onChange={e =>
+              setDoc(prevDoc => ({ ...prevDoc, name: e.target.value }))
+            }
+            className='font-semibold text-xl py-4'
+          />
+          <Textarea
+            disabled={doc.locked}
+            value={doc.description || ''}
+            placeholder='Document description'
+            onFocus={e => {
+              e.currentTarget.style.height =
+                calcHeight(e.target.value) + 3 + 'px'
+            }}
+            onChange={e => {
+              e.currentTarget.style.height =
+                calcHeight(e.target.value) + 3 + 'px'
 
-            setDoc(prevDoc => ({ ...prevDoc, description: e.target.value }))
-          }}
-          className='resize-none'
-        />
-      </div>
+              setDoc(prevDoc => ({ ...prevDoc, description: e.target.value }))
+            }}
+            className='resize-none'
+          />
+        </div>
+      )}
 
       <div
         className={cn(
@@ -240,7 +253,7 @@ export default function DocumentView() {
               tabIndex={0}
               contentEditable={!doc.locked}
               className={cn(
-                'w-full border rounded-md p-6 focus:outline-none overflow-hidden bg-transparent whitespace-normal prose',
+                'w-full border p-6 focus:outline-none overflow-hidden bg-transparent whitespace-normal prose min-h-screen',
                 doc.locked && !doc.editorOnly && 'hidden',
                 'print:hidden'
               )}

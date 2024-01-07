@@ -69,6 +69,10 @@
     .md-editor-preview * {
       color: white !important;
     }
+
+    #content-editor * {
+      color: white !important;
+    }
   }
 }
 
