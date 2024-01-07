@@ -34,6 +34,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { availableColors } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
+import { atom, useAtom } from 'atomic-state'
+
+const codeOnlyState = atom({
+  key: 'codeOnly',
+  default: false,
+  persist: true
+})
 
 export default function CreateForm({ folder }: { folder: Folder }) {
   const [isCreatingFolder, setIsCreatingFolder] = useState(false)
@@ -63,6 +70,7 @@ export default function CreateForm({ folder }: { folder: Folder }) {
 
   const [isCreatingDoc, setIsCreatingDoc] = useState(false)
   const [newDocName, setNewDocName] = useState('')
+  const [codeOnly, setCodeOnly] = useAtom(codeOnlyState)
 
   const {
     data: __,
@@ -73,7 +81,8 @@ export default function CreateForm({ folder }: { folder: Folder }) {
     auto: false,
     body: {
       name: newDocName,
-      parentFolderId: folder?.id
+      parentFolderId: folder?.id,
+      code: codeOnly
     },
     onResolve(newDoc) {
       setIsCreatingDoc(false)
@@ -210,6 +219,18 @@ export default function CreateForm({ folder }: { folder: Folder }) {
                 className='w-full'
                 placeholder='Name'
               />
+            </Label>
+
+            <Label className='flex items-center gap-x-2 cursor-pointer'>
+              <input
+                type='checkbox'
+                className='w-4 h-4'
+                checked={codeOnly}
+                onChange={e => {
+                  setCodeOnly(e.target.checked)
+                }}
+              />
+              <p className='py-3'>Code only</p>
             </Label>
           </div>
           <DialogFooter>

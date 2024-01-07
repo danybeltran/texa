@@ -17,7 +17,7 @@ import { Button } from './ui/button'
 export default function NormalFolders() {
   const params: { folderId: string } = useParams()
 
-  const { data: parentFolder } = useFetch<{
+  const { data: parentFolder, error: folderNotFound } = useFetch<{
     folderSegments: Folder[]
     folder: Folder
   }>('/folders/previous', {
@@ -72,10 +72,12 @@ export default function NormalFolders() {
             <FaChevronRight /> {folder.name}
           </Link>
         ))}
-        <div className='flex items-center gap-x-2 whitespace-nowrap'>
-          <FaChevronRight />
-          <p>{parentFolder.folder?.name}</p>
-        </div>
+        {folderNotFound ? null : (
+          <div className='flex items-center gap-x-2 whitespace-nowrap'>
+            <FaChevronRight />
+            <p>{parentFolder.folder?.name}</p>
+          </div>
+        )}
       </div>
       <div className='pt-2'>
         <Link
@@ -91,17 +93,23 @@ export default function NormalFolders() {
           </Button>
         </Link>
       </div>
-      <div className='flex flex-wrap items-center gap-8'>
-        <CreateForm folder={parentFolder.folder} />
-        <BrowserOnly>
-          {folders.map(folder => (
-            <SingleFolder folder={folder} key={'folder' + folder.id} />
-          ))}
-          {files.map(doc => (
-            <SingleDocument doc={doc} key={'document' + doc.id} />
-          ))}
-        </BrowserOnly>
-      </div>
+      {folderNotFound ? (
+        <div className='flex items-center justify-center pt-24'>
+          <p>Folder not found</p>
+        </div>
+      ) : (
+        <div className='flex flex-wrap items-center gap-8'>
+          <CreateForm folder={parentFolder.folder} />
+          <BrowserOnly>
+            {folders.map(folder => (
+              <SingleFolder folder={folder} key={'folder' + folder.id} />
+            ))}
+            {files.map(doc => (
+              <SingleDocument doc={doc} key={'document' + doc.id} />
+            ))}
+          </BrowserOnly>
+        </div>
+      )}
     </>
   )
 }

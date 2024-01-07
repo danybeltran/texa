@@ -54,6 +54,7 @@ export async function POST(req: Request) {
       parentFolderId: newDocumentData?.parentFolderId ?? null,
       owner: session.user.email,
       publicId: crypto.randomUUID(),
+      code: newDocumentData.code,
       locked: false
     }
   })

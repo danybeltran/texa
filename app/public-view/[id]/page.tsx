@@ -47,14 +47,26 @@ export default async function DocumentPage({
         <meta name='twitter:card' content='summary_large_image' />
       </Fragment>
       <div className={'flex border-white w-full gap-x-4 py-8 justify-center'}>
-        <div
-          className={cn(
-            'md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 prose text-black'
-          )}
-          dangerouslySetInnerHTML={{
-            __html: renderMD(doc?.content!)
-          }}
-        ></div>
+        {doc.code ? (
+          <div
+            className={cn(
+              'md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 prose text-black'
+            )}
+            dangerouslySetInnerHTML={{
+              __html: renderMD(doc?.content!)
+            }}
+          ></div>
+        ) : (
+          <div
+            className={cn(
+              'w-full p-6 focus:outline-none overflow-hidden bg-transparent whitespace-normal prose'
+            )}
+            id='content-editor'
+            dangerouslySetInnerHTML={{
+              __html: doc?.content!
+            }}
+          />
+        )}
       </div>
     </main>
   )

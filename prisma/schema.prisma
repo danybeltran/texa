@@ -25,5 +25,6 @@ model Doc {
   parentFolderId String?
   publicId       String
   editorOnly     Boolean @default(false)
+  code           Boolean @default(false)
   locked         Boolean
 }
