@@ -27,12 +27,13 @@ const Navbar = () => {
   return (
     <header
       className={cn(
-        'bg-white dark:bg-neutral-950 sticky top-0 z-50 transition print:hidden',
+        'sticky top-0 z-50 transition print:hidden',
         hidden && 'opacity-10'
       )}
     >
-      <div className='max-w-7xl mx-auto flex items-center justify-between py-2 px-4'>
-        <Link className='font-bold text-lg' href={'/'}>
+      <div className='max-w-[84rem] mx-auto bg-white dark:bg-neutral-950 flex items-center justify-between py-2 px-4 relative backdrop-filter backdrop-blur-lg bg-opacity-80'>
+        {/* <div className='absolute left-0 w-full h-full bg-white dark:bg-neutral-950 backdrop-filter backdrop-blur-lg'></div> */}
+        <Link className='font-bold text-lg z-10' href={'/'}>
           TeXa
         </Link>
         <NavigationMenu>

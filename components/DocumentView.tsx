@@ -12,6 +12,8 @@ import {
   FaRegEyeSlash
 } from 'react-icons/fa6'
 import { FaExternalLinkAlt } from 'react-icons/fa'
+import ResizeTextarea from 'react-textarea-autosize'
+import { AiOutlineLoading, AiOutlineLoading3Quarters } from 'react-icons/ai'
 
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
@@ -44,24 +46,33 @@ export default function DocumentView() {
     }
   })
 
-  useEffect(() => {
-    setTimeout(() => {
-      const editor = document.getElementById('editor-area')
-
-      if (editor) {
-        const heightOffset = 3
-        editor.style.height = 'auto'
-        editor.style.height = editor.scrollHeight + heightOffset + 'px'
-      }
-    }, 100)
-  }, [doc?.locked, doc?.editorOnly])
-
-  const { reFetch: saveDoc, data: __ } = useDebounceFetch('/documents', {
+  const {
+    reFetch: saveDoc,
+    data: __,
+    loading: savingDoc
+  } = useDebounceFetch('/documents', {
     method: 'PUT',
     auto: !loadingDoc && Boolean(doc),
     debounce: '600 ms',
     body: doc
   })
+
+  useEffect(() => {
+    const saveDocumentListener = (e: KeyboardEvent) => {
+      if (e.ctrlKey) {
+        if (e.key === 'S' || e.key === 's') {
+          e.preventDefault()
+          saveDoc()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', saveDocumentListener)
+
+    return () => {
+      document.removeEventListener('keydown', saveDocumentListener)
+    }
+  }, [])
 
   const renderedPreview = useMemo(
     () => (
@@ -85,16 +96,21 @@ export default function DocumentView() {
     )
 
   return (
-    <main className='w-full'>
-      <div className='flex items-center justify-between'>
+    <main className='w-full relative'>
+      <div className='flex items-center justify-between print:hidden'>
         <Link
           href={'/personal/' + (doc?.parentFolderId ? doc.parentFolderId : '')}
         >
-          <Button variant='ghost' className='gap-x-2' title='Open public link'>
+          <Button variant='ghost' className='gap-x-2' title='Go to folder'>
             <FaChevronLeft /> Close
           </Button>
         </Link>
         <div className='flex items-center gap-x-2'>
+          {savingDoc && (
+            <div className='pr-4'>
+              <AiOutlineLoading3Quarters className='animate-spin' />
+            </div>
+          )}
           <Link href={'/public-view/' + doc.publicId} target='_blank'>
             <Button className='gap-x-2'>
               <FaExternalLinkAlt />{' '}
@@ -131,7 +147,7 @@ export default function DocumentView() {
           </Button>
         </div>
       </div>
-      <div className='py-4 space-y-2'>
+      <div className='py-4 space-y-2 print:hidden'>
         <Input
           disabled={doc.locked}
           value={doc?.name!}
@@ -161,36 +177,18 @@ export default function DocumentView() {
           'flex flex-col md:flex-row border-white w-full gap-x-4 py-8 justify-center'
         )}
       >
-        <Textarea
-          style={{
-            display: doc.locked && !doc.editorOnly ? 'none' : 'inherit'
-          }}
+        <ResizeTextarea
           id='editor-area'
           placeholder='Start writing...'
-          className='w-full lg:w-1/2 p-6 text-lg resize-none'
+          className={cn(
+            'w-full lg:w-1/2 p-6 resize-none border rounded-lg focus:border-transparent focus:ring-2 focus:outline-none overflow-hidden bg-transparent',
+            doc.locked && !doc.editorOnly && 'hidden',
+            doc.editorOnly && 'w-full',
+            'print:hidden'
+          )}
           value={doc?.content || ''}
-          autoFocus
-          onFocus={e => {
-            const heightOffset = 3
-            e.currentTarget.style.height = 'auto'
-            e.currentTarget.style.height =
-              e.currentTarget.scrollHeight + heightOffset + 'px'
-          }}
-          onKeyDown={e => {
-            if (e.ctrlKey) {
-              if (e.key === 'S' || e.key === 's') {
-                e.preventDefault()
-                saveDoc()
-              }
-            }
-          }}
           disabled={doc.locked}
           onChange={e => {
-            const heightOffset = 3
-            e.currentTarget.style.height = 'auto'
-            e.currentTarget.style.height =
-              e.currentTarget.scrollHeight + heightOffset + 'px'
-
             setDoc(prevDoc => ({
               ...prevDoc,
               content: e.target.value
@@ -201,7 +199,8 @@ export default function DocumentView() {
           className={cn(
             'md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 prose text-black',
             doc.locked && 'w-full',
-            doc.editorOnly && 'hidden'
+            doc.editorOnly && 'hidden',
+            'print:block'
           )}
         >
           {renderedPreview}
