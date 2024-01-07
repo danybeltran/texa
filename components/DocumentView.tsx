@@ -276,7 +276,7 @@ export default function DocumentView() {
                     }))
                   }
                 }}
-                height='30rem'
+                height='40rem'
                 theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
                 width={doc?.editorOnly ? '100%' : '50%'}
                 defaultLanguage='markdown'
