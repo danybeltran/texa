@@ -59,7 +59,7 @@ export default async function DocumentPage({
         ) : (
           <div
             className={cn(
-              'w-full p-6 focus:outline-none overflow-hidden bg-transparent whitespace-normal prose'
+              'w-full p-6 focus:outline-none overflow-hidden bg-transparent whitespace-normal prose dark:text-white'
             )}
             id='content-editor'
             dangerouslySetInnerHTML={{

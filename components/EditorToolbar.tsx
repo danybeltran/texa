@@ -1,6 +1,3 @@
-import { renderToString } from 'react-dom/server'
-
-import { cn } from '@/lib/utils'
 import { Button } from './ui/button'
 import {
   FaBold,
@@ -11,14 +8,14 @@ import {
   FaUnderline,
   FaYoutube
 } from 'react-icons/fa6'
+import { IoMdUndo, IoMdRedo } from 'react-icons/io'
 import { useState } from 'react'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger
+  DialogTitle
 } from './ui/dialog'
 import { Input } from './ui/input'
 import { hasBaseUrl } from 'http-react'
@@ -38,9 +35,29 @@ export default function EditorToolbar({ onCommand }: { onCommand: any }) {
   const isValidYoutube = hasBaseUrl(youtubeVideoUrl)
 
   return (
-    <div className='flex sticky top-[3.7rem] bg-white dark:bg-neutral-950 max-w-full overflow-x-auto border-x gap-x-2 p-2'>
+    <div
+      id='content-editor-toolbar'
+      className='flex sticky top-[3.7rem] bg-white dark:bg-neutral-950 max-w-full overflow-x-auto border-x gap-x-2 p-2'
+    >
       <div className='text-center'>
         <div className='flex  gap-x-2'>
+          <Button
+            variant='secondary'
+            onClick={() => {
+              execCommand('undo')
+            }}
+          >
+            <IoMdUndo />
+          </Button>
+          <Button
+            variant='secondary'
+            onClick={() => {
+              execCommand('undo')
+            }}
+          >
+            <IoMdRedo />
+          </Button>
+
           {new Array(4).fill(null).map((h, i) => (
             <Button
               key={'toolbarheading' + (i + 1)}

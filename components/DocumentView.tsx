@@ -109,13 +109,15 @@ export default function DocumentView() {
           setShowMetadata(false)
           const element = document.getElementById('content-editor')
           if (element) {
-            element.innerHTML = doc.content!
+            if (doc?.content) {
+              element.innerHTML = doc.content!
+            }
           }
           setLoaded(true)
         }
       }
     }
-  }, [loaded, doc])
+  }, [loaded, doc.content])
 
   if (!doc)
     return (
@@ -274,8 +276,8 @@ export default function DocumentView() {
               tabIndex={0}
               contentEditable={!doc.locked}
               className={cn(
-                'w-full p-6 focus:outline-none overflow-hidden bg-transparent whitespace-normal prose min-h-screen',
-                doc.locked && !doc.editorOnly && 'hidden',
+                'w-full p-6 focus:outline-none overflow-hidden bg-transparent whitespace-normal prose min-h-screen inline-block dark:text-white',
+                doc.code && doc.locked && !doc.editorOnly && 'hidden',
                 !doc.code && !doc.locked && 'border',
                 'print:hidden'
               )}
@@ -285,6 +287,42 @@ export default function DocumentView() {
                   ...prevDoc,
                   content: e.currentTarget.innerHTML
                 }))
+              }}
+              onPaste={e => {
+                if (e.clipboardData.types.indexOf('Files') === -1) {
+                  e.preventDefault()
+
+                  // get text representation of clipboard
+                  var text = e.clipboardData.getData('text/plain')
+
+                  // insert text manually
+                  document.execCommand('insertText', false, text)
+                }
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Tab') {
+                  // For tabbing
+                  e.preventDefault() // this will prevent us from tabbing out of the editor
+
+                  const editor = e.currentTarget
+
+                  // now insert four non-breaking spaces for the tab key
+
+                  var doc = editor.ownerDocument.defaultView!
+                  var sel = doc.getSelection()!
+                  var range = sel.getRangeAt(0)
+
+                  var tabNode = document.createTextNode(
+                    '\u00a0\u00a0\u00a0\u00a0'
+                  )
+                  range.insertNode(tabNode)
+
+                  range.setStartAfter(tabNode)
+                  range.setEndAfter(tabNode)
+                  sel.removeAllRanges()
+                  sel.addRange(range)
+                  // For tabbing
+                }
               }}
             />
           </div>
