@@ -1,6 +1,6 @@
 'use client'
 
-import { FaFolder } from 'react-icons/fa6'
+import { FaCode, FaFolder } from 'react-icons/fa6'
 import useFetch, { revalidate } from 'http-react'
 import { BsFillFileEarmarkTextFill, BsPlusLg } from 'react-icons/bs'
 import { Folder } from '@prisma/client'
@@ -18,6 +18,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import {
@@ -35,6 +37,7 @@ import { Label } from '@/components/ui/label'
 import { availableColors } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import { atom, useAtom } from 'atomic-state'
+import Link from 'next/link'
 
 const codeOnlyState = atom({
   key: 'codeOnly',
@@ -70,7 +73,7 @@ export default function CreateForm({ folder }: { folder: Folder }) {
 
   const [isCreatingDoc, setIsCreatingDoc] = useState(false)
   const [newDocName, setNewDocName] = useState('')
-  const [codeOnly, setCodeOnly] = useAtom(codeOnlyState)
+  const [codeOnly, setCodeOnly] = useState(false)
 
   const {
     data: __,
@@ -118,10 +121,24 @@ export default function CreateForm({ folder }: { folder: Folder }) {
           </DropdownMenuItem>
           <DropdownMenuItem
             className='cursor-pointer gap-x-2'
-            onClick={() => setIsCreatingDoc(true)}
+            onClick={() => {
+              setIsCreatingDoc(true)
+              setCodeOnly(false)
+            }}
           >
             <BsFillFileEarmarkTextFill />
             Document
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            className='cursor-pointer gap-x-2'
+            onClick={() => {
+              setIsCreatingDoc(true)
+              setCodeOnly(true)
+            }}
+          >
+            <FaCode />
+            Empty (code)
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -203,8 +220,31 @@ export default function CreateForm({ folder }: { folder: Folder }) {
         <DialogTrigger asChild></DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
-            <DialogTitle>New document</DialogTitle>
-            <DialogDescription>Create a new document</DialogDescription>
+            <DialogTitle>
+              {codeOnly ? 'New markdown document' : 'New document'}
+            </DialogTitle>
+            <DialogDescription>
+              {codeOnly ? (
+                <div>
+                  <p>
+                    Markdown documents give you more control over what's shown.
+                    They also support advanced features like LaTeX (with KateX)
+                  </p>
+                  <br />
+                  <p>
+                    <Link
+                      href='https://www.markdownguide.org/basic-syntax/'
+                      target='_blank'
+                      className='underline'
+                    >
+                      Learn Markdown
+                    </Link>
+                  </p>
+                </div>
+              ) : (
+                'Create a new document. Recommended for most users.'
+              )}
+            </DialogDescription>
           </DialogHeader>
           <div className='grid gap-4'>
             <Label>
@@ -219,18 +259,6 @@ export default function CreateForm({ folder }: { folder: Folder }) {
                 className='w-full'
                 placeholder='Name'
               />
-            </Label>
-
-            <Label className='flex items-center gap-x-2 cursor-pointer'>
-              <input
-                type='checkbox'
-                className='w-4 h-4'
-                checked={codeOnly}
-                onChange={e => {
-                  setCodeOnly(e.target.checked)
-                }}
-              />
-              <p className='py-3'>Code only</p>
             </Label>
           </div>
           <DialogFooter>
