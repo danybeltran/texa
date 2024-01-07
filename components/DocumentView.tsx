@@ -33,6 +33,7 @@ import { Label } from './ui/label'
 
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import { useTheme } from 'next-themes'
 
 function calcHeight(value: string) {
   let numberOfLineBreaks = (value.match(/\n/g) || []).length
@@ -75,7 +76,9 @@ export default function DocumentView() {
       if (e.ctrlKey) {
         if (e.key === 'S' || e.key === 's') {
           e.preventDefault()
-          saveDoc()
+          if (!doc.locked) {
+            saveDoc()
+          }
         }
       }
     }
@@ -85,7 +88,7 @@ export default function DocumentView() {
     return () => {
       document.removeEventListener('keydown', saveDocumentListener)
     }
-  }, [])
+  }, [doc.locked])
 
   const renderedPreview = useMemo(
     () => (
@@ -121,6 +124,8 @@ export default function DocumentView() {
       }
     }
   }, [loaded, doc.content])
+
+  const { theme } = useTheme()
 
   if (!doc)
     return (
@@ -259,106 +264,70 @@ export default function DocumentView() {
             }}
           />
         ) : (
-          <div className='w-full md:w-1/2 relative'>
-            {false && !doc?.locked && (
-              <EditorToolbar
-                onCommand={() => {
-                  const editor = document.getElementById('content-editor')
-
-                  if (editor) {
-                    setDoc(prevDoc => ({
-                      ...prevDoc,
-                      content: editor.innerHTML
-                    }))
-                  }
-                }}
-              />
-            )}
-
+          <div className='w-full md:w-1/2 relative prose mb-48'>
             {!doc.code && (
               <>
-                <div className='prose'>
-                  {doc.locked && (
-                    <style>
-                      {`
+                <style>
+                  {`
+
+                      ${
+                        theme === 'dark'
+                          ? `
+                        .ck-editor .ck-content {
+                        background-color: #0A0A0A !important;
+                        color: white !important;
+                      }
+
+                      .ck-editor .ck-content *{
+                        color: white !important;
+                      }
+
+                      .ck-editor .ck-editor__top * {
+                        background-color: #0A0A0A !important;
+                        color: white !important;
+                      }  
+                        `
+                          : ''
+                      }
+
+
+                      .ck-editor__top {
+                        position: sticky !important;
+                        z-index: 50;
+                        border-bottom: 1px solid lightgray !important;
+                        top: 40px;
+                      }
+                      .ck-content {
+                        border: none !important;
+                      }
+
+                      .ck-content:focus {
+                        box-shadow: none !important;
+                      }
+                    `}
+                </style>
+                {doc.locked && (
+                  <style>
+                    {`
                         .ck-editor__top {
                           display: none;
                         }
-                        .ck-content {
-                          border: none !important;
-                        }
-                        `}
-                    </style>
-                  )}
-                  <CKEditor
-                    disabled={doc.locked}
-                    editor={ClassicEditor}
-                    data={doc?.content}
-                    onChange={(_, editor) => {
-                      const textData = editor.getData()
-                      setDoc(prevDoc => ({
-                        ...prevDoc,
-                        content: textData
-                      }))
-                    }}
-                  />
-                </div>
-              </>
-            )}
-            {false && (
-              <div
-                tabIndex={0}
-                contentEditable={!doc.locked}
-                className={cn(
-                  'w-full p-6 focus:outline-none overflow-hidden bg-transparent whitespace-normal prose min-h-screen inline-block dark:text-white',
-                  doc.code && doc.locked && !doc.editorOnly && 'hidden',
-                  !doc.code && !doc.locked && 'border',
-                  'print:hidden'
+                      `}
+                  </style>
                 )}
-                id='content-editor'
-                onKeyUp={e => {
-                  setDoc(prevDoc => ({
-                    ...prevDoc,
-                    content: e.currentTarget.innerHTML
-                  }))
-                }}
-                onPaste={e => {
-                  if (e.clipboardData.types.indexOf('Files') === -1) {
-                    e.preventDefault()
-
-                    // get text representation of clipboard
-                    var text = e.clipboardData.getData('text/plain')
-
-                    // insert text manually
-                    document.execCommand('insertText', false, text)
-                  }
-                }}
-                onKeyDown={e => {
-                  if (e.key === 'Tab') {
-                    // For tabbing
-                    e.preventDefault() // this will prevent us from tabbing out of the editor
-
-                    const editor = e.currentTarget
-
-                    // now insert four non-breaking spaces for the tab key
-
-                    var doc = editor.ownerDocument.defaultView!
-                    var sel = doc.getSelection()!
-                    var range = sel.getRangeAt(0)
-
-                    var tabNode = document.createTextNode(
-                      '\u00a0\u00a0\u00a0\u00a0'
-                    )
-                    range.insertNode(tabNode)
-
-                    range.setStartAfter(tabNode)
-                    range.setEndAfter(tabNode)
-                    sel.removeAllRanges()
-                    sel.addRange(range)
-                    // For tabbing
-                  }
-                }}
-              />
+                <CKEditor
+                  disabled={doc.locked}
+                  editor={ClassicEditor}
+                  data={doc?.content}
+                  onChange={(_, editor) => {
+                    const textData = editor.getData()
+                    setDoc(prevDoc => ({
+                      ...prevDoc,
+                      content: textData
+                    }))
+                  }}
+                />
+              </>
             )}
           </div>
         )}

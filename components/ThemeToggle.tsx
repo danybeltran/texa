@@ -20,6 +20,9 @@ const themeIcon = {
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
 
+  if (theme === 'light' || theme !== 'dark') {
+    setTheme('light')
+  }
   return (
     <BrowserOnly>
       <Button
@@ -28,8 +31,7 @@ export function ThemeToggle() {
         onClick={() => {
           const nextTheme: any = {
             light: 'dark',
-            dark: 'system',
-            system: 'light'
+            dark: 'light'
           }
 
           setTheme(nextTheme[theme!])

@@ -5,6 +5,8 @@ import 'markdown-it-latex/dist/index.css'
 import { cn } from '@/lib/utils'
 import { prisma } from '@/server'
 import { renderMD } from '@/lib/md'
+import { BrowserOnly } from 'react-kuh'
+import PublicViewContent from '@/components/PublicViewContent'
 
 export const metadata = {
   title: ''
@@ -57,15 +59,9 @@ export default async function DocumentPage({
             }}
           ></div>
         ) : (
-          <div
-            className={cn(
-              'w-full p-6 focus:outline-none overflow-hidden bg-transparent whitespace-normal prose dark:text-white'
-            )}
-            id='content-editor'
-            dangerouslySetInnerHTML={{
-              __html: doc?.content!
-            }}
-          />
+          <div className='md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 prose text-black  mb-48'>
+            <PublicViewContent content={doc.content!} />
+          </div>
         )}
       </div>
     </main>
