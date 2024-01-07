@@ -13,6 +13,7 @@ import SingleFolder from '@/components/SingleFolder'
 import SingleDocument from '@/components/SingleDocument'
 import { useParams } from 'next/navigation'
 import { Button } from './ui/button'
+import MoveHandler from './MoveHandler'
 
 export default function NormalFolders() {
   const params: { folderId: string } = useParams()
@@ -79,8 +80,9 @@ export default function NormalFolders() {
           </div>
         )}
       </div>
-      <div className='pt-2'>
+      <div className='pt-2 gap-x-2 flex'>
         <Link
+          replace
           href={
             '/personal/' +
             (parentFolder.folder.parentFolderId
@@ -92,6 +94,7 @@ export default function NormalFolders() {
             <FaChevronLeft /> Back
           </Button>
         </Link>
+        <MoveHandler />
       </div>
       {folderNotFound ? (
         <div className='flex items-center justify-center pt-24'>

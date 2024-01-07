@@ -1,12 +1,13 @@
 'use client'
 
-import { storage } from 'atomic-state'
+import { storage, useAtom } from 'atomic-state'
 import useFetch from 'http-react'
 import { Doc, Folder } from '@prisma/client'
 import { BrowserOnly } from 'react-kuh'
 
 import SingleFolder from '@/components/SingleFolder'
 import SingleDocument from '@/components/SingleDocument'
+import { itemsToMoveState } from '@/states'
 
 export default function RootFolders() {
   const { data: mainFolders } = useFetch<Folder[]>('/folders', {
@@ -21,6 +22,8 @@ export default function RootFolders() {
     suspense: true,
     cacheProvider: storage
   })
+
+  const [itemsToMove, setItemsToMove] = useAtom(itemsToMoveState)
 
   return (
     <BrowserOnly>

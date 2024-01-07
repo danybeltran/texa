@@ -11,7 +11,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger
 } from '@/components/ui/context-menu'
-import { FaFile, FaFileLines, FaRegTrashCan } from 'react-icons/fa6'
+import { FaFile, FaFileLines, FaFolder, FaRegTrashCan } from 'react-icons/fa6'
 import { useState } from 'react'
 import {
   AlertDialog,
@@ -23,6 +23,8 @@ import {
 } from './ui/alert-dialog'
 import { Button } from './ui/button'
 import { FaExternalLinkAlt } from 'react-icons/fa'
+import { useAtom } from 'atomic-state'
+import { itemsToMoveState } from '@/states'
 
 export default function SingleDocument({ doc }: { doc: Doc }) {
   const {
@@ -42,6 +44,8 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
   })
 
   const [deleting, setDeleting] = useState(false)
+
+  const [itemsToMove, setItemsToMove] = useAtom(itemsToMoveState)
 
   return (
     <>
@@ -69,13 +73,21 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <Link href={'/personal/document/' + doc.id} className='h-36 select-none'>
+      <Link
+        replace
+        href={'/personal/document/' + doc.id}
+        onClick={e => {
+          if (itemsToMove.length > 0) e.preventDefault()
+        }}
+        className='h-36 select-none'
+      >
         <ContextMenu>
           <ContextMenuTrigger className='h-36 text-center'>
             <FaFileLines
               className={cn(
                 'text-9xl hover:opacity-85 transition h-36 p-3.5',
-                deletingDoc && 'cursor-not-allowed animate-pulse'
+                deletingDoc && 'cursor-not-allowed animate-pulse',
+                itemsToMove.length > 0 && 'cursor-not-allowed opacity-85'
               )}
               style={{
                 color: '#6e84ff'
@@ -86,31 +98,41 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
             </p>
           </ContextMenuTrigger>
 
-          <ContextMenuContent
-            onClick={e => {
-              e.stopPropagation()
-            }}
-          >
-            {/* <ContextMenuItem>Edit</ContextMenuItem>
-          <ContextMenuItem>Move</ContextMenuItem> */}
-            <ContextMenuItem
-              onClick={() => {
-                setDeleting(true)
+          {itemsToMove.length > 0 ? null : (
+            <ContextMenuContent
+              onClick={e => {
+                e.stopPropagation()
               }}
-              className='gap-x-2 flex items-center cursor-pointer'
             >
-              <FaRegTrashCan /> Delete
-            </ContextMenuItem>
-            <ContextMenuItem>
-              <Link
-                href={'/public-view/' + doc.publicId}
-                target='_blank'
+              {/* <ContextMenuItem>Edit</ContextMenuItem>
+          <ContextMenuItem>Move</ContextMenuItem> */}
+              <ContextMenuItem
+                onClick={() => {
+                  setItemsToMove([doc])
+                }}
                 className='gap-x-2 flex items-center cursor-pointer'
               >
-                <FaExternalLinkAlt /> Open public link
-              </Link>
-            </ContextMenuItem>
-          </ContextMenuContent>
+                <FaFolder /> Move
+              </ContextMenuItem>
+              <ContextMenuItem
+                onClick={() => {
+                  setDeleting(true)
+                }}
+                className='gap-x-2 flex items-center cursor-pointer'
+              >
+                <FaRegTrashCan /> Delete
+              </ContextMenuItem>
+              <ContextMenuItem>
+                <Link
+                  href={'/public-view/' + doc.publicId}
+                  target='_blank'
+                  className='gap-x-2 flex items-center cursor-pointer'
+                >
+                  <FaExternalLinkAlt /> Open public link
+                </Link>
+              </ContextMenuItem>
+            </ContextMenuContent>
+          )}
         </ContextMenu>
       </Link>
     </>

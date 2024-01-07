@@ -23,8 +23,13 @@ import {
   AlertDialogTitle
 } from './ui/alert-dialog'
 import { Button } from './ui/button'
+import { useAtom } from 'atomic-state'
+import { itemsToMoveState } from '@/states'
+import { useRouter } from 'next/navigation'
 
 export default function SingleFolder({ folder }: { folder: Folder }) {
+  const router = useRouter()
+
   const {
     data: _,
     reFetch: deleteFolder,
@@ -44,6 +49,8 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
   const [editFolder, setEditFolder] = useState(false)
 
   const [deleting, setDeleting] = useState(false)
+
+  const [itemsToMove, setItemsToMove] = useAtom(itemsToMoveState)
 
   return (
     <>
@@ -72,7 +79,17 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <Link href={'/personal/' + folder.id} className='h-36 select-none'>
+      <Link
+        replace
+        onClick={e => {
+          if (itemsToMove[0]?.id === folder.id) e.preventDefault()
+        }}
+        href={'/personal/' + folder.id}
+        className={cn(
+          'h-36 select-none',
+          itemsToMove[0]?.id === folder.id && 'cursor-not-allowed opacity-85'
+        )}
+      >
         <ContextMenu>
           <ContextMenuTrigger className='h-36 text-center'>
             <FaFolder
@@ -89,28 +106,39 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
             </p>
           </ContextMenuTrigger>
 
-          <ContextMenuContent
-            onClick={e => {
-              e.stopPropagation()
-            }}
-          >
-            <ContextMenuItem
+          {itemsToMove[0]?.id !== folder.id && (
+            <ContextMenuContent
               onClick={e => {
                 e.stopPropagation()
-                setEditFolder(true)
               }}
-              className='gap-x-2 flex items-center cursor-pointer'
             >
-              <FaPen /> Edit
-            </ContextMenuItem>
+              <ContextMenuItem
+                onClick={e => {
+                  e.stopPropagation()
+                  setItemsToMove([folder])
+                }}
+                className='gap-x-2 flex items-center cursor-pointer'
+              >
+                <FaFolder /> Move
+              </ContextMenuItem>
+              <ContextMenuItem
+                onClick={e => {
+                  e.stopPropagation()
+                  setEditFolder(true)
+                }}
+                className='gap-x-2 flex items-center cursor-pointer'
+              >
+                <FaPen /> Edit
+              </ContextMenuItem>
 
-            <ContextMenuItem
-              onClick={() => setDeleting(true)}
-              className='gap-x-2 flex items-center cursor-pointer'
-            >
-              <FaRegTrashCan /> Delete
-            </ContextMenuItem>
-          </ContextMenuContent>
+              <ContextMenuItem
+                onClick={() => setDeleting(true)}
+                className='gap-x-2 flex items-center cursor-pointer'
+              >
+                <FaRegTrashCan /> Delete
+              </ContextMenuItem>
+            </ContextMenuContent>
+          )}
         </ContextMenu>
       </Link>
       <UpdateFolderForm
