@@ -264,7 +264,8 @@ export default function DocumentView() {
               <Editor
                 loading
                 options={{
-                  readOnly: doc.locked
+                  readOnly: doc.locked,
+                  mouseWheelZoom: true
                 }}
                 value={doc.content!}
                 onChange={v => {
