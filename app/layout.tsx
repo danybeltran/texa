@@ -10,7 +10,7 @@ import AuthProvider from '@/components/AuthProvider'
 
 export const metadata: Metadata = {
   title: 'Home',
-  description: 'Texa is the online Markdown and LaTeX editor'
+  description: 'Texa is an all-in-one rich content, Markdown and KaTeX editor'
 }
 
 const montserratFont = Poppins({
@@ -25,7 +25,7 @@ function MainLayout({ children }) {
       <head>
         <meta
           name='description'
-          content='Texa is the online Markdown and LaTeX editor'
+          content='Texa is an all-in-one rich content, Markdown and KaTeX editor'
         />
       </head>
       <body className={montserratFont.className}>

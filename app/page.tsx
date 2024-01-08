@@ -1,7 +1,11 @@
 import Link from 'next/link'
-import { TfiWrite } from 'react-icons/tfi'
+import { TfiGithub, TfiWrite } from 'react-icons/tfi'
 
 import { Button } from '@/components/ui/button'
+import { CiEdit } from 'react-icons/ci'
+import { FaFolder, FaMarkdown } from 'react-icons/fa6'
+import { MdMoneyOffCsred } from 'react-icons/md'
+import { FaCoffee, FaShareAlt } from 'react-icons/fa'
 
 export default function Home() {
   return (
@@ -12,8 +16,9 @@ export default function Home() {
             Welcome to Texa
           </h1>
           <p className='max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8'>
-            Texa is the online Markdown and LaTeX editor
+            Texa is an all-in-one rich content, Markdown and KaTeX editor.
           </p>
+
           <div className='flex gap-x-2 *:*:gap-x-2'>
             <Link href='/personal' rel='noreferrer'>
               <Button variant='outline'>
@@ -21,10 +26,20 @@ export default function Home() {
                 Start writing
               </Button>
             </Link>
+            <Link
+              href='https://github.com/danybeltran/texa'
+              target='_blank'
+              rel='noreferrer'
+            >
+              <Button variant='outline'>
+                <TfiGithub />
+                Github
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
-      {/* <section
+      <section
         id='features'
         className='container space-y-6 py-8 dark:bg-transparent md:py-12 lg:py-24 mx-auto'
       >
@@ -36,55 +51,79 @@ export default function Home() {
         <div className='mx-auto grid justify-center gap-4 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-3'>
           <div className='relative overflow-hidden rounded-lg border bg-background p-2 text-center'>
             <div className='flex h-[180px] flex-col justify-center gap-y-4 items-center rounded-md p-6'>
-              <TbBrandNextjs size={40} />
+              <MdMoneyOffCsred size={40} />
               <div className='space-y-2'>
-                <h3 className='font-bold leading-normal'>Next.js 14</h3>
+                <h3 className='font-bold leading-normal'>Free. forever.</h3>
+                <p className='text-sm text-muted-foreground'>Just write</p>
+              </div>
+            </div>
+          </div>
+          <div className='relative overflow-hidden rounded-lg border bg-background p-2 text-center'>
+            <div className='flex h-[180px] flex-col justify-center gap-y-4 items-center rounded-md p-6'>
+              <FaShareAlt size={40} />
+              <div className='space-y-2'>
+                <h3 className='font-bold leading-normal'>
+                  Instant feedback and sharing
+                </h3>
                 <p className='text-sm text-muted-foreground'>
-                  App dir, Routing, Layouts, Loading UI and API routes.
+                  Create, write and share with a link
                 </p>
               </div>
             </div>
           </div>
           <div className='relative overflow-hidden rounded-lg border bg-background p-2 text-center'>
             <div className='flex h-[180px] flex-col justify-center gap-y-4 items-center rounded-md p-6'>
-              <FaReact size={40} />
+              <FaFolder size={40} />
               <div className='space-y-2'>
-                <h3 className='font-bold leading-normal'>React 18</h3>
+                <h3 className='font-bold leading-normal'>
+                  Organize everything
+                </h3>
                 <p className='text-sm text-muted-foreground'>
-                  Server and Client Components.
+                  Create, move and edit folders and documents
                 </p>
               </div>
             </div>
           </div>
           <div className='relative overflow-hidden rounded-lg border bg-background p-2 text-center'>
             <div className='flex h-[180px] flex-col justify-center gap-y-4 items-center rounded-md p-6'>
-              <div className='flex items-center justify-center gap-x-3'>
-                <SiPrisma size={40} />
-                <GoPlus size={20} />
-                <BiLogoMongodb size={40} />
-              </div>
+              <CiEdit size={40} />
               <div className='space-y-2'>
-                <h3 className='font-bold leading-normal'>Database</h3>
+                <h3 className='font-bold leading-normal'>
+                  Rich content editing
+                </h3>
                 <p className='text-sm text-muted-foreground'>
-                  ORM using Prisma and deployed on MongoDB.
+                  Powered by CKEditor, one of the best WYSIWYG editors out there
                 </p>
               </div>
             </div>
           </div>
           <div className='relative overflow-hidden rounded-lg border bg-background p-2 text-center'>
             <div className='flex h-[180px] flex-col justify-center gap-y-4 items-center rounded-md p-6'>
-              <SiTailwindcss size={40} />
+              <FaMarkdown size={40} />
               <div className='space-y-2'>
-                <h3 className='font-bold leading-normal'>Components</h3>
+                <h3 className='font-bold leading-normal'>Markdown</h3>
                 <p className='text-sm text-muted-foreground'>
-                  UI components built using Radix UI and styled with Tailwind
-                  CSS.
+                  Everything markdown, with custom helpful tags like{' '}
+                  {`<justify>, <tex>`}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className='relative overflow-hidden rounded-lg border bg-background p-2 text-center'>
+            <div className='flex h-[180px] flex-col justify-center gap-y-4 items-center rounded-md p-6'>
+              <FaCoffee size={40} />
+              <div className='space-y-2'>
+                <h3 className='font-bold leading-normal'>
+                  Math, Mermaid, and more!
+                </h3>
+                <p className='text-sm text-muted-foreground'>
+                  KaTeX is supported out of the box in code-only documents
                 </p>
               </div>
             </div>
           </div>
         </div>
-      </section> */}
+      </section>
     </>
   )
 }
