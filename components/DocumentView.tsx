@@ -301,7 +301,7 @@ export default function DocumentView() {
                         theme === 'dark'
                           ? `
                         .ck-editor .ck-content {
-                        background-color: #0A0A0A !important;
+                        background-color: #161616 !important;
                         color: #ececec !important;
                       }
 
@@ -310,7 +310,7 @@ export default function DocumentView() {
                       }
 
                       .ck-editor .ck-editor__top * {
-                        background-color: #0A0A0A !important;
+                        background-color: #161616 !important;
                         color: #c7c7c7 !important;
                         // border: none;
                       }  

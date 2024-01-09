@@ -26,7 +26,7 @@ const Navbar = () => {
   const [hidden, setHidden] = useAtom(navHiddenState)
   return (
     <header className={cn('sticky top-0 z-50 transition print:hidden')}>
-      <div className='max-w-[84rem] mx-auto bg-white dark:bg-neutral-950 flex items-center justify-between py-2 px-4 relative backdrop-filter backdrop-blur-lg bg-opacity-80'>
+      <div className='max-w-[84rem] mx-auto bg-white dark:bg-[#161616] flex items-center justify-between py-2 px-4 relative backdrop-filter backdrop-blur-lg bg-opacity-80'>
         {/* <div className='absolute left-0 w-full h-full bg-white dark:bg-neutral-950 backdrop-filter backdrop-blur-lg'></div> */}
         <Link
           className={cn('font-bold text-lg z-10', hidden && 'opacity-10')}

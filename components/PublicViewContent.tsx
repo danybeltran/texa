@@ -14,17 +14,17 @@ export default function PublicViewContent({ content }: { content: string }) {
             theme === 'dark'
               ? `
                         .ck-editor .ck-content {
-                        background-color: #0A0A0A !important;
-                        color: white !important;
+                        background-color: #161616 !important;
+                        color: #cfcfcf !important;
                       }
 
                       .ck-editor .ck-content *{
-                        color: white !important;
+                        color: #cfcfcf !important;
                       }
 
                       .ck-editor .ck-editor__top * {
-                        background-color: #0A0A0A !important;
-                        color: white !important;
+                        background-color: #161616  !important;
+                        color: #cfcfcf !important;
                       }  
                         `
               : ''

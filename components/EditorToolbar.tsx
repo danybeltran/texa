@@ -37,7 +37,7 @@ export default function EditorToolbar({ onCommand }: { onCommand: any }) {
   return (
     <div
       id='content-editor-toolbar'
-      className='flex sticky top-[3.7rem] bg-white dark:bg-neutral-950 max-w-full overflow-x-auto border-x gap-x-2 p-2'
+      className='flex sticky top-[3.7rem] bg-white dark:bg-[#161616] max-w-full overflow-x-auto border-x gap-x-2 p-2'
     >
       <div className='text-center'>
         <div className='flex  gap-x-2'>

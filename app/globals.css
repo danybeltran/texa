@@ -38,8 +38,8 @@
   }
 
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 8.5%;
+    --foreground: 0 0% 85%;
 
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
@@ -67,11 +67,11 @@
     --ring: 0 0% 83.1%;
 
     .md-editor-preview * {
-      color: white !important;
+      color: #cfcfcf !important;
     }
 
     #content-editor * {
-      color: white !important;
+      color: #cfcfcf !important;
     }
   }
 }
@@ -118,7 +118,7 @@ body::-webkit-scrollbar-track,
 /* Track */
 #content-editor-toolbar::-webkit-scrollbar-track,
 .md-editor-preview::-webkit-scrollbar-track {
-  background-color: rgb(238, 238, 238);
+  background-color: #eeeeee;
 }
 
 /* Handle */
