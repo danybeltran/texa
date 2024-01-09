@@ -255,7 +255,7 @@ export default function DocumentView() {
 
       <div
         className={cn(
-          'flex flex-col md:flex-row border-white w-full gap-x-4 py-8 justify-center'
+          'flex flex-col md:flex-row w-full gap-x-4 py-8 justify-center'
         )}
       >
         {doc.code ? (
@@ -293,7 +293,7 @@ export default function DocumentView() {
             )}
           </>
         ) : (
-          <div className='w-full md:w-1/2 relative prose mb-48'>
+          <div className='w-full relative prose max-w-3xl ck-content mb-48'>
             <style>
               {`
 
@@ -302,26 +302,36 @@ export default function DocumentView() {
                           ? `
                         .ck-editor .ck-content {
                         background-color: #0A0A0A !important;
-                        color: white !important;
+                        color: #ececec !important;
                       }
 
                       .ck-editor .ck-content *{
-                        color: white !important;
+                        color: #d3d3d3 !important;
                       }
 
                       .ck-editor .ck-editor__top * {
                         background-color: #0A0A0A !important;
-                        color: white !important;
+                        color: #c7c7c7 !important;
+                        border: none;
                       }  
-                        `
+                      `
                           : ''
                       }
+                    
+                    .ck-toolbar {
+                      border: none !important;
+                    }
 
-
-                      .ck-editor__top {
+                    .ck-toolbar__separator {
+                      display: none !important;
+                    }
+                    
+                    .ck-editor__top {
+                        // display: none;
                         position: sticky !important;
+                        border: none !important;
                         z-index: 50;
-                        border-bottom: 1px solid lightgray !important;
+                        // border-bottom: 1px solid lightgray !important;
                         top: 20px !important;
                       }
 

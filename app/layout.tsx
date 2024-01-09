@@ -1,7 +1,7 @@
 import './globals.css'
 import { AtomicState } from 'atomic-state'
 import { FetchConfig } from 'http-react'
-import { Poppins } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import type { Metadata } from 'next'
 
 import Navbar from '@/components/Navbar'
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: 'Texa is an all-in-one rich content, Markdown and KaTeX editor'
 }
 
-const montserratFont = Poppins({
+const montserratFont = Inter({
   display: 'swap',
   subsets: ['latin', 'latin-ext'],
   weight: ['300', '400', '500', '600', '800', '900']

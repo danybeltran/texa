@@ -52,14 +52,14 @@ export default async function DocumentPage({
         {doc.code ? (
           <div
             className={cn(
-              'md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 prose text-black'
+              'md-editor-preview w-full border-neutral-500 rounded-lg p-3 prose max-w-3xl text-black'
             )}
             dangerouslySetInnerHTML={{
               __html: renderMD(doc?.content!)
             }}
           ></div>
         ) : (
-          <div className='md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 prose text-black  mb-48'>
+          <div className='md-editor-preview w-full border-neutral-500 rounded-lg p-3 prose max-w-3xl text-black  mb-48'>
             <PublicViewContent content={doc.content!} />
           </div>
         )}

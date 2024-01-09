@@ -148,3 +148,11 @@ iframe {
 .monaco-editor {
   padding-top: 16px;
 }
+
+.ck-content {
+  width: 100% !important;
+}
+
+.ck-toolbar * {
+  font-family: 'Inter', sans-serif !important;
+}
