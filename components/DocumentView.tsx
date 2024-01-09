@@ -312,7 +312,7 @@ export default function DocumentView() {
                       .ck-editor .ck-editor__top * {
                         background-color: #0A0A0A !important;
                         color: #c7c7c7 !important;
-                        border: none;
+                        // border: none;
                       }  
                       `
                           : ''
