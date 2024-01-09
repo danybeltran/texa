@@ -339,6 +339,7 @@ export default function DocumentView() {
                       .ck-content {
                         border: none !important;
                         min-height: 100vh;
+                        padding-bottom: 32px !important;
                       }
 
                       .ck-content:focus {
@@ -367,7 +368,7 @@ export default function DocumentView() {
                   poweredBy: {
                     position: 'inside',
                     side: 'left',
-                    label: 'This is'
+                    label: ''
                   } as any
                 },
 
