@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://cdn.rawgit.com/dreampulse/computer-modern-web-font/master/fonts.css');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
 
 @layer base {
   :root {
@@ -143,4 +143,8 @@ iframe {
 .tex-content {
   font-family: 'KaTeX_Main';
   font-size: auto;
+}
+
+.monaco-editor {
+  padding-top: 16px;
 }

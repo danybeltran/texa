@@ -19,18 +19,44 @@ const markdown = new MD({
   })
 
 export function renderMD(content?: string) {
-  return markdown.render(
-    (content || '')
-      .replaceAll('$$$', '$$ $')
-      .replaceAll('<tex>', "<div class='tex-content'>\n ")
-      .replaceAll('<texc>', '</div>')
-      .replaceAll('<center>', '<center>\n')
-      .replaceAll('<centerc>', ' </center>')
-      .replaceAll('<justify>', '<div style="text-align: justify">')
-      .replaceAll('<justifyc>', '</div>')
-      .replaceAll('<left>', '<div style="text-align: left">')
-      .replaceAll('<leftc>', '</div>')
-      .replaceAll('<right>', '<div style="text-align: right">')
-      .replaceAll('<rightc>', '</div>')
-  )
+  try {
+    return markdown.render(
+      (content || '')
+        .replaceAll('$$$', '$$ $')
+        .replaceAll('<tex>', "<div class='tex-content'>\n ")
+        .replaceAll('</tex>', '</div>')
+        .replaceAll('<center>', '<center>\n')
+        .replaceAll('</center>', ' </center>')
+        .replaceAll('<justify>', '<div style="text-align: justify">')
+        .replaceAll('</justify>', '</div>')
+        .replaceAll('<left>', '<div style="text-align: left">')
+        .replaceAll('</left>', '</div>')
+        .replaceAll('<right>', '<div style="text-align: right">')
+        .replaceAll('</right>', '</div>')
+        .replaceAll('<mermaid>', '```mermaid')
+        .replaceAll('</mermaid>', '```')
+        .replaceAll('<math>', '```math')
+        .replaceAll('</math>', '```')
+        .replace(/\<tr\>|\<\/tr\>/g, '|')
+        .split('\n')
+        .map((line, l, allLines) => {
+          const previousLine = allLines[l - 1]?.trim() || ''
+          if (previousLine.startsWith('<tb>')) {
+            if (line.trim() === '') return '\n'
+            let numberOfColumns = allLines[l - 1].split('|').length
+            const tbColumns = `|${new Array(numberOfColumns)
+              .fill('-')
+              .join('|')}|`
+            return `${tbColumns}\n${line}`
+          } else return line
+        })
+        .join('\n')
+        .replace(/\<tb\>|\<\/tb\>/g, '|')
+        .replaceAll('<tbl>', '<div>\n')
+        .replaceAll('</tbl>', '</div>')
+    )
+  } catch (err) {
+    console.log(err)
+    return 'Failed to render preview'
+  }
 }

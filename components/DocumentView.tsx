@@ -276,6 +276,9 @@ export default function DocumentView() {
                     }))
                   }
                 }}
+                onMount={e => {
+                  e.focus()
+                }}
                 height='40rem'
                 theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
                 width={doc?.editorOnly ? '100%' : '50%'}
