@@ -37,23 +37,6 @@ export function renderMD(content?: string) {
         .replaceAll('</mermaid>', '```')
         .replaceAll('<math>', '```math')
         .replaceAll('</math>', '```')
-        .replace(/\<tr\>|\<\/tr\>/g, '|')
-        .split('\n')
-        .map((line, l, allLines) => {
-          const previousLine = allLines[l - 1]?.trim() || ''
-          if (previousLine.startsWith('<tb>')) {
-            if (line.trim() === '') return '\n'
-            let numberOfColumns = allLines[l - 1].split('|').length
-            const tbColumns = `|${new Array(numberOfColumns)
-              .fill('-')
-              .join('|')}|`
-            return `${tbColumns}\n${line}`
-          } else return line
-        })
-        .join('\n')
-        .replace(/\<tb\>|\<\/tb\>/g, '|')
-        .replaceAll('<tbl>', '<div>\n')
-        .replaceAll('</tbl>', '</div>')
     )
   } catch (err) {
     console.log(err)
