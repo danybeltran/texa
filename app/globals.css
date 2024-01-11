@@ -145,6 +145,10 @@ iframe {
   font-size: auto;
 }
 
+.katex-html {
+  font-family: 'KaTeX_Math';
+}
+
 .monaco-editor {
   padding-top: 16px;
 }

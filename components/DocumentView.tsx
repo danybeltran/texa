@@ -279,7 +279,7 @@ export default function DocumentView() {
                 onMount={e => {
                   e.focus()
                 }}
-                height='40rem'
+                height='34rem'
                 theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
                 width={doc?.editorOnly ? '100%' : '50%'}
                 defaultLanguage='markdown'
@@ -386,6 +386,7 @@ export default function DocumentView() {
         )}
         {doc.code && (
           <div
+            id='texa-code-preview'
             className={cn(
               'md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 prose text-black',
               doc.locked && 'w-full',
@@ -395,7 +396,7 @@ export default function DocumentView() {
             style={
               !doc?.locked
                 ? {
-                    height: '40rem',
+                    height: '34rem',
                     overflowY: 'auto'
                   }
                 : {}
