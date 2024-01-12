@@ -160,3 +160,16 @@ iframe {
 .ck-toolbar * {
   font-family: 'Inter', sans-serif !important;
 }
+
+.code-page-break {
+  height: 0px !important;
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media print {
+  .code-page-break {
+    position: relative;
+  }
+}

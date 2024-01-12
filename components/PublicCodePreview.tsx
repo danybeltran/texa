@@ -18,6 +18,7 @@ export default function PublicCodePreview({ content }: { content: string }) {
       onMount={e => {
         e.focus()
       }}
+      onChange={e => {}}
       height='34rem'
       theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
       width={'100%'}

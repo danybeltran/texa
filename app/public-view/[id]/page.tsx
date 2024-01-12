@@ -5,11 +5,10 @@ import 'markdown-it-latex/dist/index.css'
 import { cn } from '@/lib/utils'
 import { prisma } from '@/server'
 import { renderMD } from '@/lib/md'
-import { BrowserOnly } from 'react-kuh'
-import Editor from '@monaco-editor/react'
+
 import PublicViewContent from '@/components/PublicViewContent'
 import { Button } from '@/components/ui/button'
-import { FaCode, FaPrint } from 'react-icons/fa6'
+import { FaCode } from 'react-icons/fa6'
 import Link from 'next/link'
 import PublicCodePreview from '@/components/PublicCodePreview'
 import PublicPrintButton from '@/components/CodePreviewPrint'
@@ -67,7 +66,11 @@ export default async function DocumentPage({
                   showSource ? '' : '?sourceCode=true'
                 }`}
               >
-                <Button className='gap-x-2' variant='secondary'>
+                <Button
+                  className='gap-x-2 opacity-50 hover:opacity-90'
+                  size='sm'
+                  variant='secondary'
+                >
                   <FaCode />{' '}
                   {searchParams.sourceCode
                     ? 'View document'

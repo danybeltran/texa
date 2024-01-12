@@ -37,6 +37,10 @@ export function renderMD(content?: string) {
         .replaceAll('</mermaid>', '```')
         .replaceAll('<math>', '```math')
         .replaceAll('</math>', '```')
+        .replace(
+          /\<(newpage |newpage)\/\>/gi,
+          '<div class="code-page-break"><p style="page-break-after: always;">&nbsp;</p><p style="page-break-before: always;">&nbsp;</p></div>'
+        )
     )
   } catch (err) {
     console.log(err)
