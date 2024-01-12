@@ -6,16 +6,24 @@ import { cn } from '@/lib/utils'
 import { prisma } from '@/server'
 import { renderMD } from '@/lib/md'
 import { BrowserOnly } from 'react-kuh'
+import Editor from '@monaco-editor/react'
 import PublicViewContent from '@/components/PublicViewContent'
+import { Button } from '@/components/ui/button'
+import { FaCode, FaPrint } from 'react-icons/fa6'
+import Link from 'next/link'
+import PublicCodePreview from '@/components/PublicCodePreview'
+import PublicPrintButton from '@/components/CodePreviewPrint'
 
 export const metadata = {
   title: ''
 }
 
 export default async function DocumentPage({
-  params
+  params,
+  searchParams
 }: {
   params: { id: string }
+  searchParams: { sourceCode: 'true' }
 }) {
   headers()
 
@@ -35,6 +43,8 @@ export default async function DocumentPage({
   let docName = doc.name || 'Unnamed document'
   let docDescription = doc.description || 'No description'
 
+  const showSource = searchParams.sourceCode === 'true'
+
   return (
     <main className='w-full'>
       <Fragment>
@@ -50,14 +60,35 @@ export default async function DocumentPage({
       </Fragment>
       <div className={'flex border-white w-full gap-x-4 py-8 justify-center'}>
         {doc.code ? (
-          <div
-            className={cn(
-              'md-editor-preview w-full border-neutral-500 rounded-lg p-3 prose max-w-3xl text-black'
+          <div className='w-full grid grid-cols-1'>
+            <div className='pb-4 space-x-2 print:hidden'>
+              <Link
+                href={`/public-view/${doc.publicId}${
+                  showSource ? '' : '?sourceCode=true'
+                }`}
+              >
+                <Button className='gap-x-2' variant='secondary'>
+                  <FaCode />{' '}
+                  {searchParams.sourceCode
+                    ? 'View document'
+                    : 'View source code'}
+                </Button>
+              </Link>
+              {showSource ? null : <PublicPrintButton />}
+            </div>
+            {searchParams.sourceCode === 'true' ? (
+              <PublicCodePreview content={doc.content!} />
+            ) : (
+              <div
+                className={cn(
+                  'mx-auto self-center mb-32 md-editor-preview w-full border-neutral-500 rounded-lg p-3 prose max-w-3xl text-black'
+                )}
+                dangerouslySetInnerHTML={{
+                  __html: renderMD(doc?.content!)
+                }}
+              />
             )}
-            dangerouslySetInnerHTML={{
-              __html: renderMD(doc?.content!)
-            }}
-          ></div>
+          </div>
         ) : (
           <div className='md-editor-preview w-full border-neutral-500 rounded-lg p-3 prose max-w-3xl text-black  mb-48'>
             <PublicViewContent content={doc.content!} />
