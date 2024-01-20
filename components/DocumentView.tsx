@@ -311,7 +311,7 @@ export default function DocumentView() {
             )}
           </div>
         ) : (
-          <div className='w-full relative prose max-w-3xl ck-content mb-48'>
+          <div className='w-full relative prose max-w-3xl ck-content mb-48 print:mb-0'>
             <style>
               {`
 
@@ -356,7 +356,7 @@ export default function DocumentView() {
                       
                       .ck-content {
                         border: none !important;
-                        min-height: 100vh;
+                        min-height: 50vh;
                         padding-bottom: 32px !important;
                       }
 
@@ -411,7 +411,7 @@ export default function DocumentView() {
               doc.editorOnly
                 ? 'hidden'
                 : !doc.locked && 'h-[34rem] print:h-auto overflow-y-auto',
-              'print:block print:mx-auto print:self-center print:mb-32 md-editor-preview print:w-full print:border-neutral-500 rprint:ounded-lg print:p-3 print:py-0 print:prose print:max-w-3xl print:text-black'
+              'print:block print:mx-auto print:self-center md-editor-preview print:w-full print:border-neutral-500 rprint:ounded-lg print:p-3 print:py-0 print:prose print:max-w-3xl print:text-black'
             )}
           >
             {renderedPreview}

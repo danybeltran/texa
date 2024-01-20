@@ -171,6 +171,10 @@ iframe {
 }
 
 @media print {
+  .ck-editor__top {
+    display: none;
+  }
+
   ::-webkit-scrollbar {
     display: none;
   }

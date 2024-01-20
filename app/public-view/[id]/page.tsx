@@ -95,14 +95,14 @@ export default async function DocumentPage({
             )}
           </div>
         ) : (
-          <>
-            <div className='pb-4 space-x-2 print:hidden'>
+          <div className='w-full max-w-3xl'>
+            <div className='space-x-2 print:hidden'>
               <PublicPrintButton />
             </div>
-            <div className='md-editor-preview w-full border-neutral-500 rounded-lg p-3 print:py-0 prose max-w-3xl text-black  mb-48'>
+            <div className='md-editor-preview w-full border-neutral-500 rounded-lg p-3 print:py-0 prose  text-black mb-48 print:mb-0'>
               <PublicViewContent content={doc.content!} />
             </div>
-          </>
+          </div>
         )}
       </div>
     </main>
