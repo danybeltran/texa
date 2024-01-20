@@ -53,7 +53,7 @@ export default function Home() {
             <div className='flex h-[180px] flex-col justify-center gap-y-4 items-center rounded-md p-6'>
               <MdMoneyOffCsred size={40} />
               <div className='space-y-2'>
-                <h3 className='font-bold leading-normal'>Free. forever.</h3>
+                <h3 className='font-bold leading-normal'>Free. Forever.</h3>
                 <p className='text-sm text-muted-foreground'>Just write</p>
               </div>
             </div>

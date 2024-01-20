@@ -15,6 +15,9 @@ import { CiCircleInfo } from 'react-icons/ci'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import Editor from '@monaco-editor/react'
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import { MdPrint } from 'react-icons/md'
 
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
@@ -31,8 +34,6 @@ import {
 } from './ui/dialog'
 import { Label } from './ui/label'
 
-import { CKEditor } from '@ckeditor/ckeditor5-react'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { useTheme } from 'next-themes'
 
 function calcHeight(value: string) {
@@ -185,6 +186,16 @@ export default function DocumentView() {
             </Button>
           )}
           <Button
+            className='gap-x-2'
+            variant='secondary'
+            onClick={() => {
+              print()
+            }}
+          >
+            <MdPrint className='text-lg' />
+          </Button>
+
+          <Button
             onClick={() => {
               setShowMetadata(m => !m)
             }}
@@ -255,11 +266,19 @@ export default function DocumentView() {
 
       <div
         className={cn(
-          'flex flex-col md:flex-row w-full gap-x-4 py-8 justify-center'
+          'flex flex-col md:flex-row w-full gap-x-4 py-8 print:py-0 justify-center'
         )}
       >
         {doc.code ? (
-          <>
+          <div
+            className={cn(
+              'print:hidden',
+              doc.editorOnly ? 'w-full' : doc.locked ? 'hidden' : 'w-1/2'
+            )}
+            style={{
+              height: '34rem'
+            }}
+          >
             {(!doc.locked || doc.editorOnly) && (
               <Editor
                 loading
@@ -279,19 +298,18 @@ export default function DocumentView() {
                 onMount={e => {
                   e.focus()
                 }}
-                height='34rem'
                 theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
-                width={doc?.editorOnly ? '100%' : '50%'}
+                width={'100%'}
                 defaultLanguage='markdown'
                 className={cn(
-                  'first:peer-first:p-4 w-1/2 resize-none border rounded-lg focus:border-transparent focus:ring-2 focus:outline-none overflow-hidden bg-transparent min-h-72',
+                  'first:peer-first:p-4 resize-none border rounded-lg focus:border-transparent focus:ring-2 focus:outline-none overflow-hidden bg-transparent min-h-72',
                   doc.locked && !doc.editorOnly && 'hidden',
                   doc.editorOnly && 'w-full',
                   'print:hidden'
                 )}
               />
             )}
-          </>
+          </div>
         ) : (
           <div className='w-full relative prose max-w-3xl ck-content mb-48'>
             <style>
@@ -388,19 +406,13 @@ export default function DocumentView() {
           <div
             id='texa-code-preview'
             className={cn(
-              'md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 prose text-black',
+              'md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 print:py-0 prose text-black',
               doc.locked && 'w-full',
-              doc.editorOnly && 'hidden',
-              'print:block'
+              doc.editorOnly
+                ? 'hidden'
+                : !doc.locked && 'h-[34rem] print:h-auto overflow-y-auto',
+              'print:block print:mx-auto print:self-center print:mb-32 md-editor-preview print:w-full print:border-neutral-500 rprint:ounded-lg print:p-3 print:py-0 print:prose print:max-w-3xl print:text-black'
             )}
-            style={
-              !doc?.locked
-                ? {
-                    height: '34rem',
-                    overflowY: 'auto'
-                  }
-                : {}
-            }
           >
             {renderedPreview}
           </div>

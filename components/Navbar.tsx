@@ -28,12 +28,17 @@ const Navbar = () => {
     <header className={cn('sticky top-0 z-50 transition print:hidden')}>
       <div className='max-w-[84rem] mx-auto bg-white dark:bg-[#161616] flex items-center justify-between py-2 px-4 relative backdrop-filter backdrop-blur-lg bg-opacity-80'>
         {/* <div className='absolute left-0 w-full h-full bg-white dark:bg-neutral-950 backdrop-filter backdrop-blur-lg'></div> */}
-        <Link
-          className={cn('font-bold text-lg z-10', hidden && 'opacity-10')}
-          href={'/'}
-        >
-          TeXa
-        </Link>
+        <div className='flex items-baseline justify-center gap-x-6'>
+          <Link
+            className={cn('font-bold text-xl z-10', hidden && 'opacity-10')}
+            href={'/'}
+          >
+            Tx
+          </Link>
+          <Link className={cn('z-10', hidden && 'opacity-10')} href={'/docs'}>
+            Docs
+          </Link>
+        </div>
         <NavigationMenu>
           <NavigationMenuList className='gap-2'>
             <NavigationMenuItem>
@@ -54,7 +59,7 @@ const Navbar = () => {
                     hidden && 'opacity-10'
                   )}
                 >
-                  My space
+                  My
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>

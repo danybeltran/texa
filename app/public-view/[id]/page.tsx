@@ -57,9 +57,11 @@ export default async function DocumentPage({
 
         <meta name='twitter:card' content='summary_large_image' />
       </Fragment>
-      <div className={'flex border-white w-full gap-x-4 py-8 justify-center'}>
+      <div
+        className={'flex border-white w-full gap-x-4 print:py-0 justify-center'}
+      >
         {doc.code ? (
-          <div className='w-full grid grid-cols-1'>
+          <div className='w-full flex flex-col'>
             <div className='pb-4 space-x-2 print:hidden'>
               <Link
                 href={`/public-view/${doc.publicId}${
@@ -84,7 +86,7 @@ export default async function DocumentPage({
             ) : (
               <div
                 className={cn(
-                  'mx-auto self-center mb-32 md-editor-preview w-full border-neutral-500 rounded-lg p-3 prose max-w-3xl text-black'
+                  'mx-auto self-center mb-32 md-editor-preview w-full border-neutral-500 rounded-lg p-3 print:py-0 prose max-w-3xl text-black'
                 )}
                 dangerouslySetInnerHTML={{
                   __html: renderMD(doc?.content!)
@@ -93,9 +95,14 @@ export default async function DocumentPage({
             )}
           </div>
         ) : (
-          <div className='md-editor-preview w-full border-neutral-500 rounded-lg p-3 prose max-w-3xl text-black  mb-48'>
-            <PublicViewContent content={doc.content!} />
-          </div>
+          <>
+            <div className='pb-4 space-x-2 print:hidden'>
+              <PublicPrintButton />
+            </div>
+            <div className='md-editor-preview w-full border-neutral-500 rounded-lg p-3 print:py-0 prose max-w-3xl text-black  mb-48'>
+              <PublicViewContent content={doc.content!} />
+            </div>
+          </>
         )}
       </div>
     </main>
