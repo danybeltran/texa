@@ -28,7 +28,7 @@ function MainLayout({ children }) {
           content='Texa is an all-in-one rich content, Markdown and KaTeX editor'
         />
       </head>
-      <body className={montserratFont.className}>
+      <body style={montserratFont.style}>
         <ThemeProvider attribute='class' defaultTheme='system'>
           <main className='min-h-screen'>
             <AuthProvider>

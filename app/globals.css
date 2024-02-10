@@ -170,6 +170,19 @@ iframe {
   /* overflow: hidden; */
 }
 
+.ck-content h2 {
+  font-size: 36px !important;
+  line-height: 8px !important;
+}
+.ck-content h3 {
+  font-size: 30px !important;
+  line-height: 8px !important;
+}
+.ck-content h4 {
+  font-size: 24px !important;
+  line-height: 10px !important;
+}
+
 @media print {
   .ck-editor__top {
     display: none;
