@@ -1,5 +1,5 @@
 'use client'
-import useFetch, { useDebounceFetch } from 'http-react'
+import useFetch, { Client, useDebounceFetch } from 'http-react'
 import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { Doc } from '@prisma/client'
@@ -14,7 +14,7 @@ import {
 import { CiCircleInfo } from 'react-icons/ci'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
-import Editor from '@monaco-editor/react'
+import Editor, { loader } from '@monaco-editor/react'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { MdPrint } from 'react-icons/md'
@@ -382,6 +382,7 @@ export default function DocumentView() {
               editor={ClassicEditor}
               data={doc?.content}
               config={{
+                extraPlugins: [MyCustomUploadAdapterPlugin],
                 ui: {
                   poweredBy: {
                     position: 'inside',
@@ -420,4 +421,28 @@ export default function DocumentView() {
       </div>
     </main>
   )
+}
+
+// Upload adapter
+
+function MyCustomUploadAdapterPlugin(editor) {
+  editor.plugins.get('FileRepository').createUploadAdapter = loader => {
+    return new MyUploadAdapter(loader)
+  }
+}
+
+class MyUploadAdapter {
+  constructor(props) {
+    ;(this as any).loader = props
+  }
+
+  async upload() {
+    try {
+      return {
+        default: (this as any).loader._reader._data
+      }
+    } catch (err) {
+      alert('An error ocurred')
+    }
+  }
 }
