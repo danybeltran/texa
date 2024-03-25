@@ -14,6 +14,8 @@ import {
 import { CiCircleInfo } from 'react-icons/ci'
 import { FaExternalLinkAlt } from 'react-icons/fa'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
+import { IoIosLink } from 'react-icons/io'
+import copy from 'copy-to-clipboard'
 import Editor, { loader } from '@monaco-editor/react'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
@@ -35,6 +37,7 @@ import {
 import { Label } from './ui/label'
 
 import { useTheme } from 'next-themes'
+import { useToast } from './ui/use-toast'
 
 function calcHeight(value: string) {
   let numberOfLineBreaks = (value.match(/\n/g) || []).length
@@ -126,6 +129,8 @@ export default function DocumentView() {
     }
   }, [loaded, doc?.content])
 
+  const { toast } = useToast()
+
   const { theme } = useTheme()
 
   if (!doc)
@@ -140,6 +145,9 @@ export default function DocumentView() {
 
   return (
     <main className='w-full relative'>
+      <head>
+        <title>{doc.name}</title>
+      </head>
       <div className='flex items-center justify-between print:hidden'>
         <Link
           href={'/personal/' + (doc?.parentFolderId ? doc.parentFolderId : '')}
@@ -257,6 +265,23 @@ export default function DocumentView() {
                 className='resize-none'
               />
             </Label>
+            <br />
+            <div>
+              <p className='py-2 text-sm font-medium'>Other</p>
+              <Button
+                onClick={() => {
+                  copy(location.origin + '/public-view/' + doc.publicId)
+                  toast({
+                    title: 'Link copied',
+                    description: 'Public view link was copied'
+                  })
+                }}
+                variant='outline'
+                className='flex items-center gap-x-2'
+              >
+                <IoIosLink /> Copy public link
+              </Button>
+            </div>
           </div>
           <div className='text-center'>
             <Button onClick={() => setShowMetadata(false)}>Close</Button>

@@ -7,6 +7,7 @@ import type { Metadata } from 'next'
 import Navbar from '@/components/Navbar'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import AuthProvider from '@/components/AuthProvider'
+import { Toaster } from '@/components/ui/toaster'
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -37,6 +38,7 @@ function MainLayout({ children }) {
                   <Navbar />
                   <div className='max-w-[86rem] mx-auto p-3 sm:px-4 '>
                     {children}
+                    <Toaster />
                   </div>
                 </FetchConfig>
               </AtomicState>
