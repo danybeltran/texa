@@ -172,15 +172,15 @@ iframe {
 
 .ck-content h2 {
   font-size: 36px !important;
-  line-height: 8px !important;
+  line-height: 92% !important;
 }
 .ck-content h3 {
   font-size: 30px !important;
-  line-height: 8px !important;
+  line-height: 92% !important;
 }
 .ck-content h4 {
   font-size: 24px !important;
-  line-height: 10px !important;
+  line-height: 92%x !important;
 }
 
 @media print {
