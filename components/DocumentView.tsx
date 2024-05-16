@@ -1,9 +1,16 @@
 'use client'
-import useFetch, { Client, useDebounceFetch } from 'http-react'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+import Editor from '@monaco-editor/react'
+import { Doc } from '@prisma/client'
+import copy from 'copy-to-clipboard'
+import useFetch, { useDebounceFetch } from 'http-react'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
-import { Doc } from '@prisma/client'
-import Link from 'next/link'
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'
+import { CiCircleInfo } from 'react-icons/ci'
+import { FaExternalLinkAlt } from 'react-icons/fa'
 import {
   FaChevronLeft,
   FaLock,
@@ -11,21 +18,14 @@ import {
   FaRegEye,
   FaRegEyeSlash
 } from 'react-icons/fa6'
-import { CiCircleInfo } from 'react-icons/ci'
-import { FaExternalLinkAlt } from 'react-icons/fa'
-import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { IoIosLink } from 'react-icons/io'
-import copy from 'copy-to-clipboard'
-import Editor, { loader } from '@monaco-editor/react'
-import { CKEditor } from '@ckeditor/ckeditor5-react'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { MdPrint } from 'react-icons/md'
 
-import { Textarea } from '@/components/ui/textarea'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { renderMD } from '@/lib/md'
+import { cn } from '@/lib/utils'
 
 import {
   Dialog,

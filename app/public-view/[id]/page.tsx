@@ -12,6 +12,8 @@ import { FaCode } from 'react-icons/fa6'
 import Link from 'next/link'
 import PublicCodePreview from '@/components/PublicCodePreview'
 import PublicPrintButton from '@/components/CodePreviewPrint'
+import PublicMdContent from '@/components/PublicMdContent'
+import { BrowserOnly, ClientOnly } from 'react-kuh'
 
 export const metadata = {
   title: ''
@@ -84,14 +86,9 @@ export default async function DocumentPage({
             {searchParams.sourceCode === 'true' ? (
               <PublicCodePreview content={doc.content!} />
             ) : (
-              <div
-                className={cn(
-                  'mx-auto self-center mb-32 md-editor-preview w-full border-neutral-500 rounded-lg p-3 print:py-0 prose max-w-3xl text-black'
-                )}
-                dangerouslySetInnerHTML={{
-                  __html: renderMD(doc?.content!)
-                }}
-              />
+              <ClientOnly>
+                <PublicMdContent content={doc?.content} />
+              </ClientOnly>
             )}
           </div>
         ) : (

@@ -183,6 +183,15 @@ iframe {
   line-height: 92%x !important;
 }
 
+p:has(.image-inline) {
+  text-align: center;
+}
+
+#texa-code-preview img {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 @media print {
   .ck-editor__top {
     display: none;
