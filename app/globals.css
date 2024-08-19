@@ -157,6 +157,10 @@ iframe {
   width: 100% !important;
 }
 
+.ck-sticky-panel__content {
+  border: 0px !important;
+}
+
 .ck-toolbar * {
   font-family: 'Inter', sans-serif !important;
 }
@@ -187,9 +191,10 @@ p:has(.image-inline) {
   text-align: center;
 }
 
-#texa-code-preview img {
+img {
   margin-left: auto;
   margin-right: auto;
+  @apply shadow-lg;
 }
 
 @media print {

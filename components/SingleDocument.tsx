@@ -23,6 +23,8 @@ import {
 } from './ui/alert-dialog'
 import { Button } from './ui/button'
 import { FaExternalLinkAlt } from 'react-icons/fa'
+import { FaFileCode } from 'react-icons/fa6'
+
 import { useAtom } from 'atomic-state'
 import { itemsToMoveState } from '@/states'
 
@@ -74,7 +76,6 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
         </AlertDialogContent>
       </AlertDialog>
       <Link
-        replace
         href={'/personal/document/' + doc.id}
         onClick={e => {
           if (itemsToMove.length > 0) e.preventDefault()
@@ -83,16 +84,29 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
       >
         <ContextMenu>
           <ContextMenuTrigger className='h-36 text-center'>
-            <FaFileLines
-              className={cn(
-                'text-9xl hover:opacity-85 transition h-36 p-3.5',
-                deletingDoc && 'cursor-not-allowed animate-pulse',
-                itemsToMove.length > 0 && 'cursor-not-allowed opacity-85'
-              )}
-              style={{
-                color: '#6e84ff'
-              }}
-            />
+            {doc?.code ? (
+              <FaFileCode
+                className={cn(
+                  'text-9xl hover:opacity-85 transition h-36 p-3.5',
+                  deletingDoc && 'cursor-not-allowed animate-pulse',
+                  itemsToMove.length > 0 && 'cursor-not-allowed opacity-85'
+                )}
+                style={{
+                  color: '#797979'
+                }}
+              />
+            ) : (
+              <FaFileLines
+                className={cn(
+                  'text-9xl hover:opacity-85 transition h-36 p-3.5',
+                  deletingDoc && 'cursor-not-allowed animate-pulse',
+                  itemsToMove.length > 0 && 'cursor-not-allowed opacity-85'
+                )}
+                style={{
+                  color: '#6e84ff'
+                }}
+              />
+            )}
             <p className='text-sm w-32 whitespace-pre-line'>
               {doc.name?.trim() || 'Unnamed document'}
             </p>

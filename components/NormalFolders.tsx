@@ -23,6 +23,7 @@ export default function NormalFolders() {
     folder: Folder
   }>('/folders/previous', {
     suspense: true,
+    id: `folder-${params.folderId}`,
     revalidateOnMount: false,
     cacheProvider: storage,
     query: {
