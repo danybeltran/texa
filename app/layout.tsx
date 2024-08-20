@@ -8,6 +8,7 @@ import Navbar from '@/components/Navbar'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import AuthProvider from '@/components/AuthProvider'
 import { Toaster } from '@/components/ui/toaster'
+import Mouser from '@/components/mouser'
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -35,6 +36,7 @@ function MainLayout({ children }) {
             <AuthProvider>
               <AtomicState>
                 <FetchConfig baseUrl='/api'>
+                  <Mouser />
                   <Navbar />
                   <div className='max-w-[86rem] mx-auto p-3 sm:px-4 '>
                     {children}

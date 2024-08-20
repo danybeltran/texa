@@ -38,6 +38,7 @@ import { Label } from './ui/label'
 
 import { useTheme } from 'next-themes'
 import { useToast } from './ui/use-toast'
+import { setNavHidden, useNavHidden } from '@/states'
 
 function calcHeight(value: string) {
   let numberOfLineBreaks = (value.match(/\n/g) || []).length
@@ -48,6 +49,8 @@ function calcHeight(value: string) {
 
 export default function DocumentView() {
   const params: { id: string } = useParams()
+
+  const hidden = useNavHidden()
 
   const {
     data: doc,
@@ -148,7 +151,12 @@ export default function DocumentView() {
       <head>
         <title>{doc.name}</title>
       </head>
-      <div className='flex items-center justify-between print:hidden'>
+      <div
+        className={cn(
+          'flex items-center justify-between print:hidden transition',
+          hidden && 'opacity-0'
+        )}
+      >
         <Link
           href={'/personal/' + (doc?.parentFolderId ? doc.parentFolderId : '')}
         >
@@ -156,7 +164,12 @@ export default function DocumentView() {
             <FaChevronLeft /> Close
           </Button>
         </Link>
-        <div className='flex items-center gap-x-2'>
+        <div
+          className={cn(
+            'flex items-center gap-x-2 transition',
+            hidden && 'opacity-0'
+          )}
+        >
           {savingDoc && (
             <div className='pr-4'>
               <AiOutlineLoading3Quarters className='animate-spin' />
@@ -231,9 +244,9 @@ export default function DocumentView() {
                     setShowMetadata(false)
                   }
                 }}
-                onChange={e =>
+                onChange={e => {
                   setDoc(prevDoc => ({ ...prevDoc, name: e.target.value }))
-                }
+                }}
               />
             </Label>
             <br />
@@ -313,6 +326,8 @@ export default function DocumentView() {
                 }}
                 value={doc.content!}
                 onChange={v => {
+                  setNavHidden(true)
+
                   if (!doc.locked) {
                     setDoc(prevDoc => ({
                       ...prevDoc,
@@ -363,6 +378,8 @@ export default function DocumentView() {
                     
                     .ck-toolbar {
                       border: none !important;
+                      transition: 200ms !important;
+                      opacity: ${hidden ? 0 : 1};
                     }
 
                     .ck-toolbar__separator {
@@ -420,6 +437,9 @@ export default function DocumentView() {
               }}
               onChange={(_, editor) => {
                 const textData = editor.getData()
+
+                setNavHidden(true)
+
                 setDoc(prevDoc => ({
                   ...prevDoc,
                   content: textData

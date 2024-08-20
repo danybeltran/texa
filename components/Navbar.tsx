@@ -11,31 +11,30 @@ import {
   navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu'
 import AuthButton from './AuthButton'
-import { useState } from 'react'
 import { Button } from './ui/button'
-import { FaChevronUp, FaRegEye } from 'react-icons/fa6'
-import { atom, useAtom } from 'atomic-state'
-
-const navHiddenState = atom({
-  key: 'navHidden',
-  default: false,
-  persist: true
-})
+import { FaRegEye } from 'react-icons/fa6'
+import { useNavHidden, setNavHidden } from '@/states'
 
 const Navbar = () => {
-  const [hidden, setHidden] = useAtom(navHiddenState)
+  const hidden = useNavHidden()
   return (
     <header className={cn('sticky top-0 z-50 transition print:hidden')}>
       <div className='max-w-[84rem] mx-auto bg-white dark:bg-[#161616] flex items-center justify-between py-2 px-4 relative backdrop-filter backdrop-blur-lg bg-opacity-80'>
         {/* <div className='absolute left-0 w-full h-full bg-white dark:bg-neutral-950 backdrop-filter backdrop-blur-lg'></div> */}
         <div className='flex items-baseline justify-center gap-x-6'>
           <Link
-            className={cn('font-bold text-xl z-10', hidden && 'opacity-10')}
+            className={cn(
+              'font-bold text-xl z-10 transition',
+              hidden && 'opacity-0'
+            )}
             href={'/'}
           >
             Tx
           </Link>
-          <Link className={cn('z-10', hidden && 'opacity-10')} href={'/docs'}>
+          <Link
+            className={cn('z-10 transition', hidden && 'opacity-0')}
+            href={'/docs'}
+          >
             Docs
           </Link>
         </div>
@@ -44,8 +43,8 @@ const Navbar = () => {
             <NavigationMenuItem>
               <Button
                 size='sm'
-                className={cn(hidden && 'opacity-10')}
-                onClick={() => setHidden(h => !h)}
+                className={cn('transition', hidden && 'opacity-0')}
+                onClick={() => setNavHidden(h => !h)}
               >
                 <FaRegEye />
               </Button>
@@ -55,8 +54,8 @@ const Navbar = () => {
                 <NavigationMenuLink
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    'font-medium',
-                    hidden && 'opacity-10'
+                    'font-medium transition',
+                    hidden && 'opacity-0'
                   )}
                 >
                   My
@@ -64,11 +63,15 @@ const Navbar = () => {
               </Link>
             </NavigationMenuItem>
 
-            <NavigationMenuItem className={cn(hidden && 'opacity-10')}>
+            <NavigationMenuItem
+              className={cn(' transition', hidden && 'opacity-0')}
+            >
               <AuthButton />
             </NavigationMenuItem>
 
-            <NavigationMenuItem className={cn(hidden && 'opacity-10')}>
+            <NavigationMenuItem
+              className={cn(' transition', hidden && 'opacity-0')}
+            >
               <ThemeToggle />
             </NavigationMenuItem>
           </NavigationMenuList>
