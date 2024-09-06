@@ -80,7 +80,7 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
         </AlertDialogContent>
       </AlertDialog>
       <Link
-        replace
+        // replace
         onClick={e => {
           if (itemsToMove[0]?.id === folder.id) e.preventDefault()
         }}
