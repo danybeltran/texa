@@ -354,58 +354,69 @@ export default function DocumentView() {
           <div className='w-full relative prose max-w-3xl ck-content mb-48 print:mb-0'>
             <style>
               {`
-
-                      ${
-                        theme === 'dark'
-                          ? `
-                        .ck-editor .ck-content {
+                ${
+                  theme === 'dark'
+                    ? `
+                      .dark .ck-editor .ck-content {
                         background-color: #161616 !important;
-                        color: #ececec !important;
+                        color: #ececec;
                       }
 
-                      .ck-editor .ck-content *{
-                        color: #d3d3d3 !important;
+                      .dark .ck-editor .ck-content *{
+                        color: #d3d3d3;
                       }
 
+                      .dark .ck-editor .ck-editor__top * {
+                        background-color: #161616 !important;
+                        color: #c7c7c7;
+                      }
+                        
+                      @media print {
+                         .ck-editor .ck-content {
+                        background-color: #161616 !important;
+                        color: black !important;
+                      }
+                        .ck-editor .ck-content *{
+                          color: black !important;
+                        }
                       .ck-editor .ck-editor__top * {
                         background-color: #161616 !important;
-                        color: #c7c7c7 !important;
-                        // border: none;
-                      }  
+                        color: black !important;
+                      }
+                      }
                       `
-                          : ''
-                      }
-                    
-                    .ck-toolbar {
-                      border: none !important;
-                      transition: 200ms !important;
-                      opacity: ${hidden ? 0 : 1};
-                    }
+                    : ''
+                }
 
-                    .ck-toolbar__separator {
-                      display: none !important;
-                    }
-                    
-                    .ck-editor__top {
-                        // display: none;
-                        position: sticky !important;
-                        border: none !important;
-                        z-index: 50;
-                        // border-bottom: 1px solid lightgray !important;
-                        top: 20px !important;
-                      }
+                .ck-toolbar {
+                  border: none !important;
+                  transition: 200ms !important;
+                  opacity: ${hidden ? 0 : 1};
+                }
 
-                      
-                      .ck-content {
-                        border: none !important;
-                        min-height: 50vh;
-                        padding-bottom: 32px !important;
-                      }
+                .ck-toolbar__separator {
+                  display: none !important;
+                }
 
-                      .ck-content:focus {
-                        box-shadow: none !important;
-                      }
-                    `}
+                .ck-editor__top {
+                  // display: none;
+                  position: sticky !important;
+                  border: none !important;
+                  z-index: 50;
+                  // border-bottom: 1px solid lightgray !important;
+                  top: 20px !important;
+                }
+
+                .ck-content {
+                  border: none !important;
+                  min-height: 50vh;
+                  padding-bottom: 32px !important;
+                }
+
+                .ck-content:focus {
+                  box-shadow: none !important;
+                }
+              `}
             </style>
             {doc.locked && (
               <style>
@@ -416,36 +427,48 @@ export default function DocumentView() {
                 `}
               </style>
             )}
-            <CKEditor
-              onReady={editor => {
-                editor.focus()
-              }}
-              disabled={doc.locked}
-              editor={ClassicEditor}
-              data={doc?.content}
-              config={{
-                extraPlugins: [MyCustomUploadAdapterPlugin],
-                ui: {
-                  poweredBy: {
-                    position: 'inside',
-                    side: 'left',
-                    label: ''
-                  } as any
-                },
 
-                placeholder: 'Start writing...'
-              }}
-              onChange={(_, editor) => {
-                const textData = editor.getData()
+            <div className='mx-auto self-center mb-32 md-editor-preview w-full border-neutral-500 rounded-lg p-3 print:py-0 prose max-w-3xl text-black'>
+              {hidden && (
+                <style>
+                  {`
+                    .ck-sticky-panel__content {
+                      opacity: 0 !important;
+                    }
+                    `}
+                </style>
+              )}
+              <CKEditor
+                onReady={editor => {
+                  editor.focus()
+                }}
+                disabled={doc.locked}
+                editor={ClassicEditor}
+                data={doc?.content}
+                config={{
+                  extraPlugins: [MyCustomUploadAdapterPlugin],
+                  ui: {
+                    poweredBy: {
+                      position: 'inside',
+                      side: 'left',
+                      label: ''
+                    } as any
+                  },
 
-                setNavHidden(true)
+                  placeholder: 'Start writing...'
+                }}
+                onChange={(_, editor) => {
+                  const textData = editor.getData()
 
-                setDoc(prevDoc => ({
-                  ...prevDoc,
-                  content: textData
-                }))
-              }}
-            />
+                  setNavHidden(true)
+
+                  setDoc(prevDoc => ({
+                    ...prevDoc,
+                    content: textData
+                  }))
+                }}
+              />
+            </div>
           </div>
         )}
         {doc.code && (

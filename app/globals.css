@@ -66,13 +66,30 @@
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
 
-    .md-editor-preview * {
+    .md-editor-preview {
       color: #cfcfcf !important;
     }
 
-    #content-editor * {
+    #content-editor {
       color: #cfcfcf !important;
     }
+  }
+
+  @media print {
+    .md-editor-preview * {
+      color: black !important;
+    }
+
+    #content-editor * {
+      color: black !important;
+    }
+  }
+
+  .ck-content p,
+  ul,
+  ol {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
   }
 }
 
