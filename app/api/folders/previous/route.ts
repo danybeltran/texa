@@ -32,7 +32,7 @@ export async function GET(req: Request) {
     {
       folderSegments: folderSegments.reverse(),
       folder: firstFolder
-    } || {},
+    },
     {
       status: 200
     }
