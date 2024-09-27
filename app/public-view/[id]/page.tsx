@@ -14,6 +14,7 @@ import PublicCodePreview from '@/components/PublicCodePreview'
 import PublicPrintButton from '@/components/CodePreviewPrint'
 import PublicMdContent from '@/components/PublicMdContent'
 import { BrowserOnly, ClientOnly } from 'react-kuh'
+import { SSRSuspense } from 'http-react'
 
 export const metadata = {
   title: ''
@@ -97,7 +98,9 @@ export default async function DocumentPage({
               <PublicPrintButton />
             </div>
             <div className='md-editor-preview mx-auto w-full max-w-3xl border-neutral-500 rounded-lg p-3 print:py-0 prose  text-black mb-48 print:mb-0'>
-              <PublicViewContent content={doc.content!} />
+              <SSRSuspense fallback={<p>Loading content...</p>}>
+                <PublicViewContent content={doc.content!} />
+              </SSRSuspense>
             </div>
           </div>
         )}
