@@ -24,8 +24,8 @@ export default async function DocumentPage({
   params: $params,
   searchParams: $searchParams
 }: {
-  params: { id: string }
-  searchParams: { sourceCode: 'true' }
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ sourceCode: 'true' }>
 }) {
   headers()
 
