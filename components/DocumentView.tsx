@@ -55,12 +55,10 @@ export default function DocumentView() {
   const {
     data: doc,
     loading: loadingDoc,
-    mutate: setDoc
+    mutate: setDoc,
+    refresh
   } = useFetch<Doc>('/documents', {
-    suspense: true,
-    id: {
-      doc: params
-    },
+    id: `doc-${params.id}`,
     onResolve() {},
     query: {
       id: params.id
@@ -148,9 +146,6 @@ export default function DocumentView() {
 
   return (
     <main className='w-full relative'>
-      <head>
-        <title>{doc.name}</title>
-      </head>
       <div
         className={cn(
           'flex items-center justify-between print:hidden transition',
