@@ -204,6 +204,11 @@ iframe {
   line-height: 92%x !important;
 }
 
+.dark #texa-code-preview *,
+.dark .md-editor-preview * {
+  color: white !important;
+}
+
 p:has(.image-inline) {
   text-align: center;
 }

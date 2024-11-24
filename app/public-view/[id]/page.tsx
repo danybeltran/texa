@@ -21,13 +21,16 @@ export const metadata = {
 }
 
 export default async function DocumentPage({
-  params,
-  searchParams
+  params: $params,
+  searchParams: $searchParams
 }: {
   params: { id: string }
   searchParams: { sourceCode: 'true' }
 }) {
   headers()
+
+  const params = await $params
+  const searchParams = await $searchParams
 
   const [doc] = await prisma.doc.findMany({
     where: {

@@ -483,6 +483,13 @@ export default function DocumentView() {
               'print:block print:mx-auto print:self-center md-editor-preview print:w-full print:border-neutral-500 rprint:ounded-lg print:p-3 print:py-0 print:prose print:max-w-3xl print:text-black'
             )}
           >
+            <style>
+              {`
+                .dark #texa-code-preview * {
+                  color: white;
+                }
+              `}
+            </style>
             {renderedPreview}
           </div>
         )}
