@@ -7,6 +7,7 @@ const markdown = new MD({
   html: true,
   breaks: true
 })
+  .use(require('@traptitech/markdown-it-katex'))
   .use(require('markdown-it-math'))
   .use(markdownItLatex)
   .use(require('@agoose77/markdown-it-mermaid').default)

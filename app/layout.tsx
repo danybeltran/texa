@@ -1,4 +1,5 @@
 import './globals.css'
+import 'katex/dist/katex.min.css'
 import { AtomicState } from 'atomic-state'
 import { FetchConfig } from 'http-react'
 import { Inter } from 'next/font/google'

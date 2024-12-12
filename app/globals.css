@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/katex@0.16.15/dist/katex.min.css');
 
 @layer base {
   :root {
