@@ -15,17 +15,32 @@ export default function PublicViewContent({ content }: { content: string }) {
               ? `
                         .ck-editor .ck-content {
                         background-color: #161616 !important;
-                        color: #cfcfcf !important;
+                        color: white !important;
                       }
 
                       .ck-editor .ck-content *{
-                        color: #cfcfcf !important;
+                        color: white !important;
                       }
 
                       .ck-editor .ck-editor__top * {
                         background-color: #161616  !important;
-                        color: #cfcfcf !important;
-                      }  
+                        color: white !important;
+                      }
+                        
+
+                      @media print {
+                        .ck-editor .ck-content {
+                        background-color: #161616 !important;
+                        color: black !important;
+                      }
+                        .ck-editor .ck-content *{
+                          color: black !important;
+                        }
+                      .ck-editor .ck-editor__top * {
+                        background-color: #161616 !important;
+                        color: black !important;
+                      }
+          }
                         `
               : ''
           }
@@ -45,7 +60,12 @@ export default function PublicViewContent({ content }: { content: string }) {
           }
         `}
       </style>
-      <CKEditor disabled editor={ClassicEditor} data={content} />
+      <CKEditor
+        //@ts-ignore
+        disabled
+        editor={ClassicEditor}
+        data={content}
+      />
     </>
   )
 }

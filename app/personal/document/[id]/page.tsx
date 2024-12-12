@@ -1,9 +1,8 @@
 import 'markdown-it-latex/dist/index.css'
 
 import DocumentView from '@/components/DocumentView'
-import { BrowserOnly } from 'react-kuh'
 import { prisma } from '@/server'
-import { FetchConfig, serialize } from 'http-react'
+import { FetchConfig } from 'http-react'
 
 export default async function DocumentPage({ params: $params }) {
   const params = await $params

@@ -437,6 +437,7 @@ export default function DocumentView() {
                 onReady={editor => {
                   editor.focus()
                 }}
+                // @ts-ignore
                 disabled={doc.locked}
                 editor={ClassicEditor}
                 data={doc?.content}

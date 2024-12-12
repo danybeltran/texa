@@ -66,13 +66,13 @@
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
 
-    .md-editor-preview {
+    /* .md-editor-preview {
       color: #cfcfcf !important;
     }
 
     #content-editor {
       color: #cfcfcf !important;
-    }
+    } */
   }
 
   @media print {
@@ -209,6 +209,13 @@ iframe {
   color: white !important;
 }
 
+@media print {
+  .dark #texa-code-preview *,
+  .dark .md-editor-preview * {
+    color: black !important;
+  }
+}
+
 p:has(.image-inline) {
   text-align: center;
 }
@@ -216,7 +223,7 @@ p:has(.image-inline) {
 img {
   margin-left: auto;
   margin-right: auto;
-  @apply shadow-lg;
+  /* @apply shadow-lg; */
 }
 
 @media print {
