@@ -14,6 +14,7 @@ import AuthButton from './AuthButton'
 import { Button } from './ui/button'
 import { FaRegEye } from 'react-icons/fa6'
 import { useNavHidden, setNavHidden } from '@/states'
+import { BrowserOnly } from 'react-kuh'
 
 const Navbar = () => {
   const hidden = useNavHidden()
@@ -72,7 +73,9 @@ const Navbar = () => {
             <NavigationMenuItem
               className={cn(' transition', hidden && 'opacity-0')}
             >
-              <ThemeToggle />
+              <BrowserOnly>
+                <ThemeToggle />
+              </BrowserOnly>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>

@@ -15,9 +15,40 @@ import PublicPrintButton from '@/components/CodePreviewPrint'
 import PublicMdContent from '@/components/PublicMdContent'
 import { BrowserOnly, ClientOnly } from 'react-kuh'
 import { SSRSuspense } from 'http-react'
+import { Metadata } from 'next'
+import SeoContent from '@/components/seo'
 
-export const metadata = {
-  title: ''
+export async function generateMetadata({
+  params: $params,
+  searchParams: $searchParams
+}: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ sourceCode: 'true' }>
+}) {
+  const params = await $params
+
+  const [doc] = await prisma.doc.findMany({
+    where: {
+      publicId: params.id
+    }
+  })
+
+  let docName = doc.name || 'Unnamed document'
+  let docDescription = doc.description || 'No description'
+
+  return {
+    title: docName,
+    openGraph: {
+      title: docName,
+      description: docDescription
+    },
+    twitter: {
+      title: docName,
+      description: docDescription,
+      card: 'summary_large_image'
+    },
+    description: docDescription
+  } as Metadata
 }
 
 export default async function DocumentPage({
@@ -45,24 +76,10 @@ export default async function DocumentPage({
       </div>
     )
 
-  let docName = doc.name || 'Unnamed document'
-  let docDescription = doc.description || 'No description'
-
   const showSource = searchParams.sourceCode === 'true'
 
   return (
     <main className='w-full'>
-      <Fragment>
-        <title>{docName}</title>
-        <meta property='og:title' content={docName} />
-        <meta name='twitter:title' content={docName} />
-
-        <meta name='description' content={docDescription} />
-        <meta name='og:description' content={docDescription} />
-        <meta name='twitter:description' content={docDescription} />
-
-        <meta name='twitter:card' content='summary_large_image' />
-      </Fragment>
       <div
         className={'flex border-white w-full gap-x-4 print:py-0 justify-center'}
       >
@@ -101,6 +118,7 @@ export default async function DocumentPage({
               <PublicPrintButton />
             </div>
             <div className='md-editor-preview mx-auto w-full max-w-3xl border-neutral-500 rounded-lg p-3 print:py-0 prose  text-black mb-48 print:mb-0'>
+              <SeoContent content={doc.content!} />
               <SSRSuspense fallback={<p>Loading content...</p>}>
                 <PublicViewContent content={doc.content!} />
               </SSRSuspense>

@@ -7,6 +7,13 @@ import { FaFolder, FaMarkdown } from 'react-icons/fa6'
 import { MdMoneyOffCsred } from 'react-icons/md'
 import { FaCoffee, FaShareAlt } from 'react-icons/fa'
 
+export async function generateMetadata() {
+  return {
+    title: 'Home',
+    description: 'Texa is an all-in-one rich content, Markdown and KaTeX editor'
+  }
+}
+
 export default function Home() {
   return (
     <>

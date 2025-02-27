@@ -11,11 +11,6 @@ import AuthProvider from '@/components/AuthProvider'
 import { Toaster } from '@/components/ui/toaster'
 import Mouser from '@/components/mouser'
 
-export const metadata: Metadata = {
-  title: 'Home',
-  description: 'Texa is an all-in-one rich content, Markdown and KaTeX editor'
-}
-
 const montserratFont = Inter({
   display: 'swap',
   subsets: ['latin', 'latin-ext'],

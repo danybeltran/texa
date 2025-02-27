@@ -2,6 +2,7 @@
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { useTheme } from 'next-themes'
+import { renderMD } from '@/lib/md'
 
 export default function PublicViewContent({ content }: { content: string }) {
   const { theme } = useTheme()
@@ -60,6 +61,7 @@ export default function PublicViewContent({ content }: { content: string }) {
           }
         `}
       </style>
+
       <CKEditor
         //@ts-ignore
         disabled
