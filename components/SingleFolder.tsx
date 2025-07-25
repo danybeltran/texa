@@ -25,10 +25,10 @@ import {
 import { Button } from './ui/button'
 import { useAtom } from 'atomic-state'
 import { itemsToMoveState } from '@/states'
-import { useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 
 export default function SingleFolder({ folder }: { folder: Folder }) {
-  const router = useRouter()
+  const { folderId } = useParams()
 
   const {
     data: _,
@@ -42,7 +42,7 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
       delete: folder
     },
     onResolve() {
-      revalidate(['GET /folders', 'parent'])
+      revalidate([`subfolders-${folderId}`, 'parent'])
     }
   })
 
@@ -86,7 +86,7 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
         }}
         href={'/personal/' + folder.id}
         className={cn(
-          'h-36 select-none',
+          'h-fit select-none',
           itemsToMove[0]?.id === folder.id && 'cursor-not-allowed opacity-85'
         )}
       >
@@ -101,7 +101,7 @@ export default function SingleFolder({ folder }: { folder: Folder }) {
                 color: folder.color
               }}
             />
-            <p className='text-sm w-32 whitespace-pre-line'>
+            <p className='text-sm w-32 whitespace-pre-line line-clamp-4'>
               {folder.name.trim() || 'Unnamed folder' || 'Unnamed folder'}
             </p>
           </ContextMenuTrigger>

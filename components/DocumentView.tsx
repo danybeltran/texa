@@ -1,6 +1,7 @@
 'use client'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
+import MonacoHtmlPlugin from 'monaco-html'
 import Editor from '@monaco-editor/react'
 import { Doc } from '@prisma/client'
 import copy from 'copy-to-clipboard'
@@ -469,7 +470,6 @@ export default function DocumentView() {
         )}
         {doc.code && (
           <div
-            id='texa-code-preview'
             className={cn(
               'md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 print:py-0 prose text-black',
               doc.locked && 'w-full',
@@ -479,13 +479,6 @@ export default function DocumentView() {
               'print:block print:mx-auto print:self-center md-editor-preview print:w-full print:border-neutral-500 rprint:ounded-lg print:p-3 print:py-0 print:prose print:max-w-3xl print:text-black'
             )}
           >
-            <style>
-              {`
-                .dark #texa-code-preview * {
-                  color: white;
-                }
-              `}
-            </style>
             {renderedPreview}
           </div>
         )}

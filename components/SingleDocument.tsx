@@ -27,8 +27,11 @@ import { FaFileCode } from 'react-icons/fa6'
 
 import { useAtom } from 'atomic-state'
 import { itemsToMoveState } from '@/states'
+import { useParams } from 'next/navigation'
 
 export default function SingleDocument({ doc }: { doc: Doc }) {
+  const { folderId } = useParams()
+
   const {
     data: _,
     reFetch: deleteFile,
@@ -41,7 +44,7 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
       delete: doc
     },
     onResolve() {
-      revalidate('GET /documents')
+      revalidate(`folder-documents-${folderId}`)
     }
   })
 
@@ -80,7 +83,7 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
         onClick={e => {
           if (itemsToMove.length > 0) e.preventDefault()
         }}
-        className='h-36 select-none'
+        className='select-none h-fit'
       >
         <ContextMenu>
           <ContextMenuTrigger className='h-36 text-center'>
@@ -107,7 +110,7 @@ export default function SingleDocument({ doc }: { doc: Doc }) {
                 }}
               />
             )}
-            <p className='text-sm w-32 whitespace-pre-line'>
+            <p className='text-sm w-32 whitespace-pre-line line-clamp-3'>
               {doc.name?.trim() || 'Unnamed document'}
             </p>
           </ContextMenuTrigger>

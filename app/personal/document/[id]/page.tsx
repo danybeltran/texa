@@ -2,7 +2,7 @@ import 'markdown-it-latex/dist/index.css'
 
 import DocumentView from '@/components/DocumentView'
 import { prisma } from '@/server'
-import { FetchConfig } from 'http-react'
+import { FetchConfig, SSRSuspense } from 'http-react'
 
 export default async function DocumentPage({ params: $params }) {
   const params = await $params
@@ -20,7 +20,9 @@ export default async function DocumentPage({ params: $params }) {
         [`doc-${id}`]: doc
       }}
     >
-      <DocumentView />
+      <SSRSuspense>
+        <DocumentView />
+      </SSRSuspense>
     </FetchConfig>
   )
 }

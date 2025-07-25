@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
-import useFetch from 'http-react'
+import useFetch, { SSRSuspense } from 'http-react'
 import { BrowserOnly } from 'react-kuh'
 import { storage } from 'atomic-state'
 import { Doc, Folder } from '@prisma/client'
@@ -22,7 +22,6 @@ export default function NormalFolders() {
     folderSegments: Folder[]
     folder: Folder
   }>('/folders/previous', {
-    suspense: true,
     id: `folder-${params.folderId}`,
     revalidateOnMount: false,
     cacheProvider: storage,
@@ -30,14 +29,21 @@ export default function NormalFolders() {
       folderId: params.folderId
     },
     default: {
-      folder: {} as any,
+      folder: {
+        parentFolderId: '',
+        name: '',
+        color: '',
+        created: new Date(),
+        id: '',
+        owner: ''
+      },
       folderSegments: []
     }
   })
 
   const { data: folders } = useFetch<Folder[]>('/folders', {
     default: [],
-    suspense: true,
+    id: `subfolders-${params.folderId}`,
     cacheProvider: storage,
     query: {
       parentFolderId: params.folderId
@@ -46,7 +52,7 @@ export default function NormalFolders() {
 
   const { data: files } = useFetch<Doc[]>('/documents', {
     default: [],
-    suspense: true,
+    id: `folder-documents-${params.folderId}`,
     cacheProvider: storage,
     query: {
       parentFolderId: params.folderId
@@ -81,7 +87,7 @@ export default function NormalFolders() {
           </div>
         )}
       </div>
-      <div className='pt-2 gap-x-2 flex'>
+      <div className='pt-2 gap-x-2 flex py-2'>
         <Link
           replace
           href={
@@ -102,16 +108,18 @@ export default function NormalFolders() {
           <p>Folder not found</p>
         </div>
       ) : (
-        <div className='flex flex-wrap items-center gap-8'>
-          <CreateForm folder={parentFolder.folder} />
-          <BrowserOnly>
-            {folders.map(folder => (
-              <SingleFolder folder={folder} key={'folder' + folder.id} />
-            ))}
-            {files.map(doc => (
-              <SingleDocument doc={doc} key={'document' + doc.id} />
-            ))}
-          </BrowserOnly>
+        <div className='h-[78vh] overflow-y-auto border'>
+          <div className='flex flex-wrap gap-10 '>
+            <CreateForm folder={parentFolder.folder} />
+            <SSRSuspense>
+              {folders.map(folder => (
+                <SingleFolder folder={folder} key={'folder' + folder.id} />
+              ))}
+              {files.map(doc => (
+                <SingleDocument doc={doc} key={'document' + doc.id} />
+              ))}
+            </SSRSuspense>
+          </div>
         </div>
       )}
     </>

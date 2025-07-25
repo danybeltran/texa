@@ -66,23 +66,15 @@
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
+  }
 
-    /* .md-editor-preview {
-      color: #cfcfcf !important;
-    }
-
-    #content-editor {
-      color: #cfcfcf !important;
-    } */
+  .dark .md-editor-preview *:not(pre):not(code):not(pre *) {
+    color: white;
   }
 
   @media print {
-    .md-editor-preview * {
-      color: black !important;
-    }
-
-    #content-editor * {
-      color: black !important;
+    .md-editor-preview *:not(pre):not(code):not(pre *) {
+      color: black;
     }
   }
 
@@ -95,7 +87,8 @@
 }
 
 @layer base {
-  * {
+  /* Apply border to all elements except <pre> tags, <code> tags, and anything inside <pre> */
+  *:not(pre):not(code):not(pre *) {
     @apply border-border;
   }
   body {
@@ -141,7 +134,7 @@ body::-webkit-scrollbar-track,
 
 /* Handle */
 #content-editor-toolbar::-webkit-scrollbar-thumb,
-.md-editor-preview::-webkit-scrollbar-thumb {
+.md-editor-preview::-webkit-editor-scrollbar-thumb {
   background: rgb(64, 64, 64);
   cursor: pointer;
 }
@@ -205,15 +198,13 @@ iframe {
   line-height: 92%x !important;
 }
 
-.dark #texa-code-preview *,
-.dark .md-editor-preview * {
-  color: white !important;
+.dark .md-editor-preview *:not(pre):not(code):not(pre *) {
+  /* color: white !important; */
 }
 
 @media print {
-  .dark #texa-code-preview *,
-  .dark .md-editor-preview * {
-    color: black !important;
+  .dark .md-editor-preview *:not(pre):not(code):not(pre *) {
+    /* color: black !important; */
   }
 }
 

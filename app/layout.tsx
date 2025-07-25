@@ -10,6 +10,7 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import AuthProvider from '@/components/AuthProvider'
 import { Toaster } from '@/components/ui/toaster'
 import Mouser from '@/components/mouser'
+import 'highlight.js/styles/github-dark.css'
 
 const montserratFont = Inter({
   display: 'swap',

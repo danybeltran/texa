@@ -41,13 +41,15 @@ export default function UpdateFolderForm({
     setOpen(false)
   }, [folder])
 
+  const { folderId } = useParams()
+
   const { reFetch: updateFolder, data: _ } = useFetch('/folders', {
     method: 'PUT',
     body: folderData,
     id: { folderData },
     auto: false,
     onResolve() {
-      revalidate(['GET /folders', 'parent', 'GET /folders/previous'])
+      revalidate([`folder-${folderId}`, `subfolders-${folderId}`, 'parent'])
       setOpen(false)
     }
   })

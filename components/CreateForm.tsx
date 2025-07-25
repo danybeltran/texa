@@ -35,7 +35,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { availableColors } from '@/lib/utils'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { atom, useAtom } from 'atomic-state'
 import Link from 'next/link'
 
@@ -49,6 +49,8 @@ export default function CreateForm({ folder }: { folder: Folder }) {
   const [isCreatingFolder, setIsCreatingFolder] = useState(false)
   const [newFolderName, setNewFolderName] = useState('')
   const [newFolderColor, setNewFolderColor] = useState(availableColors[0].value)
+
+  const { folderId } = useParams()
 
   const router = useRouter()
 
@@ -67,7 +69,7 @@ export default function CreateForm({ folder }: { folder: Folder }) {
     onResolve(newFolder) {
       setIsCreatingFolder(false)
       setNewFolderName('')
-      revalidate(newFolder.parentFolderId ? 'GET /folders' : 'parent')
+      revalidate(newFolder.parentFolderId ? `subfolders-${folderId}` : 'parent')
     }
   })
 
@@ -95,7 +97,7 @@ export default function CreateForm({ folder }: { folder: Folder }) {
 
       revalidate([
         newDoc.parentFolderId ? { folderId: newDoc.parentFolderId } : 'parent',
-        'GET /documents'
+        `folder-documents-${folderId}`
       ])
     }
   })

@@ -10,11 +10,12 @@ export default function PersonalPage() {
         <h2>Home</h2>
       </div>
       <MoveHandler />
-      <div className='flex flex-wrap py-8 pt-11 gap-8'>
-        <SSRSuspense>
+      <div className='h-14'></div>
+      <div className='h-[78vh] overflow-y-auto'>
+        <div className='flex flex-wrap gap-10 '>
           <CreateForm folder={{} as any} />
           <RootFolders />
-        </SSRSuspense>
+        </div>
       </div>
     </main>
   )

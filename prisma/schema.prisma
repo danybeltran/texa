@@ -21,6 +21,7 @@ model Doc {
   name           String? @default("Unnamed document")
   description    String? @default("")
   content        String? @default("")
+  font           String? @default("inter")
   owner          String
   parentFolderId String?
   publicId       String
