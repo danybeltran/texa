@@ -108,7 +108,7 @@ export default function NormalFolders() {
           <p>Folder not found</p>
         </div>
       ) : (
-        <div className='h-[78vh] overflow-y-auto border'>
+        <div className='h-[78vh] overflow-y-auto'>
           <div className='flex flex-wrap gap-10 '>
             <CreateForm folder={parentFolder.folder} />
             <SSRSuspense>
