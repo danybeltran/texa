@@ -68,12 +68,27 @@
     --ring: 0 0% 83.1%;
   }
 
+  /* This rule makes sure the content color is white in dark mode for md-editor-preview elements that are not pre, code, or inside pre */
   .dark .md-editor-preview *:not(pre):not(code):not(pre *) {
     color: white;
   }
 
+  /* New rule for inline code to inherit color */
+  .md-editor-preview code:not(pre code) {
+    color: inherit;
+  }
+
+  /* Ensure background for inline code is transparent */
+  .md-editor-preview code:not(pre code) {
+    background-color: transparent;
+  }
+
   @media print {
     .md-editor-preview *:not(pre):not(code):not(pre *) {
+      color: black;
+    }
+    /* Ensure inline code is black when printing */
+    .md-editor-preview code:not(pre code) {
       color: black;
     }
   }
@@ -229,4 +244,8 @@ img {
   .code-page-break {
     position: relative;
   }
+}
+
+code {
+  font-family: 'Roboto mono', monospace !important;
 }

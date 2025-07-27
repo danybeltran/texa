@@ -107,9 +107,7 @@ export default async function DocumentPage({
             {searchParams.sourceCode === 'true' ? (
               <PublicCodePreview content={doc.content!} />
             ) : (
-              <ClientOnly>
-                <PublicMdContent content={doc?.content} />
-              </ClientOnly>
+              <PublicMdContent content={doc?.content} />
             )}
           </div>
         ) : (

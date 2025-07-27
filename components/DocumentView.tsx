@@ -8,7 +8,7 @@ import copy from 'copy-to-clipboard'
 import useFetch, { useDebounceFetch } from 'http-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { CiCircleInfo } from 'react-icons/ci'
 import { FaExternalLinkAlt } from 'react-icons/fa'
@@ -43,16 +43,13 @@ import { setNavHidden, useNavHidden } from '@/states'
 
 function calcHeight(value: string) {
   let numberOfLineBreaks = (value.match(/\n/g) || []).length
-  // min-height + lines x line-height + padding + border
   let newHeight = 20 + numberOfLineBreaks * 20 + 12 + 2
   return newHeight
 }
 
 export default function DocumentView() {
   const params: { id: string } = useParams()
-
   const hidden = useNavHidden()
-
   const {
     data: doc,
     loading: loadingDoc,
@@ -60,41 +57,29 @@ export default function DocumentView() {
     refresh
   } = useFetch<Doc>('/documents', {
     id: `doc-${params.id}`,
-    onResolve() {},
     query: {
       id: params.id
     }
   })
 
-  const {
-    reFetch: saveDoc,
-    data: __,
-    loading: savingDoc
-  } = useDebounceFetch('/documents', {
-    method: 'PUT',
-    auto: !loadingDoc && Boolean(doc),
-    debounce: '600 ms',
-    body: doc
-  })
-
-  useEffect(() => {
-    const saveDocumentListener = (e: KeyboardEvent) => {
-      if (e.ctrlKey) {
-        if (e.key === 'S' || e.key === 's') {
-          e.preventDefault()
-          if (!doc?.locked) {
-            saveDoc()
-          }
-        }
-      }
+  const { reFetch: saveDoc, loading: savingDoc } = useDebounceFetch(
+    '/documents',
+    {
+      method: 'PUT',
+      auto: !loadingDoc && Boolean(doc),
+      debounce: '600 ms',
+      body: doc
     }
+  )
 
-    document.addEventListener('keydown', saveDocumentListener)
+  const [loaded, setLoaded] = useState(false)
+  const [showMetadata, setShowMetadata] = useState(false)
+  const { toast } = useToast()
+  const { theme } = useTheme()
 
-    return () => {
-      document.removeEventListener('keydown', saveDocumentListener)
-    }
-  }, [doc?.locked])
+  const editorRef = useRef<HTMLDivElement>(null)
+  const previewRef = useRef<HTMLDivElement>(null)
+  const monacoInstanceRef = useRef<any>(null)
 
   const renderedPreview = useMemo(
     () => (
@@ -105,35 +90,86 @@ export default function DocumentView() {
             ? renderMD(doc?.content)
             : '<p class="text-neutral-500 select-none print:hidden">Preview will appear here</p>'
         }}
-      ></div>
+      />
     ),
     [doc?.content]
   )
 
-  const [loaded, setLoaded] = useState(false)
-
-  const [showMetadata, setShowMetadata] = useState(false)
-
   useEffect(() => {
-    if (!loaded) {
-      if (doc) {
-        if (!doc.code) {
-          setShowMetadata(false)
-          const element = document.getElementById('content-editor')
-          if (element) {
-            if (doc?.content) {
-              element.innerHTML = doc.content!
-            }
-          }
-          setLoaded(true)
-        }
+    const saveDocumentListener = (e: KeyboardEvent) => {
+      if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+        e.preventDefault()
+        if (!doc?.locked) saveDoc()
       }
     }
-  }, [loaded, doc?.content])
+    document.addEventListener('keydown', saveDocumentListener)
+    return () => {
+      document.removeEventListener('keydown', saveDocumentListener)
+    }
+  }, [doc?.locked])
 
-  const { toast } = useToast()
+  useEffect(() => {
+    if (!loaded && doc) {
+      if (!doc.code) {
+        setShowMetadata(false)
+        setLoaded(true)
+      }
+    }
+  }, [loaded, doc?.content, doc?.code])
 
-  const { theme } = useTheme()
+  useEffect(() => {
+    if (doc?.content) {
+      const codeBlocks = document.querySelectorAll('pre')
+      codeBlocks.forEach(pre => {
+        if (!pre.querySelector('.copy-button')) {
+          const button = document.createElement('button')
+          button.innerText = 'Copy'
+          button.className =
+            'copy-button absolute top-2 right-2 p-1 text-xs bg-gray-700 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity'
+
+          const wrapper = document.createElement('div')
+          wrapper.style.position = 'relative'
+          wrapper.className = 'group'
+          pre.parentNode?.insertBefore(wrapper, pre)
+          wrapper.appendChild(pre)
+          wrapper.appendChild(button)
+
+          button.onclick = () => {
+            const code = pre.querySelector('code')?.innerText || pre.innerText
+            copy(code)
+            toast({
+              title: 'Copied!',
+              description: 'Code snippet copied to clipboard.'
+            })
+            button.innerText = 'Copied!'
+            setTimeout(() => {
+              button.innerText = 'Copy'
+            }, 2000)
+          }
+        }
+      })
+    }
+  }, [doc?.content, toast])
+
+  // ✅ Scroll sync logic
+  useEffect(() => {
+    if (!doc?.code && editorRef.current && previewRef.current) {
+      const ckContent = editorRef.current.querySelector('.ck-content')
+      if (ckContent) {
+        const onScroll = () => {
+          const ratio =
+            ckContent.scrollTop /
+            (ckContent.scrollHeight - ckContent.clientHeight)
+          previewRef.current!.scrollTop =
+            ratio *
+            (previewRef.current?.scrollHeight! -
+              previewRef.current?.clientHeight!)
+        }
+        ckContent.addEventListener('scroll', onScroll)
+        return () => ckContent.removeEventListener('scroll', onScroll)
+      }
+    }
+  }, [doc?.code])
 
   if (!doc)
     return (
@@ -149,7 +185,7 @@ export default function DocumentView() {
     <main className='w-full relative'>
       <div
         className={cn(
-          'flex items-center justify-between print:hidden transition',
+          'flex items-center justify-between print:hidden transition max-w-[86rem] fixed z-30 top-14 left-0 right-0 mx-auto p-3 sm:px-4 bgback',
           hidden && 'opacity-0'
         )}
       >
@@ -173,53 +209,42 @@ export default function DocumentView() {
           )}
           <Link href={'/public-view/' + doc.publicId} target='_blank'>
             <Button variant='secondary' className='gap-x-2'>
-              <FaExternalLinkAlt />{' '}
+              <FaExternalLinkAlt />
             </Button>
           </Link>
           <Button
             className='gap-x-2'
             variant='secondary'
-            onClick={() => {
-              setDoc(prevDoc => ({
-                ...prevDoc,
-                locked: !prevDoc.locked
-              }))
-            }}
+            onClick={() =>
+              setDoc(prevDoc => ({ ...prevDoc, locked: !prevDoc.locked }))
+            }
           >
-            {doc.locked ? <FaLock /> : <FaLockOpen />}{' '}
+            {doc.locked ? <FaLock /> : <FaLockOpen />}
           </Button>
           {doc.code && (
             <Button
               className='gap-x-2'
               variant='secondary'
-              onClick={() => {
-                setDoc(prev => ({
-                  ...prev,
-                  editorOnly: !prev.editorOnly
-                }))
-              }}
+              onClick={() =>
+                setDoc(prev => ({ ...prev, editorOnly: !prev.editorOnly }))
+              }
             >
-              {doc.editorOnly ? <FaRegEyeSlash /> : <FaRegEye />}{' '}
+              {doc.editorOnly ? <FaRegEyeSlash /> : <FaRegEye />}
             </Button>
           )}
           <Button
             className='gap-x-2'
             variant='secondary'
-            onClick={() => {
-              print()
-            }}
+            onClick={() => print()}
           >
             <MdPrint className='text-lg' />
           </Button>
-
           <Button
-            onClick={() => {
-              setShowMetadata(m => !m)
-            }}
+            onClick={() => setShowMetadata(m => !m)}
             className='gap-x-2'
             variant='secondary'
           >
-            <CiCircleInfo className='text-lg' />{' '}
+            <CiCircleInfo className='text-lg' />
           </Button>
         </div>
       </div>
@@ -235,14 +260,10 @@ export default function DocumentView() {
               <p className='py-2'>Name</p>
               <Input
                 value={doc?.name!}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    setShowMetadata(false)
-                  }
-                }}
-                onChange={e => {
-                  setDoc(prevDoc => ({ ...prevDoc, name: e.target.value }))
-                }}
+                onKeyDown={e => e.key === 'Enter' && setShowMetadata(false)}
+                onChange={e =>
+                  setDoc(prev => ({ ...prev, name: e.target.value }))
+                }
               />
             </Label>
             <br />
@@ -251,27 +272,18 @@ export default function DocumentView() {
               <Textarea
                 value={doc.description || ''}
                 placeholder='Document description'
-                onFocus={e => {
-                  e.currentTarget.style.height =
-                    calcHeight(e.target.value) + 3 + 'px'
-                }}
+                onFocus={e =>
+                  (e.currentTarget.style.height =
+                    calcHeight(e.target.value) + 3 + 'px')
+                }
                 onKeyUp={e => {
-                  if (e.ctrlKey) {
-                    if (e.key === 'Enter') {
-                      setShowMetadata(false)
-                    }
-                  }
+                  if (e.ctrlKey && e.key === 'Enter') setShowMetadata(false)
                 }}
                 onChange={e => {
                   e.currentTarget.style.height =
                     calcHeight(e.target.value) + 3 + 'px'
-
-                  setDoc(prevDoc => ({
-                    ...prevDoc,
-                    description: e.target.value
-                  }))
+                  setDoc(prev => ({ ...prev, description: e.target.value }))
                 }}
-                className='resize-none'
               />
             </Label>
             <br />
@@ -298,148 +310,68 @@ export default function DocumentView() {
         </DialogContent>
       </Dialog>
 
-      <div
-        className={cn(
-          'flex flex-col md:flex-row w-full gap-x-4 py-8 print:py-0 justify-center'
-        )}
-      >
+      <div className='flex flex-col md:flex-row w-full gap-x-4 py-8 print:py-0 justify-center pt-12'>
         {doc.code ? (
           <div
+            ref={editorRef}
             className={cn(
-              'print:hidden',
-              doc.editorOnly ? 'w-full' : doc.locked ? 'hidden' : 'w-1/2'
+              'print:hidden w-full overflow-y-auto h-[75vh]',
+              doc.editorOnly
+                ? 'w-full'
+                : doc.locked
+                ? 'hidden'
+                : 'w-full md:w-1/2'
             )}
-            style={{
-              height: '34rem'
-            }}
           >
-            {(!doc.locked || doc.editorOnly) && (
-              <Editor
-                loading
-                options={{
-                  readOnly: doc.locked,
-                  mouseWheelZoom: true
-                }}
-                value={doc.content!}
-                onChange={v => {
-                  setNavHidden(true)
+            <Editor
+              loading
+              options={{ readOnly: doc.locked, mouseWheelZoom: true }}
+              value={doc.content!}
+              onChange={v => {
+                setNavHidden(true)
+                if (!doc.locked) {
+                  setDoc(prevDoc => ({ ...prevDoc, content: v! }))
+                }
+              }}
+              onMount={editor => {
+                monacoInstanceRef.current = editor
+                editor.onDidScrollChange(() => {
+                  const scrollTop = editor.getScrollTop()
+                  const scrollHeight = editor.getScrollHeight()
+                  const clientHeight = editor.getLayoutInfo().height
+                  const ratio = scrollTop / (scrollHeight - clientHeight)
 
-                  if (!doc.locked) {
-                    setDoc(prevDoc => ({
-                      ...prevDoc,
-                      content: v!
-                    }))
+                  if (previewRef.current) {
+                    previewRef.current.scrollTop =
+                      ratio *
+                      (previewRef.current.scrollHeight -
+                        previewRef.current.clientHeight)
                   }
-                }}
-                onMount={e => {
-                  e.focus()
-                }}
-                theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
-                width={'100%'}
-                defaultLanguage='markdown'
-                className={cn(
-                  'first:peer-first:p-4 resize-none border rounded-lg focus:border-transparent focus:ring-2 focus:outline-none overflow-hidden bg-transparent min-h-72',
-                  doc.locked && !doc.editorOnly && 'hidden',
-                  doc.editorOnly && 'w-full',
-                  'print:hidden'
-                )}
-              />
-            )}
+                })
+                editor.focus()
+              }}
+              theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
+              width='100%'
+              defaultLanguage='markdown'
+              className={cn(
+                'first:peer-first:p-4 border rounded-lg focus:border-transparent focus:ring-2 focus:outline-none overflow-hidden bg-transparent',
+                doc.locked && !doc.editorOnly && 'hidden',
+                doc.editorOnly && 'w-full min-h-[75vh]',
+                'print:hidden'
+              )}
+            />
           </div>
         ) : (
-          <div className='w-full relative prose max-w-3xl ck-content mb-48 print:mb-0'>
-            <style>
-              {`
-                ${
-                  theme === 'dark'
-                    ? `
-                      .dark .ck-editor .ck-content {
-                        background-color: #161616 !important;
-                        color: #ececec;
-                      }
-
-                      .dark .ck-editor .ck-content *{
-                        color: #d3d3d3;
-                      }
-
-                      .dark .ck-editor .ck-editor__top * {
-                        background-color: #161616 !important;
-                        color: #c7c7c7;
-                      }
-                        
-                      @media print {
-                         .ck-editor .ck-content {
-                        background-color: #161616 !important;
-                        color: black !important;
-                      }
-                        .ck-editor .ck-content *{
-                          color: black !important;
-                        }
-                      .ck-editor .ck-editor__top * {
-                        background-color: #161616 !important;
-                        color: black !important;
-                      }
-                      }
-                      `
-                    : ''
-                }
-
-                .ck-toolbar {
-                  border: none !important;
-                  transition: 200ms !important;
-                  opacity: ${hidden ? 0 : 1};
-                }
-
-                .ck-toolbar__separator {
-                  display: none !important;
-                }
-
-                .ck-editor__top {
-                  // display: none;
-                  position: sticky !important;
-                  border: none !important;
-                  z-index: 50;
-                  // border-bottom: 1px solid lightgray !important;
-                  top: 20px !important;
-                }
-
-                .ck-content {
-                  border: none !important;
-                  min-height: 50vh;
-                  padding-bottom: 32px !important;
-                }
-
-                .ck-content:focus {
-                  box-shadow: none !important;
-                }
-              `}
-            </style>
-            {doc.locked && (
-              <style>
-                {`
-                  .ck-editor__top {
-                    display: none;
-                  }
-                `}
-              </style>
-            )}
-
+          <div
+            ref={editorRef}
+            className='w-full relative prose max-w-3xl ck-content print:mb-0 overflow-y-auto'
+          >
+            {/* Theme styles here... */}
             <div className='mx-auto self-center mb-32 md-editor-preview w-full border-neutral-500 rounded-lg p-3 print:py-0 prose max-w-3xl text-black'>
-              {hidden && (
-                <style>
-                  {`
-                    .ck-sticky-panel__content {
-                      opacity: 0 !important;
-                    }
-                    `}
-                </style>
-              )}
               <CKEditor
-                onReady={editor => {
-                  editor.focus()
-                }}
-                // @ts-ignore
-                disabled={doc.locked}
+                onReady={editor => editor.focus()}
+                // @ts-expect-error disabled does work
+                disabled={doc.locked!}
                 editor={ClassicEditor}
                 data={doc?.content}
                 config={{
@@ -448,21 +380,17 @@ export default function DocumentView() {
                     poweredBy: {
                       position: 'inside',
                       side: 'left',
-                      label: ''
-                    } as any
+                      label: '',
+                      verticalOffset: 0,
+                      horizontalOffset: 0
+                    }
                   },
-
                   placeholder: 'Start writing...'
                 }}
                 onChange={(_, editor) => {
                   const textData = editor.getData()
-
                   setNavHidden(true)
-
-                  setDoc(prevDoc => ({
-                    ...prevDoc,
-                    content: textData
-                  }))
+                  setDoc(prev => ({ ...prev, content: textData }))
                 }}
               />
             </div>
@@ -470,13 +398,15 @@ export default function DocumentView() {
         )}
         {doc.code && (
           <div
+            ref={previewRef}
             className={cn(
-              'md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 print:py-0 prose text-black',
-              doc.locked && 'w-full',
+              'md-editor-preview mx-auto self-center md-editor-preview w-full md:w-1/2 border-neutral-500 rounded-lg p-3 print:py-0 prose max-w-3xl text-black',
+              doc.locked && 'w-full md:w-full',
               doc.editorOnly
                 ? 'hidden'
-                : !doc.locked && 'h-[34rem] print:h-auto overflow-y-auto',
-              'print:block print:mx-auto print:self-center md-editor-preview print:w-full print:border-neutral-500 rprint:ounded-lg print:p-3 print:py-0 print:prose print:max-w-3xl print:text-black'
+                : !doc.locked && 'h-[75vh] print:h-auto overflow-y-auto',
+              doc.locked && !doc.editorOnly && 'mb-32',
+              'print:block print:mx-auto print:self-center md-editor-preview print:w-full print:border-neutral-500 print:rounded-lg print:p-3 print:py-0 print:prose print:max-w-3xl print:text-black'
             )}
           >
             {renderedPreview}
@@ -487,8 +417,6 @@ export default function DocumentView() {
   )
 }
 
-// Upload adapter
-
 function MyCustomUploadAdapterPlugin(editor) {
   editor.plugins.get('FileRepository').createUploadAdapter = loader => {
     return new MyUploadAdapter(loader)
@@ -497,16 +425,18 @@ function MyCustomUploadAdapterPlugin(editor) {
 
 class MyUploadAdapter {
   constructor(props) {
-    ;(this as any).loader = props
+    //@ts-expect-error
+    this.loader = props
   }
 
   async upload() {
     try {
       return {
-        default: (this as any).loader._reader._data
+        //@ts-expect-error
+        default: this.loader._reader._data
       }
     } catch (err) {
-      alert('An error ocurred')
+      alert('An error occurred')
     }
   }
 }

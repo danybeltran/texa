@@ -4,11 +4,6 @@ import markdownItLatex from 'markdown-it-latex'
 import { $searchParams, setURLParams } from 'http-react'
 import hljs from 'highlight.js' // Import highlight.js
 
-// You might need to adjust your build system (webpack/rollup) to handle CSS imports for server-side rendering.
-// For client-side rendering, you would typically import a theme like this:
-// import 'highlight.js/styles/github.css';
-// For SSR, ensure the necessary CSS is included in your HTML template when serving the page.
-
 const markdown = new MD({
   html: true,
   breaks: true,
@@ -17,27 +12,17 @@ const markdown = new MD({
     if (lang && hljs.getLanguage(lang)) {
       try {
         return hljs.highlight(str, { language: lang }).value
-      } catch (__) {
-        // Fallback if there's an issue with the specific language highlighting
-      }
+      } catch (__) {}
     }
 
-    // Try to auto-detect the language if a specific one wasn't provided or failed
     try {
       return hljs.highlightAuto(str).value
-    } catch (__) {
-      // Fallback if auto-detection also fails
-    }
+    } catch (__) {}
 
-    return '' // Return empty string if no highlighting is possible, markdown-it will escape it
+    return ''
   }
 })
-  // You no longer need markdown-it-highlightjs since you're using markdown-it's built-in highlight option
-  // .use(require('markdown-it-highlightjs'), {
-  //   register: {
-  //     cypher: require('highlightjs-cypher')
-  //   }
-  // })
+
   .use(require('@traptitech/markdown-it-katex'))
   .use(require('markdown-it-math'))
   .use(markdownItLatex)

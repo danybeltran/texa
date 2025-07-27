@@ -51,17 +51,16 @@ const Navbar = () => {
               </Button>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href='/personal' legacyBehavior passHref>
-                <NavigationMenuLink
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    'font-medium transition',
-                    hidden && 'opacity-0'
-                  )}
-                >
-                  My
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink
+                asChild
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  'font-medium transition',
+                  hidden && 'opacity-0'
+                )}
+              >
+                <Link href='/personal'>My</Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
 
             <NavigationMenuItem
