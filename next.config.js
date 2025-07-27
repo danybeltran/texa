@@ -1,4 +1,4 @@
-const MillionLint = require('@million/lint');
+const MillionLint = require('@million/lint')
 /**
  * @type { import("next").NextConfig }
  */
@@ -7,4 +7,4 @@ module.exports = {
   experimental: {
     serverComponentsExternalPackages: ['mongoose']
   }
-};
+}

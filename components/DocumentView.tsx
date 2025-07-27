@@ -185,7 +185,7 @@ export default function DocumentView() {
     <main className='w-full relative'>
       <div
         className={cn(
-          'flex items-center justify-between print:hidden transition max-w-[86rem] fixed z-30 top-14 left-0 right-0 mx-auto p-3 sm:px-4 bgback',
+          'flex items-center justify-between print:hidden transition max-w-[86rem] fixed z-30 top-14 left-0 right-0 mx-auto p-3 sm:px-4 bg-background',
           hidden && 'opacity-0'
         )}
       >
