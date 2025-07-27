@@ -7,7 +7,7 @@ import { useToast } from './ui/use-toast'
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import copy from 'copy-to-clipboard'
 
-export default function PublicMdContent({ content, className }) {
+export default function PublicMdContent({ content }) {
   const render = useSecondRender()
 
   const { toast } = useToast()
