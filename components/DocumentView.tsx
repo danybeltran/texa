@@ -81,6 +81,8 @@ export default function DocumentView() {
   const previewRef = useRef<HTMLDivElement>(null)
   const monacoInstanceRef = useRef<any>(null)
 
+  const navHidden = useNavHidden()
+
   const renderedPreview = useMemo(
     () => (
       <div
@@ -151,7 +153,7 @@ export default function DocumentView() {
     }
   }, [doc?.content, toast])
 
-  // ✅ Scroll sync logic
+  // Scroll sync logic
   useEffect(() => {
     if (!doc?.code && editorRef.current && previewRef.current) {
       const ckContent = editorRef.current.querySelector('.ck-content')
@@ -183,6 +185,60 @@ export default function DocumentView() {
 
   return (
     <main className='w-full relative'>
+      <style>
+        {`
+          ${
+            theme === 'dark'
+              ? `
+                        .ck-editor .ck-content {
+                        background-color: #161616 !important;
+                        color: white !important;
+                      }
+
+                      .ck-editor .ck-content *{
+                        color: white !important;
+                      }
+
+                      .ck-editor .ck-editor__top * {
+                        background-color: #161616  !important;
+                        color: white !important;
+                      }
+                        
+
+                      @media print {
+                        .ck-editor .ck-content {
+                        background-color: #161616 !important;
+                        color: black !important;
+                      }
+                        .ck-editor .ck-content *{
+                          color: black !important;
+                        }
+                      .ck-editor .ck-editor__top * {
+                        background-color: #161616 !important;
+                        color: black !important;
+                      }
+          }
+                        `
+              : ''
+          }
+
+          .ck-editor__top {
+            opacity: ${navHidden ? 0 : 1};
+            transition: 200ms;
+            z-index: 50;
+            border-bottom: 1px solid lightgray !important;
+            top: 40px;
+          }
+          .ck-content {
+            border: none !important;
+          }
+
+          .ck-content:focus {
+            box-shadow: none !important;
+          }
+        `}
+      </style>
+
       <div
         className={cn(
           'flex items-center justify-between print:hidden transition max-w-[86rem] fixed z-30 top-14 left-0 right-0 mx-auto p-3 sm:px-4 bg-background',
@@ -381,7 +437,7 @@ export default function DocumentView() {
                       position: 'inside',
                       side: 'left',
                       label: '',
-                      verticalOffset: 0,
+                      verticalOffset: -32,
                       horizontalOffset: 0
                     }
                   },
