@@ -207,19 +207,49 @@ export default function DocumentView() {
 
                       @media print {
                         .ck-editor .ck-content {
-                        background-color: #161616 !important;
-                        color: black !important;
+                          background-color: #ffffff !important; /* Set to white for print for better readability */
+                          border: 0px solid transparent !important;
+                          box-shadow: none !important; /* Remove inner shadow */
+                          color: black !important;
+                          padding: 0 !important; /* Remove padding if it's creating extra space */
                       }
                         .ck-editor .ck-content *{
                           color: black !important;
                         }
-                      .ck-editor .ck-editor__top * {
-                        background-color: #161616 !important;
-                        color: black !important;
+                      .ck-editor .ck-editor__top,
+                      .ck.ck-powered-by { /* Target the CKEditor toolbar and the powered by logo */
+                        display: none !important;
+                      }
+                      /* Ensure no extra margins/padding from CKEditor specific elements */
+                      .ck-editor__main, .ck-editor__editable, .ck-editor__editable_inline {
+                        margin: 0 !important;
+                        padding: 0 !important;
                       }
           }
                         `
-              : ''
+              : `
+              /* Styles for light theme when printing */
+              @media print {
+                .ck-editor .ck-content {
+                  background-color: #ffffff !important;
+                  border: 0px solid transparent !important;
+                  box-shadow: none !important; /* Remove inner shadow */
+                  color: black !important;
+                  padding: 0 !important;
+                }
+                .ck-editor .ck-content * {
+                  color: black !important;
+                }
+                .ck-editor .ck-editor__top,
+                .ck.ck-powered-by { /* Target the CKEditor toolbar and the powered by logo */
+                  display: none !important;
+                }
+                .ck-editor__main, .ck-editor__editable, .ck-editor__editable_inline {
+                  margin: 0 !important;
+                  padding: 0 !important;
+                }
+              }
+              `
           }
 
           .ck-editor__top {
@@ -229,12 +259,45 @@ export default function DocumentView() {
             border-bottom: 1px solid lightgray !important;
             top: 40px;
           }
-          .ck-content {
-            border: none !important;
+
+          .ck-editor__top {
+            display: ${doc.locked ? 'none' : 'auto'} !important;
           }
 
-          .ck-content:focus {
+          @media print {
+            .ck-editor__top {
+              display: hidden !important;
+            }
+          }
+
+          /* General styling for the CKEditor content area */
+          .ck-content {
+            border: none !important;
             box-shadow: none !important;
+            outline: none !important; /* Add this to remove outlines */
+          }
+
+          /* Target the main editor container when it or its descendants are focused */
+          .ck.ck-editor__main > .ck-editor__editable:focus-within,
+          .ck.ck-editor__main > .ck-editor__editable.ck-focused,
+          .ck.ck-editor__editable_inline:focus-within,
+          .ck.ck-editor__editable_inline.ck-focused {
+            box-shadow: none !important;
+            outline: none !important;
+          }
+
+          /* Also ensure no shadow/outline on the overall editor container itself */
+          .ck.ck-editor__main {
+            border: none !important;
+            box-shadow: none !important;
+            outline: none !important;
+          }
+
+          /* Remove border/shadow from the outer container if present */
+          .ck.ck-editor {
+            border: none !important;
+            box-shadow: none !important;
+            outline: none !important;
           }
         `}
       </style>
