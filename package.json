@@ -60,6 +60,8 @@
     "markdown-it-math": "^4.1.1",
     "markdown-it-mermaid": "^0.2.5",
     "markdown-it-texmath": "^1.0.0",
+    "monaco-editor": "^0.52.2",
+    "monaco-editor-core": "^0.52.2",
     "monaco-html": "^3.9.0",
     "monaco-markdown": "^0.0.12",
     "next": "^15.4.4",

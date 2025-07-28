@@ -40,6 +40,7 @@ import { Label } from './ui/label'
 import { useTheme } from 'next-themes'
 import { useToast } from './ui/use-toast'
 import { setNavHidden, useNavHidden } from '@/states'
+import oneDarkTheme from '@/lib/editor-themes/atom-one-dark.json'
 
 function calcHeight(value: string) {
   let numberOfLineBreaks = (value.match(/\n/g) || []).length
@@ -444,7 +445,15 @@ export default function DocumentView() {
           >
             <Editor
               loading
-              options={{ readOnly: doc.locked, mouseWheelZoom: true }}
+              options={{
+                readOnly: doc.locked,
+                mouseWheelZoom: true,
+                autoClosingBrackets: 'always',
+                wordWrap: 'bounded',
+                autoClosingQuotes: 'always',
+                autoIndent: 'full',
+                tabSize: 2
+              }}
               value={doc.content!}
               onChange={v => {
                 setNavHidden(true)

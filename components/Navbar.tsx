@@ -64,7 +64,10 @@ const Navbar = () => {
             </NavigationMenuItem>
 
             <NavigationMenuItem
-              className={cn(' transition', hidden && 'opacity-0')}
+              className={cn(
+                ' transition flex items-center',
+                hidden && 'opacity-0'
+              )}
             >
               <AuthButton />
             </NavigationMenuItem>

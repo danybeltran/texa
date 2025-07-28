@@ -1,6 +1,7 @@
 import { renderToString } from 'react-dom/server'
 import MD from 'markdown-it'
-import markdownItLatex from 'markdown-it-latex'
+// If you're using markdown-it-texmath, markdown-it-latex is likely redundant and can be removed
+// import markdownItLatex from 'markdown-it-latex'
 import { $searchParams, setURLParams } from 'http-react'
 import hljs from 'highlight.js' // Import highlight.js
 
@@ -34,17 +35,17 @@ const markdown = new MD({
     return ''
   }
 })
-
-  .use(require('@traptitech/markdown-it-katex'))
-  .use(require('markdown-it-math'))
-  .use(markdownItLatex)
+  // Remove redundant/conflicting math plugins if markdown-it-texmath covers your needs
+  // .use(require('@traptitech/markdown-it-katex'))
+  // .use(require('markdown-it-math'))
+  // .use(markdownItLatex) // If texmath handles your LaTeX, you might not need this one
   .use(require('@agoose77/markdown-it-mermaid').default)
   .use(require('markdown-it-texmath'), {
-    engine: require('katex'),
-    delimiters: 'dollars',
+    engine: require('katex'), // Specify KaTeX as the rendering engine
+    delimiters: 'gitlab', // This makes markdown-it-texmath understand ```math blocks
+    // Options: 'dollars' for $...$ and $$...$$, 'brackets' for \(...\) and \[...\], 'gitlab' for $`...`$ and ```math...```
     katexOptions: {
       throwOnError: false,
-      // displayMode: true,
       macros: { '\\RR': '\\mathbb{R}' }
     }
   })
@@ -58,11 +59,14 @@ export function renderMD(content?: string) {
     // They are unique in that they replace the *entire line*.
     let preprocessedLines = rawContent.split('\n').map(line => {
       const trimmedLine = line.trim()
-      if (trimmedLine.startsWith('https://www.youtu')) {
+      if (trimmedLine.startsWith('[https://www.youtu](https://www.youtu)')) {
         const id = $searchParams(trimmedLine).v
-        let embedUrl = setURLParams('https://www.youtube.com/embed/[id]', {
-          id
-        })
+        let embedUrl = setURLParams(
+          '[https://www.youtube.com/embed/](https://www.youtube.com/embed/)[id]',
+          {
+            id
+          }
+        )
         return renderToString(
           <iframe
             width='100%'
@@ -91,14 +95,14 @@ export function renderMD(content?: string) {
     // Join back for Markdown-It processing
     let markdownSource = preprocessedLines.join('\n')
 
-    // Step 2: Let markdown-it render the content first.
-    // This will handle all standard Markdown syntax (headers, bold, lists, etc.)
+    markdownSource = markdownSource
+      .replaceAll('<math>', '```math\n')
+      .replaceAll('</math>', '\n```')
+      .replaceAll('<mermaid>', '```mermaid\n')
+      .replaceAll('</mermaid>', '\n```')
+
     let renderedHtml = markdown.render(markdownSource)
 
-    // Step 3: Apply your custom replacements on the *rendered HTML* string.
-    // This ensures Markdown-It has already parsed its own syntax.
-
-    // Handle custom HTML tags and other general replacements on the HTML output
     renderedHtml = renderedHtml
       .replaceAll('$$$', '$$ $')
       .replaceAll('<tex>', "<div class='tex-content'>\n ")
@@ -111,16 +115,11 @@ export function renderMD(content?: string) {
       .replaceAll('</left>', '</div>')
       .replaceAll('<right>', '<div style="text-align: right">')
       .replaceAll('</right>', '</div>')
-      .replaceAll('<mermaid>', '```mermaid')
-      .replaceAll('</mermaid>', '```')
-      .replaceAll('<math>', '```math')
-      .replaceAll('</math>', '```')
       .replace(
         /\<(newpage |newpage)\/\>/gi,
         '<div class="code-page-break"><p style="page-break-after: always;"> </p><p style="page-break-before: always;"> </p></div>'
       )
       // Icons: Apply after markdown.render
-      // *** CHANGE IS HERE: [\w-]+ now includes hyphens ***
       .replace(/<bi-([\w-]+)>/g, (match, iconName) => {
         return `<i class="bi bi-${iconName}"></i>`
       })
