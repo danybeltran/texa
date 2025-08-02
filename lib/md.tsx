@@ -1,7 +1,5 @@
 import { renderToString } from 'react-dom/server'
 import MD from 'markdown-it'
-// If you're using markdown-it-texmath, markdown-it-latex is likely redundant and can be removed
-// import markdownItLatex from 'markdown-it-latex'
 import { $searchParams, setURLParams } from 'http-react'
 import hljs from 'highlight.js' // Import highlight.js
 
@@ -15,6 +13,13 @@ const fonts = {
   poppins: 'poppins',
   geist: 'geist',
   dmsans: 'dmsans'
+}
+
+// Custom slugify function to replace the markdown-it-slugify package
+function slugify(s) {
+  // Convert to lowercase, remove non-word characters and spaces,
+  // and replace spaces with hyphens.
+  return encodeURIComponent(String(s).trim().toLowerCase().replace(/\s+/g, '-'))
 }
 
 const markdown = new MD({
@@ -35,15 +40,12 @@ const markdown = new MD({
     return ''
   }
 })
-  // Remove redundant/conflicting math plugins if markdown-it-texmath covers your needs
-  // .use(require('@traptitech/markdown-it-katex'))
-  // .use(require('markdown-it-math'))
-  // .use(markdownItLatex) // If texmath handles your LaTeX, you might not need this one
+  // We are no longer using markdown-it-anchor, so this line is removed.
+  // ---------------------------------------
   .use(require('@agoose77/markdown-it-mermaid').default)
   .use(require('markdown-it-texmath'), {
     engine: require('katex'), // Specify KaTeX as the rendering engine
-    delimiters: 'gitlab', // This makes markdown-it-texmath understand ```math blocks
-    // Options: 'dollars' for $...$ and $$...$$, 'brackets' for \(...\) and \[...\], 'gitlab' for $`...`$ and ```math...```
+    delimiters: 'dollars',
     katexOptions: {
       throwOnError: false,
       macros: { '\\RR': '\\mathbb{R}' }
@@ -102,6 +104,24 @@ export function renderMD(content?: string) {
       .replaceAll('</mermaid>', '\n```')
 
     let renderedHtml = markdown.render(markdownSource)
+
+    renderedHtml = renderedHtml.replace(
+      /(<h([1-6])>)(.*?)(<\/h\2>)/g,
+      (match, openTag, level, content, closeTag) => {
+        const id = slugify(content)
+
+        return `
+          <span class="relative">
+            ${openTag}
+            <span id="${id}" style="position: absolute; top: -76px"></span>
+            <a href="#${id}" style="text-decoration:none; displa: flex; align-items: center" class="font-bold">
+              ${content.trim()}
+            </a>
+            ${closeTag}
+          </span>
+        `
+      }
+    )
 
     renderedHtml = renderedHtml
       .replaceAll('$$$', '$$ $')

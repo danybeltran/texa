@@ -8,7 +8,7 @@ import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import copy from 'copy-to-clipboard'
 
 export default function PublicMdContent({ content }) {
-  const render = useSecondRender()
+  // const render = useSecondRender()
 
   const { toast } = useToast()
 
@@ -58,6 +58,8 @@ export default function PublicMdContent({ content }) {
     }
   }, [content, toast])
 
+  useEffect(() => {}, [])
+
   const renderedContent = useMemo(
     () => (
       <div
@@ -65,11 +67,11 @@ export default function PublicMdContent({ content }) {
           'mx-auto self-center mb-32 md-editor-preview w-full border-neutral-500 rounded-lg p-3 print:py-0 prose max-w-3xl text-black'
         )}
         dangerouslySetInnerHTML={{
-          __html: render ? renderMD(content!) : ''
+          __html: renderMD(content!)
         }}
       />
     ),
-    [content, render]
+    [content]
   )
 
   return renderedContent
