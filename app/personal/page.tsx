@@ -1,7 +1,6 @@
 import CreateForm from '@/components/CreateForm'
 import MoveHandler from '@/components/MoveHandler'
 import RootFolders from '@/components/RootFolders'
-import { SSRSuspense } from 'http-react'
 
 export default function PersonalPage() {
   return (
