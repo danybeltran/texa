@@ -103,16 +103,6 @@ function postProcessHtml(renderedHtml: string) {
                 className='font-bold'
               >
                 {content.trim()}
-                {/* <span
-                  dangerouslySetInnerHTML={{
-                    __html: renderToString(
-                      <Icon
-                        name='link-45deg'
-                        style={{ fontSize: '20px', marginLeft: '10px' }}
-                      />
-                    )
-                  }}
-                /> */}
               </a>
             </Fragment>
           )}
@@ -153,12 +143,10 @@ function postProcessHtml(renderedHtml: string) {
   return finalHtml
 }
 
-// Main server-side render function
+// Main render function, now with a check for the environment.
 export function renderMD(content?: string) {
   try {
     let rawContent = content || ''
-
-    // The preprocessing of lines with renderToString is fine as long as you're using React's SSR
     let preprocessedLines = rawContent.split('\n').map(line => {
       const trimmedLine = line.trim()
       if (trimmedLine.startsWith('[https://www.youtu](https://www.youtu)')) {
@@ -194,8 +182,11 @@ export function renderMD(content?: string) {
       .replaceAll('<mermaid>', '```mermaid\n')
       .replaceAll('</mermaid>', '\n```')
 
-    // This is the call that was failing. It now uses the serverMarkdown instance.
-    const renderedHtml = serverMarkdown.render(markdownSource)
+    // THIS IS THE ONLY SIGNIFICANT CHANGE.
+    // It checks if the code is running in the browser and uses the correct markdown instance.
+    const markdownProcessor =
+      typeof window !== 'undefined' ? clientMarkdown : serverMarkdown
+    const renderedHtml = markdownProcessor.render(markdownSource)
 
     return postProcessHtml(renderedHtml)
   } catch (err) {
