@@ -58,6 +58,8 @@ export default function PublicMdContent({ content }) {
     }
   }, [content, toast])
 
+  const secondRender = useSecondRender()
+
   useEffect(() => {}, [])
 
   const renderedContent = useMemo(
@@ -71,7 +73,7 @@ export default function PublicMdContent({ content }) {
         }}
       />
     ),
-    [content]
+    [content, secondRender]
   )
 
   return renderedContent
