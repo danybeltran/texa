@@ -11,14 +11,16 @@ import { Button } from '@/components/ui/button'
 
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { useGoogleSession } from '@/lib/hooks/use-session'
 
 export default function AuthButton() {
-  const { data } = useSession()
+  const { data } = useGoogleSession()
+
   return data?.user ? (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
-          <AvatarImage src={data?.user?.image!} alt='@shadcn' />
+          <img src={data?.user?.image!} alt='' />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

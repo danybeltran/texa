@@ -1,15 +1,14 @@
 'use client'
 
 import * as React from 'react'
-import { Moon, Sun } from 'lucide-react'
-import { useTheme } from 'next-themes'
 
 import { Button } from '@/components/ui/button'
 
 import { HiMiniComputerDesktop } from 'react-icons/hi2'
 import { WiDaySunny } from 'react-icons/wi'
 import { FaRegMoon } from 'react-icons/fa6'
-import { BrowserOnly, ClientOnly } from 'react-kuh'
+import { setTheme, useTheme } from '@/states'
+import Cookies from 'js-cookie'
 
 const themeIcon = {
   light: <WiDaySunny />,
@@ -18,28 +17,24 @@ const themeIcon = {
 }
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
+  const theme = useTheme()
 
-  if (theme !== 'light' && theme !== 'dark') {
-    setTheme('light')
-  }
   return (
-    <BrowserOnly>
-      <Button
-        variant='outline'
-        size='icon'
-        onClick={() => {
-          const nextTheme: any = {
-            light: 'dark',
-            dark: 'light'
-          }
+    <Button
+      variant='outline'
+      size='icon'
+      onClick={() => {
+        const nextTheme: any = {
+          light: 'dark',
+          dark: 'light'
+        }
 
-          setTheme(nextTheme[theme!])
-        }}
-      >
-        <span className='text-lg'>{themeIcon[theme!]}</span>
-        <span className='sr-only'>Toggle theme</span>
-      </Button>
-    </BrowserOnly>
+        Cookies.set('theme', nextTheme[theme])
+        setTheme(nextTheme[theme])
+      }}
+    >
+      <span className='text-lg'>{themeIcon[theme!]}</span>
+      <span className='sr-only'>Toggle theme</span>
+    </Button>
   )
 }

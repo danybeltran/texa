@@ -24,6 +24,8 @@ import AuthProvider from '@/components/AuthProvider'
 import { Toaster } from '@/components/ui/toaster'
 import Mouser from '@/components/mouser'
 import 'highlight.js/styles/atom-one-dark.css'
+import { getServerSession } from 'next-auth'
+import { cookies } from 'next/headers'
 
 const interFont = Inter({
   display: 'swap',
@@ -76,7 +78,13 @@ const DM_SansFont = DM_Sans({
   subsets: ['latin', 'latin-ext']
 })
 
-function MainLayout({ children }) {
+async function MainLayout({ children }) {
+  const serverSession = await getServerSession()
+
+  const theme = (await cookies()).get('theme')?.value || 'light'
+
+  console.log({ theme })
+
   return (
     <html suppressHydrationWarning>
       <head>
@@ -85,7 +93,7 @@ function MainLayout({ children }) {
           content='Texa is an all-in-one rich content, Markdown and KaTeX editor'
         />
       </head>
-      <body style={DM_SansFont.style}>
+      <body style={interFont.style}>
         <style>
           {`
           .pica-font {
@@ -120,8 +128,17 @@ function MainLayout({ children }) {
         <ThemeProvider attribute='class' defaultTheme='system'>
           <main className='min-h-screen'>
             <AuthProvider>
-              <AtomicState>
-                <FetchConfig baseUrl='/api'>
+              <AtomicState
+                value={{
+                  theme: theme
+                }}
+              >
+                <FetchConfig
+                  baseUrl='/api'
+                  value={{
+                    'GET /auth/session': serverSession || {}
+                  }}
+                >
                   <Mouser />
                   <Navbar />
                   <div className='max-w-[86rem] mx-auto p-3 sm:px-4 '>

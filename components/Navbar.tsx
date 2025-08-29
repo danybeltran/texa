@@ -75,9 +75,7 @@ const Navbar = () => {
             <NavigationMenuItem
               className={cn(' transition', hidden && 'opacity-0')}
             >
-              <BrowserOnly>
-                <ThemeToggle />
-              </BrowserOnly>
+              <ThemeToggle />
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
