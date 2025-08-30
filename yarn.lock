@@ -3202,13 +3202,13 @@ atomic-state@^3.0.6:
   resolved "https://registry.yarnpkg.com/atomic-state/-/atomic-state-3.0.6.tgz#fc8e1da22b848ef3828a7a4aaa26d4c8da2712bd"
   integrity sha512-w7ZB5xEazHUiGWOGSUy1I0QdRQUvxADkcbR60SZ/Csen8WIGe29a32iuv0LVwLSP1HBfjsyhiecQ2+/C10Yomg==
 
-atomic-utils@^1.5.9:
-  version "1.5.9"
-  resolved "https://registry.yarnpkg.com/atomic-utils/-/atomic-utils-1.5.9.tgz#110c4c14406c33eb688396cb1ad0e99797a60460"
-  integrity sha512-ELxsVSA1irc7bLdo1i528k1wgH2nJheLEAldMjPOmiOcMjcHYbY9R0behZxE0/crFvmEEQCbIeEbIg8vqvBaaQ==
+atomic-utils@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/atomic-utils/-/atomic-utils-1.6.1.tgz#b34298ffbcc51c5cfe3ccfdca83acb4a23c2d011"
+  integrity sha512-+iBNIg+rBlTbQ82+yOVMb/fzYKgRm0/E+B0OsKaWSd7A/xRTIA/vR2Z4W7LjVf4CscKoVU2R1sKSK0UtqRzBOg==
   dependencies:
     atomic-state "^3.0.6"
-    http-react "^3.7.7"
+    http-react "^3.8.1"
     react-kuh "^0.1.6"
 
 autoprefixer@^10.4.20:
@@ -5174,10 +5174,10 @@ http-proxy-agent@^7.0.2:
     agent-base "^7.1.0"
     debug "^4.3.4"
 
-http-react@^3.7.7:
-  version "3.7.7"
-  resolved "https://registry.yarnpkg.com/http-react/-/http-react-3.7.7.tgz#81f807c340428017df6fef9fddb2200e16e3484d"
-  integrity sha512-E4N9LVQfUD+2/nUviw6EJlpbg4/9rnBYKuZAFKBsl5uzPDxoRYCv+R7XBxmqF1x6WckVqLiMQ9Jxgo6Qxj/vNw==
+http-react@^3.8.1:
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/http-react/-/http-react-3.8.1.tgz#24a578e44419a9a75ffdc1343d627d0d1bf2b4ef"
+  integrity sha512-BTOtER0NKo0LmGK2jbJNI9AKJH5WjlWZ/wLh649JHhrp22NUHBzpBEq4pqvpD6SXKKt96BtO+5ogKj0idmJtpw==
 
 http-signature@~0.10.0:
   version "0.10.1"

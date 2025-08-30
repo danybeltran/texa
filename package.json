@@ -29,7 +29,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toast": "^1.2.2",
     "@traptitech/markdown-it-katex": "^3.6.0",
-    "atomic-utils": "^1.5.9",
+    "atomic-utils": "^1.6.1",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.9",
     "bs-icon": "^0.0.8",
