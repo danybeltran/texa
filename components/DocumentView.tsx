@@ -1,7 +1,6 @@
 'use client'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
-import MonacoHtmlPlugin from 'monaco-html'
 import Editor from '@monaco-editor/react'
 import { Doc } from '@prisma/client'
 import copy from 'copy-to-clipboard'
@@ -37,9 +36,8 @@ import {
 } from './ui/dialog'
 import { Label } from './ui/label'
 
-import { useTheme } from 'next-themes'
 import { useToast } from './ui/use-toast'
-import { setNavHidden, useNavHidden } from '@/states'
+import { setNavHidden, useNavHidden, useTheme } from '@/states'
 import oneDarkTheme from '@/lib/editor-themes/atom-one-dark.json'
 
 function calcHeight(value: string) {
@@ -76,7 +74,7 @@ export default function DocumentView() {
   const [loaded, setLoaded] = useState(false)
   const [showMetadata, setShowMetadata] = useState(false)
   const { toast } = useToast()
-  const { theme } = useTheme()
+  const theme = useTheme()
 
   const editorRef = useRef<HTMLDivElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
@@ -100,7 +98,7 @@ export default function DocumentView() {
 
   useEffect(() => {
     const saveDocumentListener = (e: KeyboardEvent) => {
-      if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
         e.preventDefault()
         if (!doc?.locked) saveDoc()
       }
@@ -153,6 +151,8 @@ export default function DocumentView() {
       })
     }
   }, [doc?.content, toast])
+
+  const initialContent = useRef(doc?.content || '')
 
   // Scroll sync logic
   useEffect(() => {
@@ -397,7 +397,8 @@ export default function DocumentView() {
                     calcHeight(e.target.value) + 3 + 'px')
                 }
                 onKeyUp={e => {
-                  if (e.ctrlKey && e.key === 'Enter') setShowMetadata(false)
+                  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter')
+                    setShowMetadata(false)
                 }}
                 onChange={e => {
                   e.currentTarget.style.height =
@@ -461,8 +462,8 @@ export default function DocumentView() {
                   setDoc(prevDoc => ({ ...prevDoc, content: v! }))
                 }
               }}
-              onMount={editor => {
-                monacoInstanceRef.current = editor
+              onMount={(editor, monaco) => {
+                monacoInstanceRef.current = monaco
                 editor.onDidScrollChange(() => {
                   const scrollTop = editor.getScrollTop()
                   const scrollHeight = editor.getScrollHeight()
@@ -494,14 +495,13 @@ export default function DocumentView() {
             ref={editorRef}
             className='w-full relative prose max-w-3xl ck-content print:mb-0 overflow-y-auto'
           >
-            {/* Theme styles here... */}
             <div className='mx-auto self-center mb-32 md-editor-preview w-full border-neutral-500 rounded-lg p-3 print:py-0 prose max-w-3xl text-black'>
               <CKEditor
                 onReady={editor => editor.focus()}
                 // @ts-expect-error disabled does work
                 disabled={doc.locked!}
                 editor={ClassicEditor}
-                data={doc?.content}
+                data={initialContent.current}
                 config={{
                   extraPlugins: [MyCustomUploadAdapterPlugin],
                   ui: {
@@ -516,9 +516,9 @@ export default function DocumentView() {
                   placeholder: 'Start writing...'
                 }}
                 onChange={(_, editor) => {
-                  const textData = editor.getData()
                   setNavHidden(true)
-                  setDoc(prev => ({ ...prev, content: textData }))
+                  const currentData = editor.getData()
+                  setDoc(prev => ({ ...prev, content: currentData }))
                 }}
               />
             </div>
