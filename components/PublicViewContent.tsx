@@ -1,11 +1,18 @@
 'use client'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
-import { useTheme } from 'next-themes'
-import { renderMD } from '@/lib/md'
 
-export default function PublicViewContent({ content }: { content: string }) {
-  const { theme } = useTheme()
+import { renderMD } from '@/lib/md'
+import { useTheme } from '@/states'
+
+export default function PublicViewContent({
+  font,
+  content
+}: {
+  content: string
+  font: string
+}) {
+  const theme = useTheme()
 
   return (
     <>
@@ -61,13 +68,14 @@ export default function PublicViewContent({ content }: { content: string }) {
           }
         `}
       </style>
-
-      <CKEditor
-        //@ts-ignore
-        disabled
-        editor={ClassicEditor}
-        data={content}
-      />
+      <div className={`${font}-font`}>
+        <CKEditor
+          //@ts-ignore
+          disabled
+          editor={ClassicEditor}
+          data={content}
+        />
+      </div>
     </>
   )
 }

@@ -7,7 +7,7 @@ import copy from 'copy-to-clipboard'
 import useFetch, { useDebounceFetch } from 'http-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useEffect, useMemo, useState, useRef } from 'react'
+import { useEffect, useMemo, useState, useRef, useLayoutEffect } from 'react'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { CiCircleInfo } from 'react-icons/ci'
 import { FaExternalLinkAlt } from 'react-icons/fa'
@@ -24,7 +24,7 @@ import { MdPrint } from 'react-icons/md'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { renderMD } from '@/lib/md'
+import { fontNames, renderMD } from '@/lib/md'
 import { cn } from '@/lib/utils'
 
 import {
@@ -39,6 +39,16 @@ import { Label } from './ui/label'
 import { useToast } from './ui/use-toast'
 import { setNavHidden, useNavHidden, useTheme } from '@/states'
 import oneDarkTheme from '@/lib/editor-themes/atom-one-dark.json'
+import { ArrowLeft } from 'lucide-react'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from './ui/select'
 
 function calcHeight(value: string) {
   let numberOfLineBreaks = (value.match(/\n/g) || []).length
@@ -70,6 +80,8 @@ export default function DocumentView() {
       body: doc
     }
   )
+
+  const documentFont = doc.font || 'inter'
 
   const [loaded, setLoaded] = useState(false)
   const [showMetadata, setShowMetadata] = useState(false)
@@ -174,6 +186,16 @@ export default function DocumentView() {
     }
   }, [doc?.code])
 
+  const fontSelectRef = useRef<HTMLSelectElement>(null)
+
+  useLayoutEffect(() => {
+    const toolbar = document.querySelector('.ck-toolbar__items')
+
+    if (toolbar) {
+      // toolbar.appendChild(fontSelectRef.current!)
+    }
+  }, [theme, fontSelectRef, loadingDoc, doc.locked])
+
   if (!doc)
     return (
       <div className='flex items-center flex-wrap justify-center pt-24'>
@@ -254,10 +276,9 @@ export default function DocumentView() {
           }
 
           .ck-editor__top {
-            opacity: ${navHidden ? 0 : 1};
+            opacity: ${navHidden ? 0.3 : 1};
             transition: 200ms;
             z-index: 50;
-            border-bottom: 1px solid lightgray !important;
             top: 40px;
           }
 
@@ -306,21 +327,23 @@ export default function DocumentView() {
       <div
         className={cn(
           'flex items-center justify-between print:hidden transition max-w-[86rem] fixed z-30 top-14 left-0 right-0 mx-auto p-3 sm:px-4 bg-background',
-          hidden && 'opacity-0'
+          hidden && 'opacity-50'
         )}
       >
         <Link
           href={'/personal/' + (doc?.parentFolderId ? doc.parentFolderId : '')}
         >
-          <Button variant='ghost' className='gap-x-2' title='Go to folder'>
-            <FaChevronLeft /> Close
+          <Button
+            variant='ghost'
+            size='icon'
+            className='gap-x-2'
+            title='Go to folder'
+          >
+            <ArrowLeft />
           </Button>
         </Link>
         <div
-          className={cn(
-            'flex items-center gap-x-2 transition',
-            hidden && 'opacity-0'
-          )}
+          className={cn('flex items-center transition', hidden && 'opacity-50')}
         >
           {savingDoc && (
             <div className='pr-4'>
@@ -328,13 +351,59 @@ export default function DocumentView() {
             </div>
           )}
           <Link href={'/public-view/' + doc.publicId} target='_blank'>
-            <Button variant='secondary' className='gap-x-2'>
+            <Button variant='ghost' className='gap-x-2'>
               <FaExternalLinkAlt />
             </Button>
           </Link>
+
+          <span ref={fontSelectRef}>
+            <Select
+              value={doc.font || 'inter'}
+              onValueChange={value => {
+                setDoc(prev => ({
+                  ...prev,
+                  font: value
+                }))
+              }}
+            >
+              <SelectTrigger className='w-20 border-none'>Font</SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Font</SelectLabel>
+                  <SelectItem value='pica' className='pica-font'>
+                    {fontNames.pica}
+                  </SelectItem>
+                  <SelectItem value='roboto' className='roboto-font'>
+                    {fontNames.roboto}
+                  </SelectItem>
+                  <SelectItem value='raleway' className='raleway-font'>
+                    {fontNames.raleway}
+                  </SelectItem>
+                  <SelectItem value='montserrat' className='montserrat-font'>
+                    {fontNames.montserrat}
+                  </SelectItem>
+                  <SelectItem value='courier' className='courier-font'>
+                    {fontNames.courier}
+                  </SelectItem>
+                  <SelectItem value='newsreader' className='newsreader-font'>
+                    {fontNames.newsreader}
+                  </SelectItem>
+                  <SelectItem value='poppins' className='poppins-font'>
+                    {fontNames.poppins}
+                  </SelectItem>
+                  <SelectItem value='geist' className='geist-font'>
+                    {fontNames.geist}
+                  </SelectItem>
+                  <SelectItem value='dmsans' className='dmsans-font'>
+                    {fontNames.dmsans}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </span>
           <Button
             className='gap-x-2'
-            variant='secondary'
+            variant='ghost'
             onClick={() =>
               setDoc(prevDoc => ({ ...prevDoc, locked: !prevDoc.locked }))
             }
@@ -344,7 +413,7 @@ export default function DocumentView() {
           {doc.code && (
             <Button
               className='gap-x-2'
-              variant='secondary'
+              variant='ghost'
               onClick={() =>
                 setDoc(prev => ({ ...prev, editorOnly: !prev.editorOnly }))
               }
@@ -352,17 +421,13 @@ export default function DocumentView() {
               {doc.editorOnly ? <FaRegEyeSlash /> : <FaRegEye />}
             </Button>
           )}
-          <Button
-            className='gap-x-2'
-            variant='secondary'
-            onClick={() => print()}
-          >
+          <Button className='gap-x-2' variant='ghost' onClick={() => print()}>
             <MdPrint className='text-lg' />
           </Button>
           <Button
             onClick={() => setShowMetadata(m => !m)}
             className='gap-x-2'
-            variant='secondary'
+            variant='ghost'
           >
             <CiCircleInfo className='text-lg' />
           </Button>
@@ -495,7 +560,12 @@ export default function DocumentView() {
             ref={editorRef}
             className='w-full relative prose max-w-3xl ck-content print:mb-0 overflow-y-auto'
           >
-            <div className='mx-auto self-center mb-32 md-editor-preview w-full border-neutral-500 rounded-lg p-3 print:py-0 prose max-w-3xl text-black'>
+            <div
+              className={cn(
+                'mx-auto self-center mb-32 md-editor-preview w-full border-neutral-500 rounded-lg p-3 print:py-0 prose max-w-3xl text-black',
+                `${doc.font || 'inter'}-font`
+              )}
+            >
               <CKEditor
                 onReady={editor => editor.focus()}
                 // @ts-expect-error disabled does work

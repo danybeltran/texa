@@ -103,6 +103,7 @@ export async function PUT(req: Request) {
       content: newDocumentData.content,
       parentFolderId: newDocumentData.parentFolderId,
       editorOnly: newDocumentData.editorOnly,
+      font: newDocumentData.font || 'inter',
       description: newDocumentData.description,
       locked: newDocumentData.locked
     },

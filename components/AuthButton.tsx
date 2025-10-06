@@ -19,10 +19,7 @@ export default function AuthButton() {
   return data?.user ? (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Avatar>
-          <img src={data?.user?.image!} alt='' />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+        <img className='size-8 rounded-full' src={data?.user?.image!} alt='' />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>{data?.user?.name}</DropdownMenuLabel>

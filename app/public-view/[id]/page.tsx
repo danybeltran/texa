@@ -114,7 +114,10 @@ export default async function DocumentPage({
             <div className='md-editor-preview mx-auto w-full max-w-3xl border-neutral-500 rounded-lg p-3 print:py-0 prose  text-black mb-48 print:mb-0'>
               <SeoContent content={doc.content!} />
               <SSRSuspense fallback={<p>Loading content...</p>}>
-                <PublicViewContent content={doc.content!} />
+                <PublicViewContent
+                  content={doc.content!}
+                  font={doc.font || 'inter'}
+                />
               </SSRSuspense>
             </div>
           </div>

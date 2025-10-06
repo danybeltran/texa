@@ -5,7 +5,7 @@ import hljs from 'highlight.js'
 import Icon from 'bs-icon'
 import { Fragment } from 'react'
 
-const fonts = {
+export const fonts = {
   pica: 'pica',
   roboto: 'roboto',
   raleway: 'raleway',
@@ -15,24 +15,28 @@ const fonts = {
   poppins: 'poppins',
   geist: 'geist',
   dmsans: 'dmsans'
-}
+} as const
+
+export const fontNames = {
+  pica: 'IM Fell DW Pica',
+  roboto: 'Roboto',
+  raleway: 'Raleway',
+  montserrat: 'Montserrat',
+  courier: 'Courier Prime',
+  newsreader: 'Newsreader',
+  poppins: 'Poppins',
+  geist: 'Geist',
+  dmsans: 'DM Sans'
+} as const
 
 // Custom slugify function
 function slugify(s: string) {
-  // 1. Trim leading/trailing whitespace.
   const trimmedString = s.trim()
-
-  // 2. Replace sequences of one or more whitespace characters with a single hyphen.
-  // This is a common practice for URL slugs.
   const spacedString = trimmedString.replace(/\s+/g, '-')
-
-  // 3. Encode the URI component. This is the crucial step that handles
-  // special characters like parentheses, commas, etc., and makes them safe for a URL fragment.
   return encodeURIComponent(spacedString).toLowerCase()
 }
 
 // --- Server-Side Markdown Processor ---
-// This one is lean and doesn't include any plugins that rely on the 'document' object.
 const serverMarkdown = new MD({
   html: true,
   breaks: true,
@@ -50,7 +54,6 @@ const serverMarkdown = new MD({
 })
 
 // --- Client-Side Markdown Processor ---
-// This one includes all the plugins since it will only run in the browser.
 const clientMarkdown = new MD({
   html: true,
   breaks: true,
@@ -76,16 +79,14 @@ const clientMarkdown = new MD({
     }
   })
 
-// Reusable post-processing function
+// Post-processing HTML
 function postProcessHtml(renderedHtml: string) {
-  // Post-processing logic is now separated for both server and client
   let finalHtml = renderedHtml.replace(
     /(<h([1-6])>)(.*?)(<\/h\2>)/g,
     (match, openTag, level, content, closeTag) => {
       const id = slugify(content)
-
       return `
-        <span class="relative">
+        <div class="relative w-full">
           ${openTag}
           ${renderToString(
             <Fragment>
@@ -97,17 +98,16 @@ function postProcessHtml(renderedHtml: string) {
                 href={`#${id}`}
                 style={{
                   textDecoration: 'none',
-                  display: 'flex',
                   alignItems: 'center'
                 }}
-                className='font-bold'
+                className='font-bold w-full'
               >
                 {content.trim()}
               </a>
             </Fragment>
           )}
           ${closeTag}
-        </span>
+        </div>
       `
     }
   )
@@ -143,10 +143,44 @@ function postProcessHtml(renderedHtml: string) {
   return finalHtml
 }
 
-// Main render function, now with a check for the environment.
+// --- Helper: Convert <tbl> blocks into Markdown tables ---
+function convertTables(raw: string) {
+  return raw.replace(
+    /<tbl\s+([^>]+)>([\s\S]*?)<\/tbl>/gi,
+    (match, headers, body) => {
+      const headerCells = headers
+        .split(',')
+        .map(h => h.trim())
+        .filter(Boolean)
+
+      const bodyRows = body
+        .trim()
+        .split('\n')
+        .map(row =>
+          row
+            .split(',')
+            .map(c => c.trim())
+            .filter(Boolean)
+        )
+
+      const headerLine = `|${headerCells.join('|')}|`
+      const dividerLine = `|${headerCells.map(() => '-').join('|')}|`
+      const bodyLines = bodyRows.map(row => `|${row.join('|')}|`)
+
+      return [headerLine, dividerLine, ...bodyLines].join('\n')
+    }
+  )
+}
+
+// --- Main Markdown Render Function ---
 export function renderMD(content?: string) {
   try {
     let rawContent = content || ''
+
+    // 🧩 Convert <tbl> → Markdown table
+    rawContent = convertTables(rawContent)
+
+    // Preprocessing (YouTube, images, etc.)
     let preprocessedLines = rawContent.split('\n').map(line => {
       const trimmedLine = line.trim()
       if (trimmedLine.startsWith('[https://www.youtu](https://www.youtu)')) {
@@ -182,12 +216,10 @@ export function renderMD(content?: string) {
       .replaceAll('<mermaid>', '```mermaid\n')
       .replaceAll('</mermaid>', '\n```')
 
-    // THIS IS THE ONLY SIGNIFICANT CHANGE.
-    // It checks if the code is running in the browser and uses the correct markdown instance.
     const markdownProcessor =
       typeof window !== 'undefined' ? clientMarkdown : serverMarkdown
-    const renderedHtml = markdownProcessor.render(markdownSource)
 
+    const renderedHtml = markdownProcessor.render(markdownSource)
     return postProcessHtml(renderedHtml)
   } catch (err) {
     console.error(err)
@@ -195,12 +227,14 @@ export function renderMD(content?: string) {
   }
 }
 
-// New client-side render function
+// --- Client-Side Markdown Renderer ---
 export function renderClientMD(content?: string) {
   try {
     let rawContent = content || ''
 
-    // The preprocessing part is the same
+    // 🧩 Convert <tbl> → Markdown table
+    rawContent = convertTables(rawContent)
+
     let preprocessedLines = rawContent.split('\n').map(line => {
       //... (same logic as above)
       return line

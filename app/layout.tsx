@@ -83,8 +83,6 @@ async function MainLayout({ children }) {
 
   const theme = (await cookies()).get('theme')?.value || 'light'
 
-  console.log({ theme })
-
   return (
     <html suppressHydrationWarning>
       <head>
@@ -139,7 +137,7 @@ async function MainLayout({ children }) {
                     'GET /auth/session': serverSession || {}
                   }}
                 >
-                  <Mouser />
+                  {/* <Mouser /> */}
                   <Navbar />
                   <div className='max-w-[86rem] mx-auto p-3 sm:px-4 '>
                     {children}
