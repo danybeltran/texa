@@ -183,9 +183,13 @@ export function renderMD(content?: string) {
     // Preprocessing (YouTube, images, etc.)
     let preprocessedLines = rawContent.split('\n').map(line => {
       const trimmedLine = line.trim()
-      if (trimmedLine.startsWith('[https://www.youtu](https://www.youtu)')) {
+
+      const isYoutubeLink = trimmedLine.startsWith('https://www.youtu')
+      if (isYoutubeLink) {
         const id = $searchParams(trimmedLine).v
-        let embedUrl = setURLParams('https://www.youtube.com/embed/', { id })
+
+        let embedUrl = setURLParams('https://www.youtube.com/embed/:id', { id })
+
         return renderToString(
           <iframe
             width='100%'
