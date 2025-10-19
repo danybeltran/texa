@@ -157,6 +157,11 @@ async function MainLayout({ children }) {
             .dmsans-font {
               font-family: ${DM_SansFont.style.fontFamily};
             }
+
+            .katex-font {
+              font-family: 'KaTeX_Main';
+              font-size: 110%;
+            }
           `}
         </style>
         <ThemeProvider attribute='class' defaultTheme='system'>
