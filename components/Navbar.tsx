@@ -21,7 +21,7 @@ const Navbar = () => {
     <header
       // The header is now always visible
       className={cn(
-        'sticky top-0 z-50 shadow-sm transition-all duration-300 print:hidden'
+        'sticky top-0 z-50 shadow-sm transition-all duration-300 print:hidden border-b'
       )}
     >
       <div
@@ -74,7 +74,7 @@ const Navbar = () => {
                   asChild
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    'font-medium text-foreground/80 hover:text-foreground transition-colors p-2 md:px-3 md:py-2'
+                    'font-medium text-foreground/80 hover:text-foreground transition-colors p-2 md:px-3 md:py-2 bg-transparent'
                   )}
                 >
                   <Link href='/personal'>
