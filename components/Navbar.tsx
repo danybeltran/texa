@@ -34,7 +34,7 @@ const Navbar = () => {
 
     function mouserHide() {
       setTimeout(() => {
-        setNavHidden(true)
+        // setNavHidden(true)
       }, 100)
     }
 

@@ -13,7 +13,7 @@ export default function Mouser() {
 
     function mouserHide() {
       setTimeout(() => {
-        setNavHidden(true)
+        // setNavHidden(true)
       }, 100)
     }
 

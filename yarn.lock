@@ -3202,14 +3202,14 @@ atomic-state@^3.0.6:
   resolved "https://registry.yarnpkg.com/atomic-state/-/atomic-state-3.0.6.tgz#fc8e1da22b848ef3828a7a4aaa26d4c8da2712bd"
   integrity sha512-w7ZB5xEazHUiGWOGSUy1I0QdRQUvxADkcbR60SZ/Csen8WIGe29a32iuv0LVwLSP1HBfjsyhiecQ2+/C10Yomg==
 
-atomic-utils@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/atomic-utils/-/atomic-utils-1.6.1.tgz#b34298ffbcc51c5cfe3ccfdca83acb4a23c2d011"
-  integrity sha512-+iBNIg+rBlTbQ82+yOVMb/fzYKgRm0/E+B0OsKaWSd7A/xRTIA/vR2Z4W7LjVf4CscKoVU2R1sKSK0UtqRzBOg==
+atomic-utils@^1.6.4:
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/atomic-utils/-/atomic-utils-1.6.4.tgz#6b40e05e6447604d0737f4c4b8c1a15af4874219"
+  integrity sha512-qUMzhLRCaPJ7sv5SagysllB84R9a7D6PGJ7TEg0wvlN/lzf+I8IOaVUOOJIK7pEQU0ol2gUooVL8IeKgO3GqfQ==
   dependencies:
     atomic-state "^3.0.6"
-    http-react "^3.8.1"
-    react-kuh "^0.1.6"
+    http-react "^3.8.4"
+    react-kuh "^0.1.7"
 
 autoprefixer@^10.4.20:
   version "10.4.20"
@@ -5174,10 +5174,10 @@ http-proxy-agent@^7.0.2:
     agent-base "^7.1.0"
     debug "^4.3.4"
 
-http-react@^3.8.1:
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/http-react/-/http-react-3.8.1.tgz#24a578e44419a9a75ffdc1343d627d0d1bf2b4ef"
-  integrity sha512-BTOtER0NKo0LmGK2jbJNI9AKJH5WjlWZ/wLh649JHhrp22NUHBzpBEq4pqvpD6SXKKt96BtO+5ogKj0idmJtpw==
+http-react@^3.8.4:
+  version "3.8.4"
+  resolved "https://registry.yarnpkg.com/http-react/-/http-react-3.8.4.tgz#0ffb1c2f378db0f62392201a821a5332a8b9a2e6"
+  integrity sha512-kR+GG7WyNBII8YInL0oHRbaBqcmSd5crzUb3lpTnPSRQnnguj706A8QsxTpPQL3742QkljJPEK5FbmRQJdKvLg==
 
 http-signature@~0.10.0:
   version "0.10.1"
@@ -7072,10 +7072,10 @@ react-is@^16.13.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-kuh@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/react-kuh/-/react-kuh-0.1.6.tgz#66a81e374da95d5ea38d53355f7b242e096eb250"
-  integrity sha512-KeaGNBeDZkMHSyCPSv+ewQ1Y03nVqryqhXAHs0KD/TxZIA2ngHdHw8HCbE8BDedgRBgC5LiwRnGAAra/4KNChA==
+react-kuh@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/react-kuh/-/react-kuh-0.1.7.tgz#0fa467bbb99441812b5cbed058a430a958e8b4bb"
+  integrity sha512-08hU2/qgyd6zTMgTBm8NUPCDAEAncpSMNv87MBkPuUnRZcTIqEHaJYRgq3LshwtcYe0gAVY4xThNIBUFyvTPqA==
   dependencies:
     clsx "^2.1.1"
     tailwind-merge "^2.5.5"

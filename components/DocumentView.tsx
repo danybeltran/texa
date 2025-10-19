@@ -56,6 +56,8 @@ function calcHeight(value: string) {
   return newHeight
 }
 
+let previousMutateSave: NodeJS.Timeout
+
 export default function DocumentView() {
   const params: { id: string } = useParams()
   const hidden = useNavHidden()
@@ -164,7 +166,7 @@ export default function DocumentView() {
     }
   }, [doc?.content, toast])
 
-  const initialContent = useRef(doc?.content || '')
+  const initialContent = useRef(doc?.content).current
 
   // Scroll sync logic
   useEffect(() => {
@@ -522,7 +524,7 @@ export default function DocumentView() {
               }}
               value={doc.content!}
               onChange={v => {
-                setNavHidden(true)
+                // setNavHidden(true)
                 if (!doc.locked) {
                   setDoc(prevDoc => ({ ...prevDoc, content: v! }))
                 }
@@ -571,7 +573,7 @@ export default function DocumentView() {
                 // @ts-expect-error disabled does work
                 disabled={doc.locked!}
                 editor={ClassicEditor}
-                data={initialContent.current}
+                data={initialContent}
                 config={{
                   extraPlugins: [MyCustomUploadAdapterPlugin],
                   ui: {
@@ -586,7 +588,7 @@ export default function DocumentView() {
                   placeholder: 'Start writing...'
                 }}
                 onChange={(_, editor) => {
-                  setNavHidden(true)
+                  // setNavHidden(true)
                   const currentData = editor.getData()
                   setDoc(prev => ({ ...prev, content: currentData }))
                 }}
