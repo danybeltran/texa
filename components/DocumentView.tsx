@@ -24,7 +24,7 @@ import { MdPrint } from 'react-icons/md'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { fontNames, renderMD } from '@/lib/md'
+import { fontNames, fonts, renderMD } from '@/lib/md'
 import { cn } from '@/lib/utils'
 
 import {
@@ -372,33 +372,18 @@ export default function DocumentView() {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Font</SelectLabel>
-                  <SelectItem value='pica' className='pica-font'>
-                    {fontNames.pica}
-                  </SelectItem>
-                  <SelectItem value='roboto' className='roboto-font'>
-                    {fontNames.roboto}
-                  </SelectItem>
-                  <SelectItem value='raleway' className='raleway-font'>
-                    {fontNames.raleway}
-                  </SelectItem>
-                  <SelectItem value='montserrat' className='montserrat-font'>
-                    {fontNames.montserrat}
-                  </SelectItem>
-                  <SelectItem value='courier' className='courier-font'>
-                    {fontNames.courier}
-                  </SelectItem>
-                  <SelectItem value='newsreader' className='newsreader-font'>
-                    {fontNames.newsreader}
-                  </SelectItem>
-                  <SelectItem value='poppins' className='poppins-font'>
-                    {fontNames.poppins}
-                  </SelectItem>
-                  <SelectItem value='geist' className='geist-font'>
-                    {fontNames.geist}
-                  </SelectItem>
-                  <SelectItem value='dmsans' className='dmsans-font'>
-                    {fontNames.dmsans}
-                  </SelectItem>
+                  {Object.keys(fonts).map(font => {
+                    const fontName = fontNames[font]
+                    return (
+                      <SelectItem
+                        value={font}
+                        key={'custom-font' + font}
+                        className={`${font}-font`}
+                      >
+                        {fontName}
+                      </SelectItem>
+                    )
+                  })}
                 </SelectGroup>
               </SelectContent>
             </Select>

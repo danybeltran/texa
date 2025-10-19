@@ -12,7 +12,10 @@ import {
   Newsreader,
   Poppins,
   Geist,
-  DM_Sans
+  DM_Sans,
+  Roboto_Mono,
+  Literata,
+  Alegreya
 } from 'next/font/google'
 import 'bs-icon/icons.css'
 
@@ -26,8 +29,9 @@ import Mouser from '@/components/mouser'
 import 'highlight.js/styles/atom-one-dark.css'
 import { getServerSession } from 'next-auth'
 import { cookies } from 'next/headers'
+import { css } from 'atomic-utils'
 
-const interFont = Inter({
+const InterFont = Inter({
   display: 'swap',
   subsets: ['latin', 'latin-ext'],
   weight: ['300', '400', '500', '600', '800', '900']
@@ -40,6 +44,21 @@ const IM_Fell_DW_PicaFont = IM_Fell_DW_Pica({
 
 const RobotoFont = Roboto({
   weight: ['300', '400', '600', '800', '900'],
+  subsets: ['latin', 'latin-ext']
+})
+
+const RobotoMonoFont = Roboto_Mono({
+  weight: ['300', '400', '600', '700'],
+  subsets: ['latin', 'latin-ext']
+})
+
+const LiterataFont = Literata({
+  weight: ['300', '400', '600', '800', '900'],
+  subsets: ['latin', 'latin-ext']
+})
+
+const AlegreyaFont = Alegreya({
+  weight: ['400', '600', '800', '900'],
   subsets: ['latin', 'latin-ext']
 })
 
@@ -91,37 +110,54 @@ async function MainLayout({ children }) {
           content='Texa is an all-in-one rich content, Markdown and KaTeX editor'
         />
       </head>
-      <body style={interFont.style}>
+      <body style={InterFont.style}>
         <style>
-          {`
-          .pica-font {
-            font-family: ${IM_Fell_DW_PicaFont.style.fontFamily};
-          }
-          .roboto-font {
-            font-family: ${RobotoFont.style.fontFamily};
-          }
-          .raleway-font {
-            font-family: ${RalewayFont.style.fontFamily};
-          }
-          .montserrat-font {
-            font-family: ${MontserratFont.style.fontFamily};
-          }
-          .courier-font {
-            font-family: ${Courier_PrimeFont.style.fontFamily};
-          }
-          .newsreader-font {
-            font-family: ${NewsreaderFont.style.fontFamily};
-          }
-          .poppins-font {
-            font-family: ${PoppinsFont.style.fontFamily};
-          }
-          .geist-font {
-            font-family: ${GeistFont.style.fontFamily};
-          }
-          .dmsans-font {
-            font-family: ${DM_SansFont.style.fontFamily};
-          }
-        `}
+          {css`
+            .inter-font {
+              font-family: ${InterFont.style.fontFamily};
+            }
+
+            .literata-font {
+              font-family: ${LiterataFont.style.fontFamily};
+            }
+
+            .alegreya-font {
+              font-family: ${AlegreyaFont.style.fontFamily};
+            }
+
+            .roboto_mono-font {
+              font-family: ${RobotoMonoFont.style.fontFamily};
+            }
+
+            .pica-font {
+              font-family: ${IM_Fell_DW_PicaFont.style.fontFamily};
+              font-size: 115%;
+            }
+            .roboto-font {
+              font-family: ${RobotoFont.style.fontFamily};
+            }
+            .raleway-font {
+              font-family: ${RalewayFont.style.fontFamily};
+            }
+            .montserrat-font {
+              font-family: ${MontserratFont.style.fontFamily};
+            }
+            .courier-font {
+              font-family: ${Courier_PrimeFont.style.fontFamily};
+            }
+            .newsreader-font {
+              font-family: ${NewsreaderFont.style.fontFamily};
+            }
+            .poppins-font {
+              font-family: ${PoppinsFont.style.fontFamily};
+            }
+            .geist-font {
+              font-family: ${GeistFont.style.fontFamily};
+            }
+            .dmsans-font {
+              font-family: ${DM_SansFont.style.fontFamily};
+            }
+          `}
         </style>
         <ThemeProvider attribute='class' defaultTheme='system'>
           <main className='min-h-screen'>

@@ -6,6 +6,10 @@ import Icon from 'bs-icon'
 import { Fragment } from 'react'
 
 export const fonts = {
+  alegreya: 'alegreya',
+  literata: 'Literata',
+  inter: 'inter',
+  roboto_mono: 'roboto_mono',
   pica: 'pica',
   roboto: 'roboto',
   raleway: 'raleway',
@@ -17,7 +21,11 @@ export const fonts = {
   dmsans: 'dmsans'
 } as const
 
-export const fontNames = {
+export const fontNames: { [k in keyof typeof fonts]: string } = {
+  alegreya: 'Alegreya',
+  literata: 'Literata',
+  roboto_mono: 'Roboto mono',
+  inter: 'Inter',
   pica: 'IM Fell DW Pica',
   roboto: 'Roboto',
   raleway: 'Raleway',
