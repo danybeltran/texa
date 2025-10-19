@@ -502,6 +502,7 @@ export default function DocumentView() {
                   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter')
                     setShowMetadata(false)
                 }}
+                className='max-h-64 resize-none'
                 onChange={e => {
                   e.currentTarget.style.height =
                     calcHeight(e.target.value) + 3 + 'px'
@@ -641,7 +642,8 @@ export default function DocumentView() {
                 ? 'hidden'
                 : !doc.locked && 'h-[75vh] print:h-auto overflow-y-auto',
               doc.locked && !doc.editorOnly && 'mb-32',
-              'print:block print:mx-auto print:self-center md-editor-preview print:w-full print:border-neutral-500 print:rounded-lg print:p-3 print:py-0 print:prose print:max-w-3xl print:text-black'
+              'print:block print:mx-auto print:self-center md-editor-preview print:w-full print:border-neutral-500 print:rounded-lg print:p-3 print:py-0 print:prose print:max-w-3xl print:text-black',
+              `${doc.font || 'inter'}-font`
             )}
           >
             {renderedPreview}
