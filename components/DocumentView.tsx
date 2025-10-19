@@ -39,7 +39,16 @@ import { Label } from './ui/label'
 import { useToast } from './ui/use-toast'
 import { setNavHidden, useNavHidden, useTheme } from '@/states'
 import oneDarkTheme from '@/lib/editor-themes/atom-one-dark.json'
-import { ArrowLeft } from 'lucide-react'
+import {
+  ArrowLeft,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  Info,
+  Lock,
+  Printer,
+  Unlock
+} from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -328,39 +337,54 @@ export default function DocumentView() {
 
       <div
         className={cn(
-          'flex items-center justify-between print:hidden transition max-w-[86rem] fixed z-30 top-14 left-0 right-0 mx-auto p-3 sm:px-4 bg-background',
+          // Aesthetics: Fixed, floating bar with background, blur, and shadow
+          'flex items-center justify-between print:hidden transition max-w-[86rem] fixed z-30 left-0 right-0 mx-auto p-2 sm:px-4 mt-4',
+          'bg-background/90 backdrop-blur-sm',
+          // Adjusted top-positioning to sit directly below the main navbar (assuming ~52px tall navbar)
+          'top-[52px]',
+          // Apply opacity when the main navbar is hidden
           hidden && 'opacity-50'
         )}
       >
-        <Link
-          href={'/personal/' + (doc?.parentFolderId ? doc.parentFolderId : '')}
-        >
-          <Button
-            variant='ghost'
-            size='icon'
-            className='gap-x-2'
+        {/* --- Left Group: Navigation and Status --- */}
+        <div className='flex items-center gap-x-2'>
+          {/* Back Button (Lucide ArrowLeft) */}
+          <Link
+            href={
+              '/personal/' + (doc?.parentFolderId ? doc.parentFolderId : '')
+            }
             title='Go to folder'
           >
-            <ArrowLeft />
-          </Button>
-        </Link>
-        <div
-          className={cn('flex items-center transition', hidden && 'opacity-50')}
-        >
-          {savingDoc && (
-            <div className='pr-4'>
-              <AiOutlineLoading3Quarters className='animate-spin' />
-            </div>
-          )}
-          <Link href={'/public-view/' + doc.publicId} target='_blank'>
-            <Button variant='ghost' className='gap-x-2'>
-              <FaExternalLinkAlt />
+            <Button variant='ghost' size='icon' className='hover:bg-primary/10'>
+              <ArrowLeft className='w-5 h-5' />
             </Button>
           </Link>
 
-          <span ref={fontSelectRef}>
+          {/* Saving Status */}
+          {savingDoc && (
+            <div className='pl-2 flex items-center text-sm font-medium text-muted-foreground'>
+              <AiOutlineLoading3Quarters className='animate-spin w-4 h-4 mr-1 text-primary' />
+              Saving...
+            </div>
+          )}
+        </div>
+
+        <div className='flex items-center gap-x-1'>
+          {/* Public View Link (Lucide ExternalLink) */}
+          <Link
+            href={'/public-view/' + doc.publicId}
+            target='_blank'
+            title='Open Public View'
+          >
+            <Button variant='ghost' size='icon'>
+              <ExternalLink className='w-4 h-4' />
+            </Button>
+          </Link>
+
+          {/* Font Selector (Styled for toolbar integration) */}
+          <span ref={fontSelectRef} className='pr-1'>
             <Select
-              value={doc.font || 'inter'}
+              value={documentFont}
               onValueChange={value => {
                 setDoc(prev => ({
                   ...prev,
@@ -368,10 +392,12 @@ export default function DocumentView() {
                 }))
               }}
             >
-              <SelectTrigger className='w-20 border-none'>Font</SelectTrigger>
+              <SelectTrigger className='w-24 border-none bg-transparent hover:bg-transparent'>
+                <SelectValue placeholder='Font' />
+              </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Font</SelectLabel>
+                  <SelectLabel>Select Font</SelectLabel>
                   {Object.keys(fonts).map(font => {
                     const fontName = fontNames[font]
                     return (
@@ -388,35 +414,59 @@ export default function DocumentView() {
               </SelectContent>
             </Select>
           </span>
+
+          {/* Lock/Unlock Button (Lucide Lock/Unlock with Color Cue) */}
           <Button
-            className='gap-x-2'
+            size='icon'
             variant='ghost'
+            title={doc.locked ? 'Unlock for editing' : 'Lock document'}
             onClick={() =>
               setDoc(prevDoc => ({ ...prevDoc, locked: !prevDoc.locked }))
             }
           >
-            {doc.locked ? <FaLock /> : <FaLockOpen />}
+            {doc.locked ? (
+              <Lock className='w-5 h-5' />
+            ) : (
+              <Unlock className='w-5 h-5 text-green-500' />
+            )}
           </Button>
+
+          {/* Editor/Preview Toggle (Code Docs Only, Lucide Eye/EyeOff) */}
           {doc.code && (
             <Button
-              className='gap-x-2'
+              size='icon'
               variant='ghost'
+              title={doc.editorOnly ? 'Show preview' : 'Hide preview'}
               onClick={() =>
                 setDoc(prev => ({ ...prev, editorOnly: !prev.editorOnly }))
               }
             >
-              {doc.editorOnly ? <FaRegEyeSlash /> : <FaRegEye />}
+              {doc.editorOnly ? (
+                <Eye className='w-5 h-5' />
+              ) : (
+                <EyeOff className='w-5 h-5' />
+              )}
             </Button>
           )}
-          <Button className='gap-x-2' variant='ghost' onClick={() => print()}>
-            <MdPrint className='text-lg' />
+
+          {/* Print Button (Lucide Printer) */}
+          <Button
+            size='icon'
+            variant='ghost'
+            title='Print Document'
+            onClick={() => print()}
+          >
+            <Printer className='w-5 h-5' />
           </Button>
+
+          {/* Metadata/Info Button (Lucide Info) */}
           <Button
             onClick={() => setShowMetadata(m => !m)}
-            className='gap-x-2'
+            size='icon'
             variant='ghost'
+            title='Document Details'
           >
-            <CiCircleInfo className='text-lg' />
+            <Info className='w-5 h-5' />
           </Button>
         </div>
       </div>
@@ -483,7 +533,7 @@ export default function DocumentView() {
         </DialogContent>
       </Dialog>
 
-      <div className='flex flex-col md:flex-row w-full gap-x-4 py-8 print:py-0 justify-center pt-12'>
+      <div className='flex flex-col md:flex-row w-full gap-x-4 py-8 print:py-0 justify-center pt-16'>
         {doc.code ? (
           <div
             ref={editorRef}

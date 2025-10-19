@@ -1,8 +1,6 @@
 'use client'
 
-import { FaCode, FaFolder } from 'react-icons/fa6'
 import useFetch, { revalidate } from 'http-react'
-import { BsFillFileEarmarkTextFill, BsPlusLg } from 'react-icons/bs'
 import { Folder } from '@prisma/client'
 import { useState } from 'react'
 
@@ -19,7 +17,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuSub,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import {
@@ -36,8 +33,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { availableColors } from '@/lib/utils'
 import { useParams, useRouter } from 'next/navigation'
-import { atom, useAtom } from 'atomic-state'
+import { atom } from 'atomic-state'
 import Link from 'next/link'
+// Importing Lucide Icons
+import { FolderPlus, FileText, Code, Plus } from 'lucide-react'
 
 const codeOnlyState = atom({
   key: 'codeOnly',
@@ -51,9 +50,9 @@ export default function CreateForm({ folder }: { folder: Folder }) {
   const [newFolderColor, setNewFolderColor] = useState(availableColors[0].value)
 
   const { folderId } = useParams()
-
   const router = useRouter()
 
+  // --- Folder Creation Logic (Remains Unchanged) ---
   const {
     data: _,
     reFetch: createFolder,
@@ -77,6 +76,7 @@ export default function CreateForm({ folder }: { folder: Folder }) {
   const [newDocName, setNewDocName] = useState('')
   const [codeOnly, setCodeOnly] = useState(false)
 
+  // --- Document Creation Logic (Remains Unchanged) ---
   const {
     data: __,
     reFetch: createDoc,
@@ -104,58 +104,67 @@ export default function CreateForm({ folder }: { folder: Folder }) {
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <div className='text-center flex flex-col items-center h-36 pt-4 select-none'>
-            <div className='border h-28 border-neutral-400 border-dashed decoration-dashed  w-full flex items-center rounded-lg cursor-pointer'>
-              <BsPlusLg className='text-9xl p-6' />
-            </div>
-            <p className='text-sm mt-4'>Add or create</p>
-          </div>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className='w-56'>
-          <DropdownMenuItem
-            className='cursor-pointer gap-x-2'
-            onClick={() => setIsCreatingFolder(true)}
-          >
-            <FaFolder />
-            Folder
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className='cursor-pointer gap-x-2'
-            onClick={() => {
-              setIsCreatingDoc(true)
-              setCodeOnly(false)
-            }}
-          >
-            <BsFillFileEarmarkTextFill />
-            Document
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className='cursor-pointer gap-x-2'
-            onClick={() => {
-              setIsCreatingDoc(true)
-              setCodeOnly(true)
-            }}
-          >
-            <FaCode />
-            Empty (code)
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {/* --- Floating Action Button (FAB) Container --- */}
+      <div className='fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50'>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              size='icon'
+              className='h-14 w-14 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105'
+              aria-label='Create New Item'
+            >
+              <Plus className='h-6 w-6' />
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent className='w-56' side='top' align='end'>
+            <DropdownMenuItem
+              className='cursor-pointer gap-x-2'
+              onClick={() => setIsCreatingFolder(true)}
+            >
+              <FolderPlus className='w-4 h-4' />
+              Folder
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className='cursor-pointer gap-x-2'
+              onClick={() => {
+                setIsCreatingDoc(true)
+                setCodeOnly(false)
+              }}
+            >
+              <FileText className='w-4 h-4' />
+              Document (Rich Text)
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className='cursor-pointer gap-x-2'
+              onClick={() => {
+                setIsCreatingDoc(true)
+                setCodeOnly(true)
+              }}
+            >
+              <Code className='w-4 h-4' />
+              Document (Markdown)
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      {/* --- End of FAB --- */}
+
+      {/* ----------------- New Folder Dialog (Remains Unchanged) ----------------- */}
       <Dialog
         open={isCreatingFolder}
         onOpenChange={open => setIsCreatingFolder(open)}
       >
-        <DialogTrigger asChild></DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
-            <DialogTitle>New folder</DialogTitle>
-            <DialogDescription>Create a new folder</DialogDescription>
+            <DialogTitle>New Folder</DialogTitle>
+            <DialogDescription>
+              Create a new folder to organize your content.
+            </DialogDescription>
           </DialogHeader>
           <div className='grid gap-4'>
-            <Label>
+            <Label htmlFor='name'>
               <p className='py-3'>Folder name</p>
               <Input
                 id='name'
@@ -165,14 +174,13 @@ export default function CreateForm({ folder }: { folder: Folder }) {
                 value={newFolderName}
                 onChange={e => setNewFolderName(e.target.value)}
                 className='w-full'
-                placeholder='Name'
+                placeholder='e.g., Project Reports'
               />
             </Label>
           </div>
           <div className='grid gap-4'>
-            <Label>
+            <Label htmlFor='color'>
               <p className='py-3'>Folder color</p>
-
               <Select
                 value={newFolderColor}
                 onValueChange={value => setNewFolderColor(value)}
@@ -207,65 +215,69 @@ export default function CreateForm({ folder }: { folder: Folder }) {
             <Button
               type='submit'
               onClick={createFolder}
-              disabled={creatingFolder}
+              disabled={creatingFolder || !newFolderName.trim()}
             >
-              Create
+              {creatingFolder ? 'Creating...' : 'Create'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      {/* Doc creation */}
+
+      {/* ----------------- New Document Dialog (Remains Unchanged) ----------------- */}
       <Dialog
         open={isCreatingDoc}
         onOpenChange={open => setIsCreatingDoc(open)}
       >
-        <DialogTrigger asChild></DialogTrigger>
         <DialogContent className='sm:max-w-[425px]'>
           <DialogHeader>
             <DialogTitle>
-              {codeOnly ? 'New markdown document' : 'New document'}
+              {codeOnly ? 'New Markdown Document' : 'New Document'}
             </DialogTitle>
             <DialogDescription>
               {codeOnly ? (
                 <div>
                   <p>
-                    Markdown documents give you more control over what's shown.
-                    They also support advanced features like LaTeX (with KateX)
+                    Markdown documents are ideal for technical notes,
+                    documentation, and advanced formatting like LaTeX (KateX).
                   </p>
                   <br />
                   <p>
                     <Link
                       href='https://www.markdownguide.org/basic-syntax/'
                       target='_blank'
-                      className='underline'
+                      className='underline text-blue-500 hover:text-blue-600'
                     >
-                      Learn Markdown
+                      Learn Markdown Syntax
                     </Link>
                   </p>
                 </div>
               ) : (
-                'Create a new document. Recommended for most users.'
+                'Create a new rich-text document. Recommended for most general purpose notes and content.'
               )}
             </DialogDescription>
           </DialogHeader>
           <div className='grid gap-4'>
-            <Label>
+            <Label htmlFor='doc-name'>
               <p className='py-3'>Document name</p>
               <Input
                 onKeyDown={e => {
                   if (e.key === 'Enter') createDoc()
                 }}
-                id='name'
+                id='doc-name'
                 value={newDocName}
                 onChange={e => setNewDocName(e.target.value)}
                 className='w-full'
-                placeholder='Name'
+                placeholder='e.g., Meeting Notes 2024'
               />
             </Label>
           </div>
           <DialogFooter>
-            <Button type='submit' onClick={createDoc} disabled={creatingDoc}>
-              Create
+            <Button
+              type='submit'
+              onClick={createDoc}
+              disabled={creatingDoc || !newDocName.trim()}
+            >
+              {creatingDoc ? 'Creating...' : 'Create'}
             </Button>
           </DialogFooter>
         </DialogContent>

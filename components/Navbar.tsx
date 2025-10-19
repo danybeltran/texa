@@ -1,6 +1,5 @@
 'use client'
 import Link from 'next/link'
-
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { cn } from '@/lib/utils'
 import {
@@ -12,116 +11,86 @@ import {
 } from '@/components/ui/navigation-menu'
 import AuthButton from './AuthButton'
 import { Button } from './ui/button'
-import { FaRegEye } from 'react-icons/fa6'
-import { useNavHidden, setNavHidden } from '@/states'
-import { BrowserOnly } from 'react-kuh'
-import { useEffect, useRef } from 'react'
+import { FolderOpen, BookText } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
 const Navbar = () => {
-  const hidden = useNavHidden()
-
   const pathname = usePathname()
-
-  const navbarRef = useRef<HTMLHeadingElement>(null)
-
-  useEffect(() => {
-    function mouser() {
-      setTimeout(() => {
-        setNavHidden(false)
-      }, 100)
-    }
-
-    function mouserHide() {
-      setTimeout(() => {
-        // setNavHidden(true)
-      }, 100)
-    }
-
-    navbarRef.current?.addEventListener('mousemove', mouser)
-    navbarRef.current?.addEventListener('touchmove', mouser)
-
-    window.addEventListener('wheel', mouserHide)
-
-    return () => {
-      navbarRef.current?.removeEventListener('mousemove', mouser)
-      navbarRef.current?.removeEventListener('touchmove', mouser)
-
-      window.removeEventListener('wheel', mouserHide)
-    }
-  }, [navbarRef.current])
 
   return (
     <header
-      ref={navbarRef}
-      className={cn('sticky top-0 z-50 transition print:hidden')}
+      // The header is now always visible
+      className={cn(
+        'sticky top-0 z-50 shadow-sm transition-all duration-300 print:hidden'
+      )}
     >
-      <div className='max-w-[84rem] mx-auto bg-white dark:bg-[#161616] flex items-center justify-between py-2 px-4 relative backdrop-filter backdrop-blur-lg bg-opacity-80'>
-        {/* <div className='absolute left-0 w-full h-full bg-white dark:bg-neutral-950 backdrop-filter backdrop-blur-lg'></div> */}
-        <div className='flex items-baseline justify-center gap-x-6'>
+      <div
+        className={cn(
+          'max-w-[84rem] mx-auto flex items-center justify-between py-3 px-4 relative',
+          'backdrop-blur-sm bg-transparent'
+        )}
+      >
+        {/* --- Left Section: Logo and Main Links --- */}
+        <div className='flex items-center gap-x-8'>
+          {/* Logo/Brand (Tx) */}
           <Link
-            className={cn(
-              'font-bold text-xl z-10 transition',
-              hidden && 'opacity-50'
-            )}
+            className='font-extrabold text-2xl tracking-tight text-primary z-10'
             href={'/'}
           >
             Tx
           </Link>
-          <Link
-            className={cn('z-10 transition', hidden && 'opacity-0')}
-            href={'/docs'}
-          >
-            Docs
-          </Link>
-        </div>
-        {pathname.startsWith('/public-view') ? (
-          <div className='flex gap-x-2'>
+
+          {/* Docs Link */}
+          <div className='hidden md:flex items-center gap-x-4 text-sm'>
             <Link
-              href='/'
-              className={cn({
-                'opacity-10': hidden
-              })}
+              className='text-foreground/70 hover:text-foreground transition-colors font-medium'
+              href={'/docs'}
             >
-              <Button variant='outline'>Go to app</Button>
+              <BookText className='w-4 h-4 inline-block mr-1' /> Docs
+            </Link>
+          </div>
+        </div>
+
+        {/* --- Right Section: Context-Specific Navigation --- */}
+        {pathname.startsWith('/public-view') ? (
+          /* --- Public View Menu --- */
+          <div className='flex items-center gap-x-2'>
+            <Link href='/' className='transition-opacity'>
+              <Button variant='default' size='sm'>
+                Go to App
+              </Button>
             </Link>
             <ThemeToggle />
           </div>
         ) : (
-          <NavigationMenu
-            className={cn({
-              'opacity-10': hidden
-            })}
-          >
-            <NavigationMenuList className='gap-2'>
-              <NavigationMenuItem>
-                <Button
-                  size='sm'
-                  className={cn('transition')}
-                  onClick={() => setNavHidden(h => !h)}
-                >
-                  <FaRegEye />
-                </Button>
-              </NavigationMenuItem>
+          /* --- Private/App Menu --- */
+          <NavigationMenu>
+            <NavigationMenuList className='gap-1 md:gap-2'>
+              {/* NOTE: The Eye Toggle Button has been removed */}
+
+              {/* My Folder Link */}
               <NavigationMenuItem>
                 <NavigationMenuLink
                   asChild
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    'font-medium transition'
+                    'font-medium text-foreground/80 hover:text-foreground transition-colors p-2 md:px-3 md:py-2'
                   )}
                 >
-                  <Link href='/personal'>My</Link>
+                  <Link href='/personal'>
+                    <FolderOpen className='w-4 h-4 mr-1 md:mr-2' />
+                    My Space
+                  </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
-              <NavigationMenuItem
-                className={cn(' transition flex items-center')}
-              >
+              {/* Auth Button (Sign In/Profile) */}
+              <NavigationMenuItem>
                 <AuthButton />
               </NavigationMenuItem>
 
-              <NavigationMenuItem className={cn(' transition')}>
+              {/* Theme Toggle */}
+              <NavigationMenuItem>
                 <ThemeToggle />
               </NavigationMenuItem>
             </NavigationMenuList>

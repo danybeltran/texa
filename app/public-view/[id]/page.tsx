@@ -13,13 +13,14 @@ import PublicMdContent from '@/components/PublicMdContent'
 import { SSRSuspense } from 'http-react'
 import { Metadata } from 'next'
 import SeoContent from '@/components/seo'
+import { ArrowLeft } from 'lucide-react' // Use Lucide for consistent icon styling
 
 export async function generateMetadata({
   params: $params,
   searchParams: $searchParams
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ sourceCode: 'true' }>
+  searchParams: Promise<{ sourceCode: 'true'; from: string }> // Added 'from' to the promise
 }) {
   const params = await $params
 
@@ -52,7 +53,7 @@ export default async function DocumentPage({
   searchParams: $searchParams
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ sourceCode: 'true' }>
+  searchParams: Promise<{ sourceCode: 'true'; from: string }> // Added 'from' to the promise
 }) {
   headers()
 
@@ -73,6 +74,18 @@ export default async function DocumentPage({
     )
 
   const showSource = searchParams.sourceCode === 'true'
+  const fromFolderId = searchParams.from
+
+  // LOGIC ADDED HERE: Check if the 'from' parameter matches the document's parent folder ID
+  const showBackButton = fromFolderId && doc.parentFolderId === fromFolderId
+
+  const BackButton = showBackButton ? (
+    <Link href={`/public-folder/${doc.parentFolderId}`}>
+      <Button variant='secondary' size='sm' className='gap-x-2'>
+        <ArrowLeft className='w-4 h-4' /> Back to folder
+      </Button>
+    </Link>
+  ) : null
 
   return (
     <main className='w-full'>
@@ -82,6 +95,7 @@ export default async function DocumentPage({
         {doc.code ? (
           <div className='w-full flex flex-col'>
             <div className='pb-4 space-x-2 print:hidden'>
+              {BackButton} {/* Render Back button here */}
               <Link
                 href={`/public-view/${doc.publicId}${
                   showSource ? '' : '?sourceCode=true'
@@ -109,6 +123,7 @@ export default async function DocumentPage({
         ) : (
           <div className='w-full'>
             <div className='space-x-2 print:hidden'>
+              {BackButton} {/* Render Back button here */}
               <PublicPrintButton />
             </div>
             <div className='md-editor-preview mx-auto w-full max-w-3xl border-neutral-500 rounded-lg p-3 print:py-0 prose  text-black mb-48 print:mb-0'>

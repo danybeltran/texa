@@ -8,31 +8,56 @@ import SingleFolder from '@/components/SingleFolder'
 import SingleDocument from '@/components/SingleDocument'
 
 export default function RootFolders() {
-  const { data: mainFolders, hasData: hasCachedFolders } = useFetch<Folder[]>(
-    '/folders',
-    {
-      id: 'parent',
-      cacheProvider: storage,
-      default: []
-    }
-  )
+  const { data: mainFolders } = useFetch<Folder[]>('/folders', {
+    id: 'parent',
+    cacheProvider: storage,
+    default: []
+  })
 
-  const { data: files, hasData: hasCachedFiles } = useFetch<Doc[]>(
-    '/documents',
-    {
-      default: [],
-      cacheProvider: storage
-    }
-  )
+  const { data: files } = useFetch<Doc[]>('/documents', {
+    default: [],
+    cacheProvider: storage
+  })
+
+  const hasFolders = mainFolders.length > 0
+  const hasFiles = files.length > 0
+  const allItemsEmpty = !hasFolders && !hasFiles
 
   return (
-    <SSRSuspense>
-      {mainFolders.map(folder => (
-        <SingleFolder folder={folder} key={'folder' + folder.id} />
-      ))}
-      {files.map(doc => (
-        <SingleDocument doc={doc} key={'document' + doc.id} />
-      ))}
-    </SSRSuspense>
+    // Wrap the content with the responsive grid container
+    <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 p-2'>
+      <SSRSuspense>
+        {allItemsEmpty ? (
+          <p className='col-span-full text-center py-12 text-gray-500 dark:text-gray-400'>
+            Your personal space is empty. Start by creating a new folder or
+            document! 🚀
+          </p>
+        ) : (
+          <>
+            {/* 1. Folders Section */}
+            {hasFolders && (
+              <h3 className='col-span-full text-lg font-semibold text-foreground/80 pt-4 pb-2 border-b border-border/60 mb-2'>
+                Folders
+              </h3>
+            )}
+            {mainFolders.map(folder => (
+              // Folders are rendered first to ensure top-of-list grouping
+              <SingleFolder folder={folder} key={'folder' + folder.id} />
+            ))}
+
+            {/* 2. Documents Section */}
+            {hasFiles && (
+              // Only show the header if there are documents
+              <h3 className='col-span-full text-lg font-semibold text-foreground/80 pt-4 pb-2 border-b border-border/60 mb-2'>
+                Documents
+              </h3>
+            )}
+            {files.map(doc => (
+              <SingleDocument doc={doc} key={'document' + doc.id} />
+            ))}
+          </>
+        )}
+      </SSRSuspense>
+    </div>
   )
 }
