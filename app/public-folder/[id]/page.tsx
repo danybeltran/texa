@@ -3,18 +3,19 @@ import { prisma } from '@/server'
 import { Metadata } from 'next'
 import { headers } from 'next/headers'
 import Link from 'next/link'
-import { FolderIcon, FileTextIcon, FileCodeIcon } from 'lucide-react'
+import { FolderIcon, FileTextIcon, FileCodeIcon, ArrowLeft } from 'lucide-react'
 import { cn } from '@/lib/utils' // Assuming cn is available
+import { PublicFolderBackButton } from './public-folder-back-button'
 
 // Utility function to check for a valid 24-character hex MongoDB ID string
-// This prevents the Prisma "Malformed ObjectID" crash.
 const isValidMongoId = (id: string | undefined): boolean => {
   if (!id) return false
-  // A standard MongoDB ObjectId is 24 hexadecimal characters long.
   return typeof id === 'string' && id.length === 24 && /^[0-9a-fA-F]+$/.test(id)
 }
 
-// (Metadata function is updated to safely handle null/undefined folder AND invalid ID)
+// ----------------------------------------------------------------------------------
+// Metadata Generation
+// ----------------------------------------------------------------------------------
 export async function generateMetadata({
   params: $params
 }: {
@@ -23,7 +24,7 @@ export async function generateMetadata({
   const params = await $params
   const folderId = params.id
 
-  // 1. Check ID validity first
+  // 1. Check ID validity first to prevent Prisma crash
   if (!isValidMongoId(folderId)) {
     return {
       title: 'Invalid Link',
@@ -52,10 +53,7 @@ export async function generateMetadata({
 
   return {
     title: folderName,
-    openGraph: {
-      title: folderName,
-      description: folderDescription
-    },
+    openGraph: { title: folderName, description: folderDescription },
     twitter: {
       title: folderName,
       description: folderDescription,
@@ -66,18 +64,23 @@ export async function generateMetadata({
 }
 
 // ----------------------------------------------------------------------------------
+// Main Component
+// ----------------------------------------------------------------------------------
 
 export default async function PublicFolderPage({
-  params: $params
+  params: $params,
+  searchParams: $searchParams
 }: {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ from: string }> // Added 'from' query parameter type
 }) {
   headers()
 
   const params = await $params
+  const searchParams = await $searchParams
   const currentFolderId = params.id
 
-  // CRITICAL: Prevent crash if ID is malformed
+  // CRITICAL: Check ID format before proceeding
   if (!isValidMongoId(currentFolderId)) {
     return (
       <div className='flex items-center justify-center pt-24'>
@@ -86,28 +89,13 @@ export default async function PublicFolderPage({
     )
   }
 
-  // Use Promise.all inside a try/catch block for robustness
+  // Fetching data
   const [[folder], subfolders, documents] = await Promise.all([
-    prisma.folder.findMany({
-      where: {
-        id: currentFolderId
-      }
-    }),
-
-    prisma.folder.findMany({
-      where: {
-        parentFolderId: currentFolderId
-      }
-    }),
+    prisma.folder.findMany({ where: { id: currentFolderId } }),
+    prisma.folder.findMany({ where: { parentFolderId: currentFolderId } }),
     prisma.doc.findMany({
-      where: {
-        parentFolderId: currentFolderId
-      },
-      select: {
-        publicId: true,
-        name: true,
-        code: true
-      }
+      where: { parentFolderId: currentFolderId },
+      select: { publicId: true, name: true, code: true }
     })
   ])
 
@@ -121,16 +109,22 @@ export default async function PublicFolderPage({
   const hasSubfolders = subfolders.length > 0
   const hasDocuments = documents.length > 0
 
+  // Back Button Logic: Show if 'from' query parameter is present (indicating navigation history)
+  const fromFolderId = searchParams.from
+
+  const BackButton = fromFolderId ? <PublicFolderBackButton /> : null
+
   // Helper function to render a card item (Folder or Document)
   const renderItemCard = (item: any, isFolder: boolean) => {
-    // Determine if it's a code file (only relevant if it's a document)
     const isCodeFile = !isFolder && item.code
 
-    // Base props for all items
     const key = isFolder ? `f-${item.id}` : `d-${item.publicId}`
+
+    // FIX: When linking to a sub-folder or document, pass the CURRENT folder's ID as 'from'
     const url = isFolder
-      ? `/public-folder/${item.id}`
-      : `/public-view/${item.publicId}?from=${currentFolderId}`
+      ? `/public-folder/${item.id}?from=${currentFolderId}` // <- Added ?from for folder links
+      : `/public-view/${item.publicId}?from=${currentFolderId}` // <- Added ?from for document links
+
     const itemName =
       item.name || (isFolder ? 'Untitled Folder' : 'Untitled Document')
 
@@ -202,7 +196,8 @@ export default async function PublicFolderPage({
           {folder.name || 'Folder Contents'}
         </h1>
 
-        <hr className='mb-8 border-gray-200 dark:border-gray-700' />
+        {/* ACTION BAR: Render Back Button only if ?from is present */}
+        {BackButton}
 
         {/* Dynamic Grid Layout for Folders and Documents */}
         <div
@@ -210,6 +205,7 @@ export default async function PublicFolderPage({
             'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4'
           }
         >
+          {/* Folders/Documents Separation and Rendering */}
           {hasSubfolders || hasDocuments ? (
             <>
               {/* 1. Folders Section */}
